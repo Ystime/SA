@@ -1,0 +1,13 @@
+    BusinessPartner *temp5 = [[BusinessPartner alloc]init];
+    temp5.PartnerID = @"1";
+    temp5.Name = @"Scheer Management";
+    temp5.Street = @"Lage Biezenweg";
+    temp5.HouseNumber = @"5C";
+    temp5.PostalCode = @"4131 LV";
+    temp5.City = @"Vianen";
+    temp5.Country = @"The Netherlands";
+    temp5.TelephoneNumber = @"0714071130";
+    temp5.Email = @"info@scheer-management.com";
+    temp5.Latitude = @"51.981230";
+    temp5.Longitude = @"5.093582";
+    [temp  addObject:temp5];
