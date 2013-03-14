@@ -34,7 +34,7 @@ NSMutableArray *bupas;
     
     BusinessPartner *temp1 = [[BusinessPartner alloc]initWithSDMDictionary:nil];
     temp1.BusinessPartnerID = @"1";
-    temp1.BusinessPartnerType = @"Suspect";
+    temp1.BusinessPartnerType = @"Customer";
     temp1.BusinessPartnerName = @"Scheer Management";
     temp1.Address.Street = @"Lage Biezenweg";
     temp1.Address.HouseNumber = @"5C";
@@ -49,7 +49,7 @@ NSMutableArray *bupas;
     
     BusinessPartner *temp2 = [[BusinessPartner alloc]initWithSDMDictionary:nil];
     temp2.BusinessPartnerID = @"2";
-    temp2.BusinessPartnerType = @"Suspect";
+    temp2.BusinessPartnerType = @"Customer";
     temp2.BusinessPartnerName = @"NL4B";
     temp2.Address.Street = @"Huizermaatweg";
     temp2.Address.HouseNumber = @"30";

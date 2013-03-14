@@ -49,7 +49,7 @@ int selectedContact;
         NoteView *subView = [subviewArray objectAtIndex:0];
         [self.bottomView addSubview:subView];
     }
-    else if([type isEqualToString:@"Suspect"])
+    else if([type isEqualToString:@"Customer"])
     {
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"BW_View" owner:self options:nil];
         BWView *subView = [subviewArray objectAtIndex:0];

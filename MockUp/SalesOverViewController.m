@@ -130,7 +130,7 @@ int selectedRow;
 
 -(void)getSalesDocs
 {
-//    [[NSNotificationCenter defaultCenter]removeObserver:self forKeyPath:kCVCLoadedDocs];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kCVCLoadedDocs object:nil];
     allSDs = cvc.SalesDocuments;
     salesDocuments = [[NSMutableArray alloc]init];
     [self performSelectorOnMainThread:@selector(salesDocumentsLoaded) withObject:nil waitUntilDone:NO];
