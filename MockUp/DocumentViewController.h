@@ -19,12 +19,13 @@
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 @property (strong, nonatomic) SalesDocument *tempSalesDocument;
 @property (strong, nonatomic) IBOutlet UITableView *ItemsTable;
-@property (strong, nonatomic) IBOutlet UIView *ItemInfoView;
+//@property (strong, nonatomic) IBOutlet UIView *ItemInfoView;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *ItemActionButtons;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *HeaderLabel;
 @property (strong, nonatomic) UIPopoverController *pop;
 @property (nonatomic) BOOL changeMode;
 @property (strong, nonatomic) IBOutlet UIButton *AddButton;
+- (IBAction)saveDocs:(id)sender;
 
 - (IBAction)changeItem:(id)sender;
 -(void)setHeaderLabelView;

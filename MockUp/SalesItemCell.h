@@ -11,8 +11,8 @@
 
 @interface SalesItemCell : UITableViewCell
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *Labels;
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesItem:(SalesDocumentItem*)item;
--(void)changeItem:(SalesDocumentItem*)item;
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesItem:(SalesDocItem*)item;
+-(void)changeItem:(SalesDocItem*)item;
 @property (strong, nonatomic) IBOutlet UIImageView *ActionImage;
 @property (strong, nonatomic) IBOutlet UIImageView *MaterialImage;
 

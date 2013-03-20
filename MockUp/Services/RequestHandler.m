@@ -220,12 +220,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSDictionary *userInfoDict;
     NSError *error;
     
-    NSMutableArray *contacts = [service getMaterialsWithData:request.responseData error:&error];
+    NSMutableArray *materials = [service getMaterialsWithData:request.responseData error:&error];
     if(error) {
         userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
     }
     else {
-        userInfoDict = [NSDictionary dictionaryWithObject:contacts forKey:kResponseItems];
+        userInfoDict = [NSDictionary dictionaryWithObject:materials forKey:kResponseItems];
     }
     
     [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
@@ -280,7 +280,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     
 }
 
--(void)loadSalesDocuments:(NSString*)bupaID
+-(void)loadSalesDocuments:(ODataQuery*)bupaDocQuery
 {
     if([SettingsUtilities getDemoStatus])
     {
@@ -293,29 +293,31 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSError *error;
     if([self executeLoginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error])
     {
-        NSURL *url = [service.SalesDocumentsQuery.URL copy];
-        ODataQuery *query = [[ODataQuery alloc]initWithURL:url];
-        [query filter:[NSString stringWithFormat:@"CustomerID eq '%@'",bupaID ]];
+//        NSURL *url = [service.SalesDocumentsQuery.URL copy];
+//        ODataQuery *query = [[ODataQuery alloc]initWithURL:url];
+//        [query filter:[NSString stringWithFormat:@"CustomerID eq '%@'",bupaID ]];
         //[query expand:@"Items"];
-        [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadSalesDocumentsCompleted:) andUserInfo:nil];
+        [connectivityHelper executeBasicAsyncRequestWithQuery:bupaDocQuery andRequestDelegate:self andDidFinishSelector:@selector(loadSalesDocumentsCompleted:) andUserInfo:nil];
     }
     
 }
 
 -(BOOL) createSalesDocument:(SalesDocument*)salesdoc
 {
-    
-    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
-    
     NSError *error;
+
+    [self loginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error];
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+//    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:[[ODataQuery alloc]initWithURL:[NSURL URLWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/"]]];
+
+    
     NSString *test = [service getXMLForCreateRequest:salesdoc error:&error];
-    NSLog(@"%@",test);
     
     if(csrf)
     {
-        NSURL *url = [[NSURL alloc]initWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/SalesDocuments"];
-        ODataQuery *sdQuery = [[ODataQuery alloc]initWithURL:url];
-        NSLog(@"%@",sdQuery.URL);
+//        NSURL *url = [[NSURL alloc]initWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/SalesDocuments"];
+//        ODataQuery *sdQuery = [[ODataQuery alloc]initWithURL:url];
+//        NSLog(@"%@",sdQuery.URL);
         
         id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery:service.SalesDocumentsQuery andBody:test andCSRFData:csrf];
         NSLog(@"REQUEST: %@", [request responseString]);
@@ -333,7 +335,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSDictionary *userInfoDict;
     NSError *error;
     
-    NSMutableArray *items = [service getSalesDocumentItemsWithData:request.responseData error:&error];
+    NSMutableArray *items = [service getSalesDocItemsWithData:request.responseData error:&error];
     if(error) {
         userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
     }
@@ -397,7 +399,16 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 {
     if([SettingsUtilities getDemoStatus])
     {
-        
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        if([bupaID isEqualToString:@""])
+        {
+            [dic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
+            
+        }
+        [dic setObject:[UIImage imageNamed:@"Scheer.png"] forKey:@"Scheer"];
+        [dic setObject:[UIImage imageNamed:@"NL4B.png"] forKey:@"NL4B"];
+        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:temp];
     }
     else
     {
@@ -408,7 +419,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
         }
         [dic setObject:[UIImage imageNamed:@"logoAH.png"] forKey:@"Albert Heijn"];
-        [dic setObject:[UIImage imageNamed:@"C1000.png"] forKey:@"C1000"];
+        [dic setObject:[UIImage imageNamed:@"ETOS.png"] forKey:@"Etos"];
         NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:temp];
     }

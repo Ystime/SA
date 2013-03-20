@@ -11,7 +11,7 @@
 #import "GlobalFunctions.h"
 @interface MaterialInfoViewController : UITableViewController
 @property (strong, nonatomic) Material *material;
-@property (strong, nonatomic) SalesDocumentItem *editItem;
+@property (strong, nonatomic) SalesDocItem *editItem;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *MaterialLabels;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *SliderButtons;
 @property (strong, nonatomic) IBOutlet UIButton *AddButton;

@@ -15,7 +15,9 @@
 #import "SDMRequesting.h"
 
 #define X_CSRF_TOKEN @"X-CSRF-TOKEN"
-#define SAP_XSRF_COOKIE_PREFIX @"sap-XSRF_"
+//#define SAP_XSRF_COOKIE_PREFIX @"sap-XSRF_"
+#define SAP_XSRF_COOKIE_PREFIX @"SAP_SESSIONID_"
+
 
 @implementation SDMConnectivityHelper
 
@@ -267,6 +269,7 @@
 - (CSRFData *)getCSRFDataForServiceQuery:(ODataQuery *)aServiceQuery
 {
     id <SDMRequesting> request = [self createRequestWithQuery:aServiceQuery];
+    [request addRequestHeader:@"X-Requested-With" value:@"XMLHttpRequest"];
     [request addRequestHeader:X_CSRF_TOKEN value:@"Fetch"];
     [request startSynchronous];
     
@@ -291,6 +294,8 @@
         if (!csrfData.cookie) {
             NSArray *requestCookies = request.requestCookies;
             for (NSHTTPCookie *aCookie in requestCookies) {
+                NSLog(aCookie.name);
+                NSLog(aCookie.value);
                 if ([aCookie.name rangeOfString:SAP_XSRF_COOKIE_PREFIX options:NSCaseInsensitiveSearch].location != NSNotFound) {
                     csrfData.cookie = aCookie;
                 }

@@ -94,7 +94,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 -(Material*)loadMaterial:(NSString*)barcode;
 
 
--(void)loadSalesDocuments:(NSString*)bupaID;
+-(void)loadSalesDocuments:(ODataQuery*)bupaDocQuery;
 
 -(BOOL) createSalesDocument:(SalesDocument*)salesdoc;
 

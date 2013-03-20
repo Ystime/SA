@@ -82,7 +82,7 @@ UIImage *matImage;
         self.MaterialImage.image = [UIImage imageNamed:@"unknown.png"];
 }
 
--(void)setItem:(SalesDocumentItem *)Selecteditem andImage:(UIImage*)image
+-(void)setItem:(SalesDocItem *)Selecteditem andImage:(UIImage*)image
 {
     item = Selecteditem;
     matImage = image;

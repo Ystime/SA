@@ -12,7 +12,7 @@
 
 @interface ItemViewController : UITableViewController
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *CellLabels;
-@property (strong, nonatomic) SalesDocumentItem *item;
+@property (strong, nonatomic) SalesDocItem *item;
 @property (strong, nonatomic) IBOutlet UIImageView *MaterialImage;
--(void)setItem:(SalesDocumentItem *)Selecteditem andImage:(UIImage*)image;
+-(void)setItem:(SalesDocItem *)Selecteditem andImage:(UIImage*)image;
 @end

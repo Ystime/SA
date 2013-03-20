@@ -147,13 +147,13 @@ int value;
     NSString *itemAction;
     switch ([sender tag]) {
         case 1:
-            itemAction = @"Quotation";
+            itemAction = @"QUOTATION";
             break;
         case 2:
-            itemAction = @"Return Order";
+            itemAction = @"RETURN_ORDER";
             break;
         case 3:
-            itemAction = @"Sales Order";
+            itemAction = @"ORDER";
             break;
         default:
             break;

@@ -18,6 +18,7 @@
     temp1.UoM = @"Pieces";
     temp1.Description = @"SAP Server";
     temp1.EANCode = @"1234567890";
+
     
     Material *temp2 = [[Material alloc]initWithSDMDictionary:nil];
     temp2.MaterialNumber = @"Y000000002";

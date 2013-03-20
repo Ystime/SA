@@ -42,14 +42,7 @@
                 label.text = [self stringFromDate:sd.RequestedDeliveryDate];
                 break;
             case 3:
-                if([sd.OrderType isEqualToString:@"A"])
-                    label.text = @"Inquiry";
-                else if([sd.OrderType isEqualToString:@"B"])
-                    label.text = @"Quotation";
-                else if([sd.OrderType isEqualToString:@"C"])
-                    label.text = @"Order";
-                else if([sd.OrderType isEqualToString:@"H"])
-                    label.text = @"Return";
+                label.text = sd.OrderType;
                 break;
             case 4:
                 label.text = [NSString stringWithFormat:@"%0.2f €",sd.NetValue.doubleValue];

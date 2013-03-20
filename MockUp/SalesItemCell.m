@@ -10,7 +10,7 @@
 
 @implementation SalesItemCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesItem:(SalesDocumentItem*)item
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesItem:(SalesDocItem*)item
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -20,7 +20,7 @@
     return self;
 }
 
--(void)changeItem:(SalesDocumentItem*)item
+-(void)changeItem:(SalesDocItem*)item
 {
     for(UILabel *label in self.Labels)
     {
@@ -45,15 +45,15 @@
                 break;
         }
     }
-    if([item.ItemNumber isEqualToString:@"Quotation"])
+    if([item.ItemNumber isEqualToString:@"QUOTATION"])
     {
         self.ActionImage.image = [UIImage imageNamed:@"QT.png"];
     }
-    else if([item.ItemNumber isEqualToString:@"Sales Order"])
+    else if([item.ItemNumber isEqualToString:@"ORDER"])
     {
         self.ActionImage.image = [UIImage imageNamed:@"SO.png"];
     }
-    else if([item.ItemNumber isEqualToString:@"Return Order"])
+    else if([item.ItemNumber isEqualToString:@"RETURN_ORDER"])
     {
         self.ActionImage.image = [UIImage imageNamed:@"RO.png"];
     }

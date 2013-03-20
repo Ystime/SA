@@ -21,12 +21,12 @@
 
 #pragma mark GeoCode
 @interface GeoCode : BaseComplexType {
-	NSNumber *m_Longitude;
-	NSNumber *m_Latitude;
+	NSString *m_Longitude;
+	NSString *m_Latitude;
 }
 
-@property (strong, nonatomic) NSNumber *Longitude; ///< Longitude (geo-lon) - Edm.Double
-@property (strong, nonatomic) NSNumber *Latitude; ///< Latitude (geo-lat) - Edm.Double
+@property (strong, nonatomic) NSString *Longitude; ///< Longitude (geo-lon) - Edm.String
+@property (strong, nonatomic) NSString *Latitude; ///< Latitude (geo-lat) - Edm.String
 
 /**
  Static method that loads all of the complex type property labels.
@@ -171,16 +171,16 @@
 
 #pragma mark DocumentStatus
 @interface DocumentStatus : BaseComplexType {
-	NSString *m_Delivery_Status;
-	NSString *m_Invoice_Status;
 	NSString *m_Overall_Status;
+	NSString *m_Invoice_Status;
+	NSString *m_Delivery_Status;
 }
 
-@property (strong, nonatomic) NSString *Delivery_Status; ///< Delivery_Status - Edm.String
+@property (strong, nonatomic) NSString *Overall_Status; ///< Overall_Status - Edm.String
 
 @property (strong, nonatomic) NSString *Invoice_Status; ///< Invoice_Status - Edm.String
 
-@property (strong, nonatomic) NSString *Overall_Status; ///< Overall_Status - Edm.String
+@property (strong, nonatomic) NSString *Delivery_Status; ///< Delivery_Status - Edm.String
 
 
 /**
@@ -355,6 +355,8 @@
 	NSMutableArray *m_ContactPersons;
     ODataQuery *m_MediaCollectionQuery;
 	NSMutableArray *m_MediaCollection;
+    ODataQuery *m_SalesDocumentsQuery;
+	NSMutableArray *m_SalesDocuments;
 
 }
 
@@ -371,6 +373,8 @@
 @property (strong, nonatomic) NSMutableArray *ContactPersons;
 @property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
 @property (strong, nonatomic) NSMutableArray *MediaCollection;
+@property (strong, nonatomic) ODataQuery *SalesDocumentsQuery;
+@property (strong, nonatomic) NSMutableArray *SalesDocuments;
 
 #pragma mark Static Methods
 /**
@@ -453,12 +457,20 @@
 */
 - (BOOL)loadMediaCollectionWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
+/**
+ Navigation property. Loads SalesDocuments details for this entity from the provided data.
+ @param aData The NSData containing the SalesDocuments information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadSalesDocumentsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
 
 @end
 
 #pragma mark - Material
 @interface Material : BaseEntityType {
-	NSNumber *m_Quantity; 
+	NSNumber *m_Quantity;
 	NSString *m_UoM;
 	NSString *m_Plant;
 	NSString *m_Description;
@@ -467,6 +479,7 @@
 	NSString *m_EANCode;
 	NSString *m_SalesOrganization;
 	NSString *m_MaterialGroup;
+	NSDecimalNumber *m_Price;
     ODataQuery *m_MediaCollectionQuery;
 	NSMutableArray *m_MediaCollection;
 
@@ -481,6 +494,7 @@
 @property (strong, nonatomic) NSString *EANCode; ///< EANCode - Edm.String
 @property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
 @property (strong, nonatomic) NSString *MaterialGroup; ///< MaterialGroup - Edm.String
+@property (strong, nonatomic) NSDecimalNumber *Price; ///< Price - Edm.Decimal
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
 @property (strong, nonatomic) NSMutableArray *MediaCollection;
@@ -562,7 +576,6 @@
 @end
 
 #pragma mark - SalesDocument
-
 @interface SalesDocument : BaseEntityType {
 	DocumentStatus *m_Status;
 	NSString *m_CustomerPurchaseOrderNumber;
@@ -675,78 +688,78 @@
 
 @end
 
-#pragma mark - SalesDocumentItem
-@interface SalesDocumentItem : BaseEntityType {
+#pragma mark - SalesDocItem
+@interface SalesDocItem : BaseEntityType {
 	DocumentStatus *m_Status;
-	NSDecimalNumber *m_NetValue;
-	NSDecimalNumber *m_NetPrice;
-	NSString *m_UoM;
-	NSNumber *m_Quantity;
-	NSString *m_Plant;
-	NSString *m_Description;
-	NSString *m_Material;
-	NSString *m_ItemNumber;
 	NSString *m_OrderID;
+	NSString *m_ItemNumber;
+	NSString *m_Material;
+	NSString *m_Description;
+	NSString *m_Plant;
+	NSNumber *m_Quantity;
+	NSString *m_UoM;
+	NSDecimalNumber *m_NetPrice;
+	NSDecimalNumber *m_NetValue;
     ODataQuery *m_SalesDocumentQuery;
 	NSMutableArray *m_SalesDocument;
 
 }
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
-@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
-@property (strong, nonatomic) NSDecimalNumber *NetPrice; ///< NetPrice - Edm.Decimal
-@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
-@property (strong, nonatomic) NSNumber *Quantity; ///< Int2 - Edm.Int16
-@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSString *Material; ///< Material - Edm.String
-@property (strong, nonatomic) NSString *ItemNumber; ///< ItemNumber - Edm.String
 @property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
+@property (strong, nonatomic) NSString *ItemNumber; ///< ItemNumber - Edm.String
+@property (strong, nonatomic) NSString *Material; ///< Material - Edm.String
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
+@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
+@property (strong, nonatomic) NSNumber *Quantity; ///< Int2 - Edm.Int16
+@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
+@property (strong, nonatomic) NSDecimalNumber *NetPrice; ///< NetPrice - Edm.Decimal
+@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *SalesDocumentQuery;
 @property (strong, nonatomic) NSMutableArray *SalesDocument;
 
 #pragma mark Static Methods
 /**
- Static method that returns an array of SalesDocumentItem entities from the provided data.
- @param aData The NSData containing an Atom Feed including the entries to be parsed to SalesDocumentItem entities.
+ Static method that returns an array of SalesDocItem entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to SalesDocItem entities.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of SalesDocumentItem entities. Returns nil if the data in invalid.
+ @return Returns an array of SalesDocItem entities. Returns nil if the data in invalid.
 */
-+ (NSMutableArray *)parseSalesDocumentItemEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
++ (NSMutableArray *)parseSalesDocItemEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Static method that returns an array of SalesDocumentItem entities and their related entities from the provided data.
- @param aData The NSData containing an Atom Feed including the entries to be parsed to SalesDocumentItem entities.
+ Static method that returns an array of SalesDocItem entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to SalesDocItem entities.
  @param aServiceDocument The SDMODataServiceDocument that represents the service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of SalesDocumentItem entities. Returns nil if the data in invalid.
+ @return Returns an array of SalesDocItem entities. Returns nil if the data in invalid.
 */
-+ (NSMutableArray *)parseExpandedSalesDocumentItemEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
++ (NSMutableArray *)parseExpandedSalesDocItemEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
 
 /**
- Returns a single SalesDocumentItem entity from the provided data.
- @param aData The NSData containing an Atom Entry including the entry to be parsed to a SalesDocumentItem entity.
+ Returns a single SalesDocItem entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a SalesDocItem entity.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a SalesDocumentItem entity. Returns nil if the data in invalid.
+ @return Returns a SalesDocItem entity. Returns nil if the data in invalid.
 */
-+ (SalesDocumentItem *)parseSalesDocumentItemEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
++ (SalesDocItem *)parseSalesDocItemEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Returns a single SalesDocumentItem entity and related entities from the provided data.
- @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a SalesDocumentItem entity.
+ Returns a single SalesDocItem entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a SalesDocItem entity.
  @param aServiceDocument The SDMODataServiceDocument that represents the service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a SalesDocumentItem entity. Returns nil if the data in invalid.
+ @return Returns a SalesDocItem entity. Returns nil if the data in invalid.
 */
-+ (SalesDocumentItem *)parseExpandedSalesDocumentItemEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
++ (SalesDocItem *)parseExpandedSalesDocItemEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
 
 /**
- Static method that returns an array of SalesDocumentItem objects from a given array of SDMODataEntry objects.
+ Static method that returns an array of SalesDocItem objects from a given array of SDMODataEntry objects.
  @param sdmEntries Array of SDMODataEntry objects.
- @return Array of SalesDocumentItem objects.
+ @return Array of SalesDocItem objects.
 */
-+ (NSMutableArray *)createSalesDocumentItemEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
++ (NSMutableArray *)createSalesDocItemEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
 
 /**
  Static method that loads the entity schema of this type.
@@ -784,24 +797,20 @@
 
 #pragma mark - MediaForBusinessPartner
 @interface MediaForBusinessPartner : BaseEntityType {
+	NSString *m_MediaType;
 	NSString *m_BusinessPartnerID;
-	NSNumber *m_FileSize;
-	NSString *m_FileName;
-	NSString *m_MimeType;
-	NSString *m_MediaID;
-	MediaLink *m_mediaLinkRead;
-	MediaLink *m_mediaLinkEdit;
+	NSString *m_Keyword;
+    ODataQuery *m_MediaQuery;
+	NSMutableArray *m_Media;
 
 }
 
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
 @property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
-@property (strong, nonatomic) NSNumber *FileSize; ///< Int2 - Edm.Int16
-@property (strong, nonatomic) NSString *FileName; ///< FileName - Edm.String
-@property (strong, nonatomic) NSString *MimeType; ///< MimeType - Edm.String
-@property (strong, nonatomic) NSString *MediaID; ///< MediaID - Edm.String
-#pragma mark Entity Media Link Properties
-@property (strong, readonly) MediaLink *mediaLinkRead; ///< Media Link Read - Holds the ODataQuery and Content-Type of the media link for read
-@property (strong, readonly) MediaLink *mediaLinkEdit; ///< Media Link Edit - Holds the ODataQuery and Content-Type of the media link for update
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *MediaQuery;
+@property (strong, nonatomic) NSMutableArray *Media;
 
 #pragma mark Static Methods
 /**
@@ -866,6 +875,15 @@
 */
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName;
 
+
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads Media details for this entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 @end
@@ -1038,26 +1056,22 @@
 
 #pragma mark - MediaForContactPerson
 @interface MediaForContactPerson : BaseEntityType {
-	NSString *m_RelatedPartnerID;
-	NSNumber *m_FileSize;
-	NSString *m_FileName;
-	NSString *m_MimeType;
-	NSString *m_MediaID;
+	NSString *m_Keyword;
 	NSString *m_ContactPersonID;
-	MediaLink *m_mediaLinkRead;
-	MediaLink *m_mediaLinkEdit;
+	NSString *m_RelatedPartnerID;
+	NSString *m_MediaType;
+    ODataQuery *m_MediaQuery;
+	NSMutableArray *m_Media;
 
 }
 
-@property (strong, nonatomic) NSString *RelatedPartnerID; ///< RelatedPartnerID - Edm.String
-@property (strong, nonatomic) NSNumber *FileSize; ///< Int2 - Edm.Int16
-@property (strong, nonatomic) NSString *FileName; ///< FileName - Edm.String
-@property (strong, nonatomic) NSString *MimeType; ///< MimeType - Edm.String
-@property (strong, nonatomic) NSString *MediaID; ///< MediaID - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
 @property (strong, nonatomic) NSString *ContactPersonID; ///< ContactPersonID - Edm.String
-#pragma mark Entity Media Link Properties
-@property (strong, readonly) MediaLink *mediaLinkRead; ///< Media Link Read - Holds the ODataQuery and Content-Type of the media link for read
-@property (strong, readonly) MediaLink *mediaLinkEdit; ///< Media Link Edit - Holds the ODataQuery and Content-Type of the media link for update
+@property (strong, nonatomic) NSString *RelatedPartnerID; ///< RelatedPartnerID - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *MediaQuery;
+@property (strong, nonatomic) NSMutableArray *Media;
 
 #pragma mark Static Methods
 /**
@@ -1123,71 +1137,242 @@
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName;
 
 
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads Media details for this entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
 
 @end
 
-#pragma mark - MediaForMaterials
-@interface MediaForMaterials : BaseEntityType {
-	NSNumber *m_FileSize;
-	NSString *m_FileName;
-	NSString *m_MimeType;
-	NSString *m_MediaID;
+#pragma mark - MediaForMaterial
+@interface MediaForMaterial : BaseEntityType {
 	NSString *m_MaterialNumber;
+	NSString *m_Keyword;
+	NSString *m_MediaType;
+
+}
+
+@property (strong, nonatomic) NSString *MaterialNumber; ///< MaterialNumber - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+
+#pragma mark Static Methods
+/**
+ Static method that returns an array of MediaForMaterial entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForMaterial entities.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForMaterial entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseMediaForMaterialEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForMaterial entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForMaterial entities.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForMaterial entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseExpandedMediaForMaterialEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForMaterial entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a MediaForMaterial entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForMaterial entity. Returns nil if the data in invalid.
+*/
++ (MediaForMaterial *)parseMediaForMaterialEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForMaterial entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a MediaForMaterial entity.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForMaterial entity. Returns nil if the data in invalid.
+*/
++ (MediaForMaterial *)parseExpandedMediaForMaterialEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForMaterial objects from a given array of SDMODataEntry objects.
+ @param sdmEntries Array of SDMODataEntry objects.
+ @return Array of MediaForMaterial objects.
+*/
++ (NSMutableArray *)createMediaForMaterialEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
+
+/**
+ Static method that loads the entity schema of this type.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that loads all of the entity type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadLabels:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+
+
+@end
+
+#pragma mark - Media
+@interface Media : BaseEntityType {
+	NSString *m_Keyword;
+	NSString *m_RelatedID;
+	NSString *m_Source;
+	NSString *m_ContentType;
+	NSString *m_MediaType;
+	NSString *m_FileName;
+	NSNumber *m_FileSize;
 	MediaLink *m_mediaLinkRead;
 	MediaLink *m_mediaLinkEdit;
 
 }
 
-@property (strong, nonatomic) NSNumber *FileSize; ///< Int2 - Edm.Int16
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *RelatedID; ///< RelatedID - Edm.String
+@property (strong, nonatomic) NSString *Source; ///< Source - Edm.String
+@property (strong, nonatomic) NSString *ContentType; ///< ContentType - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
 @property (strong, nonatomic) NSString *FileName; ///< FileName - Edm.String
-@property (strong, nonatomic) NSString *MimeType; ///< MimeType - Edm.String
-@property (strong, nonatomic) NSString *MediaID; ///< MediaID - Edm.String
-@property (strong, nonatomic) NSString *MaterialNumber; ///< MaterialNumber - Edm.String
+@property (strong, nonatomic) NSNumber *FileSize; ///< Int2 - Edm.Int16
 #pragma mark Entity Media Link Properties
 @property (strong, readonly) MediaLink *mediaLinkRead; ///< Media Link Read - Holds the ODataQuery and Content-Type of the media link for read
 @property (strong, readonly) MediaLink *mediaLinkEdit; ///< Media Link Edit - Holds the ODataQuery and Content-Type of the media link for update
 
 #pragma mark Static Methods
 /**
- Static method that returns an array of MediaForMaterials entities from the provided data.
- @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForMaterials entities.
+ Static method that returns an array of Media entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to Media entities.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of MediaForMaterials entities. Returns nil if the data in invalid.
+ @return Returns an array of Media entities. Returns nil if the data in invalid.
 */
-+ (NSMutableArray *)parseMediaForMaterialsEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
++ (NSMutableArray *)parseMediaEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Static method that returns an array of MediaForMaterials entities and their related entities from the provided data.
- @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForMaterials entities.
+ Static method that returns an array of Media entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to Media entities.
  @param aServiceDocument The SDMODataServiceDocument that represents the service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of MediaForMaterials entities. Returns nil if the data in invalid.
+ @return Returns an array of Media entities. Returns nil if the data in invalid.
 */
-+ (NSMutableArray *)parseExpandedMediaForMaterialsEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
++ (NSMutableArray *)parseExpandedMediaEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
 
 /**
- Returns a single MediaForMaterials entity from the provided data.
- @param aData The NSData containing an Atom Entry including the entry to be parsed to a MediaForMaterials entity.
+ Returns a single Media entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a Media entity.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a MediaForMaterials entity. Returns nil if the data in invalid.
+ @return Returns a Media entity. Returns nil if the data in invalid.
 */
-+ (MediaForMaterials *)parseMediaForMaterialsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
++ (Media *)parseMediaEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Returns a single MediaForMaterials entity and related entities from the provided data.
- @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a MediaForMaterials entity.
+ Returns a single Media entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a Media entity.
  @param aServiceDocument The SDMODataServiceDocument that represents the service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a MediaForMaterials entity. Returns nil if the data in invalid.
+ @return Returns a Media entity. Returns nil if the data in invalid.
 */
-+ (MediaForMaterials *)parseExpandedMediaForMaterialsEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
++ (Media *)parseExpandedMediaEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
 
 /**
- Static method that returns an array of MediaForMaterials objects from a given array of SDMODataEntry objects.
+ Static method that returns an array of Media objects from a given array of SDMODataEntry objects.
  @param sdmEntries Array of SDMODataEntry objects.
- @return Array of MediaForMaterials objects.
+ @return Array of Media objects.
 */
-+ (NSMutableArray *)createMediaForMaterialsEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
++ (NSMutableArray *)createMediaEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
+
+/**
+ Static method that loads the entity schema of this type.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that loads all of the entity type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadLabels:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+
+
+@end
+
+#pragma mark - MediaForSalesDocument
+@interface MediaForSalesDocument : BaseEntityType {
+	NSString *m_OrderID;
+	NSString *m_Keyword;
+	NSString *m_MediaType;
+
+}
+
+@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+
+#pragma mark Static Methods
+/**
+ Static method that returns an array of MediaForSalesDocument entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForSalesDocument entities.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForSalesDocument entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseMediaForSalesDocumentEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForSalesDocument entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForSalesDocument entities.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForSalesDocument entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseExpandedMediaForSalesDocumentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForSalesDocument entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a MediaForSalesDocument entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForSalesDocument entity. Returns nil if the data in invalid.
+*/
++ (MediaForSalesDocument *)parseMediaForSalesDocumentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForSalesDocument entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a MediaForSalesDocument entity.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForSalesDocument entity. Returns nil if the data in invalid.
+*/
++ (MediaForSalesDocument *)parseExpandedMediaForSalesDocumentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForSalesDocument objects from a given array of SDMODataEntry objects.
+ @param sdmEntries Array of SDMODataEntry objects.
+ @return Array of MediaForSalesDocument objects.
+*/
++ (NSMutableArray *)createMediaForSalesDocumentEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
 
 /**
  Static method that loads the entity schema of this type.
@@ -1222,12 +1407,14 @@
     ODataQuery *m_BusinessPartnersQuery;
     ODataQuery *m_MaterialsQuery;
     ODataQuery *m_SalesDocumentsQuery;
-    ODataQuery *m_SalesDocumentItemsQuery;
+    ODataQuery *m_SalesDocItemsQuery;
     ODataQuery *m_MediaCollectionForBusinessPartnerQuery;
     ODataQuery *m_UserSettingCollectionQuery;
     ODataQuery *m_MaterialGroupsQuery;
-    ODataQuery *m_MediaForContactPersonSetQuery;
-    ODataQuery *m_MediaForMaterialsSetQuery;
+    ODataQuery *m_MediaCollectionForContactPersonQuery;
+    ODataQuery *m_MediaCollectionForMaterialQuery;
+    ODataQuery *m_MediasetQuery;
+    ODataQuery *m_MediaCollectionForSalesDocumentQuery;
 
 }
 
@@ -1252,15 +1439,15 @@ The OData query for the Material collection.
 
 /**
 The OData query for the SalesDocument collection.
-(Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
+(Addressable false, Requires-filter false, Creatable true, Updatable true, Deletable true)
 */
 @property (strong, nonatomic) ODataQuery *SalesDocumentsQuery;
 
 /**
-The OData query for the SalesDocumentItem collection.
+The OData query for the SalesDocItem collection.
 (Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
 */
-@property (strong, nonatomic) ODataQuery *SalesDocumentItemsQuery;
+@property (strong, nonatomic) ODataQuery *SalesDocItemsQuery;
 
 /**
 The OData query for the MediaForBusinessPartner collection.
@@ -1284,13 +1471,25 @@ The OData query for the MaterialGroup collection.
 The OData query for the MediaForContactPerson collection.
 (Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
 */
-@property (strong, nonatomic) ODataQuery *MediaForContactPersonSetQuery;
+@property (strong, nonatomic) ODataQuery *MediaCollectionForContactPersonQuery;
 
 /**
-The OData query for the MediaForMaterials collection.
+The OData query for the MediaForMaterial collection.
 (Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
 */
-@property (strong, nonatomic) ODataQuery *MediaForMaterialsSetQuery;
+@property (strong, nonatomic) ODataQuery *MediaCollectionForMaterialQuery;
+
+/**
+The OData query for the Media collection.
+(Addressable false, Requires-filter false, Creatable true, Updatable true, Deletable true)
+*/
+@property (strong, nonatomic) ODataQuery *MediasetQuery;
+
+/**
+The OData query for the MediaForSalesDocument collection.
+(Addressable false, Requires-filter false, Creatable true, Updatable true, Deletable true)
+*/
+@property (strong, nonatomic) ODataQuery *MediaCollectionForSalesDocumentQuery;
 
 
 #pragma mark Service Entity Set methods
@@ -1429,40 +1628,40 @@ The OData query for the MediaForMaterials collection.
 */
 - (SalesDocument *)getSalesDocumentsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 /**
- Returns a collection of SalesDocumentItem entities from the data returned by the OData service.
+ Returns a collection of SalesDocItem entities from the data returned by the OData service.
  @param aData The NSData returned from the OData service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of SalesDocumentItem entities.
+ @return Returns an array of SalesDocItem entities.
 */
-- (NSMutableArray *)getSalesDocumentItemsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (NSMutableArray *)getSalesDocItemsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Returns the OData query for a specific SalesDocumentItem entity.
- @param ItemNumber Part of the SalesDocumentItem unique identifier (of type Edm.String).
- @param OrderID Part of the SalesDocumentItem unique identifier (of type Edm.String).
+ Returns the OData query for a specific SalesDocItem entity.
+ @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
+ @param ItemNumber Part of the SalesDocItem unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getSalesDocumentItemsEntryQueryWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID;
+- (ODataQuery *)getSalesDocItemsEntryQueryWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber;
 
 /**
- Returns the OData query for a specific SalesDocumentItem entity with typed parameters.
+ Returns the OData query for a specific SalesDocItem entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param ItemNumber Part of the SalesDocumentItem unique identifier (of type Edm.String).
- @param OrderID Part of the SalesDocumentItem unique identifier (of type Edm.String).
+ @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
+ @param ItemNumber Part of the SalesDocItem unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getSalesDocumentItemsEntryQueryTypedWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID;
+- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber;
 
 /**
- Returns a specific SalesDocumentItem entity from the provided data.
- @param aData The NSData containing the SalesDocumentItem information to be parsed to a SalesDocumentItem entity.
+ Returns a specific SalesDocItem entity from the provided data.
+ @param aData The NSData containing the SalesDocItem information to be parsed to a SalesDocItem entity.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a SalesDocumentItem entity. Returns nil if the data in invalid.
+ @return Returns a SalesDocItem entity. Returns nil if the data in invalid.
 */
-- (SalesDocumentItem *)getSalesDocumentItemsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (SalesDocItem *)getSalesDocItemsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 /**
  Returns a collection of MediaForBusinessPartner entities from the data returned by the OData service.
  @param aData The NSData returned from the OData service.
@@ -1473,23 +1672,25 @@ The OData query for the MediaForMaterials collection.
 
 /**
  Returns the OData query for a specific MediaForBusinessPartner entity.
+ @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
- @param MediaID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithBusinessPartnerID:(NSString *)BusinessPartnerID andMediaID:(NSString *)MediaID;
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword;
 
 /**
  Returns the OData query for a specific MediaForBusinessPartner entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
+ @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
- @param MediaID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithBusinessPartnerID:(NSString *)BusinessPartnerID andMediaID:(NSString *)MediaID;
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword;
 
 /**
  Returns a specific MediaForBusinessPartner entity from the provided data.
@@ -1570,29 +1771,29 @@ The OData query for the MediaForMaterials collection.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
  @return Returns an array of MediaForContactPerson entities.
 */
-- (NSMutableArray *)getMediaForContactPersonSetWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (NSMutableArray *)getMediaCollectionForContactPersonWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
  Returns the OData query for a specific MediaForContactPerson entity.
- @param RelatedPartnerID Part of the MediaForContactPerson unique identifier (of type Edm.String).
- @param MediaID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param ContactPersonID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForContactPerson unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaForContactPersonSetEntryQueryWithRelatedPartnerID:(NSString *)RelatedPartnerID andMediaID:(NSString *)MediaID andContactPersonID:(NSString *)ContactPersonID;
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType;
 
 /**
  Returns the OData query for a specific MediaForContactPerson entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param RelatedPartnerID Part of the MediaForContactPerson unique identifier (of type Edm.String).
- @param MediaID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param ContactPersonID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaForContactPersonSetEntryQueryTypedWithRelatedPartnerID:(NSString *)RelatedPartnerID andMediaID:(NSString *)MediaID andContactPersonID:(NSString *)ContactPersonID;
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType;
 
 /**
  Returns a specific MediaForContactPerson entity from the provided data.
@@ -1600,42 +1801,120 @@ The OData query for the MediaForMaterials collection.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
  @return Returns a MediaForContactPerson entity. Returns nil if the data in invalid.
 */
-- (MediaForContactPerson *)getMediaForContactPersonSetEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (MediaForContactPerson *)getMediaCollectionForContactPersonEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 /**
- Returns a collection of MediaForMaterials entities from the data returned by the OData service.
+ Returns a collection of MediaForMaterial entities from the data returned by the OData service.
  @param aData The NSData returned from the OData service.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns an array of MediaForMaterials entities.
+ @return Returns an array of MediaForMaterial entities.
 */
-- (NSMutableArray *)getMediaForMaterialsSetWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (NSMutableArray *)getMediaCollectionForMaterialWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Returns the OData query for a specific MediaForMaterials entity.
- @param MediaID Part of the MediaForMaterials unique identifier (of type Edm.String).
- @param MaterialNumber Part of the MediaForMaterials unique identifier (of type Edm.String).
+ Returns the OData query for a specific MediaForMaterial entity.
+ @param MaterialNumber Part of the MediaForMaterial unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForMaterial unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForMaterial unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaForMaterialsSetEntryQueryWithMediaID:(NSString *)MediaID andMaterialNumber:(NSString *)MaterialNumber;
+- (ODataQuery *)getMediaCollectionForMaterialEntryQueryWithMaterialNumber:(NSString *)MaterialNumber andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
 
 /**
- Returns the OData query for a specific MediaForMaterials entity with typed parameters.
+ Returns the OData query for a specific MediaForMaterial entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param MediaID Part of the MediaForMaterials unique identifier (of type Edm.String).
- @param MaterialNumber Part of the MediaForMaterials unique identifier (of type Edm.String).
+ @param MaterialNumber Part of the MediaForMaterial unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForMaterial unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForMaterial unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaForMaterialsSetEntryQueryTypedWithMediaID:(NSString *)MediaID andMaterialNumber:(NSString *)MaterialNumber;
+- (ODataQuery *)getMediaCollectionForMaterialEntryQueryTypedWithMaterialNumber:(NSString *)MaterialNumber andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
 
 /**
- Returns a specific MediaForMaterials entity from the provided data.
- @param aData The NSData containing the MediaForMaterials information to be parsed to a MediaForMaterials entity.
+ Returns a specific MediaForMaterial entity from the provided data.
+ @param aData The NSData containing the MediaForMaterial information to be parsed to a MediaForMaterial entity.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
- @return Returns a MediaForMaterials entity. Returns nil if the data in invalid.
+ @return Returns a MediaForMaterial entity. Returns nil if the data in invalid.
 */
-- (MediaForMaterials *)getMediaForMaterialsSetEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (MediaForMaterial *)getMediaCollectionForMaterialEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+/**
+ Returns a collection of Media entities from the data returned by the OData service.
+ @param aData The NSData returned from the OData service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of Media entities.
+*/
+- (NSMutableArray *)getMediasetWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns the OData query for a specific Media entity.
+ @param Keyword Part of the Media unique identifier (of type Edm.String).
+ @param RelatedID Part of the Media unique identifier (of type Edm.String).
+ @param Source Part of the Media unique identifier (of type Edm.String).
+ @param MediaType Part of the Media unique identifier (of type Edm.String).
+ Note: pass the parameter values exactly as they should appear in the query URL, 
+ in the correct format according to their types 
+ (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediasetEntryQueryWithKeyword:(NSString *)Keyword andRelatedID:(NSString *)RelatedID andSource:(NSString *)Source andMediaType:(NSString *)MediaType;
+
+/**
+ Returns the OData query for a specific Media entity with typed parameters.
+ Note: This method is relevant only for OData compliant services.
+ @param Keyword Part of the Media unique identifier (of type Edm.String).
+ @param RelatedID Part of the Media unique identifier (of type Edm.String).
+ @param Source Part of the Media unique identifier (of type Edm.String).
+ @param MediaType Part of the Media unique identifier (of type Edm.String).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediasetEntryQueryTypedWithKeyword:(NSString *)Keyword andRelatedID:(NSString *)RelatedID andSource:(NSString *)Source andMediaType:(NSString *)MediaType;
+
+/**
+ Returns a specific Media entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed to a Media entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a Media entity. Returns nil if the data in invalid.
+*/
+- (Media *)getMediasetEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+/**
+ Returns a collection of MediaForSalesDocument entities from the data returned by the OData service.
+ @param aData The NSData returned from the OData service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForSalesDocument entities.
+*/
+- (NSMutableArray *)getMediaCollectionForSalesDocumentWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns the OData query for a specific MediaForSalesDocument entity.
+ @param OrderID Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ Note: pass the parameter values exactly as they should appear in the query URL, 
+ in the correct format according to their types 
+ (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaCollectionForSalesDocumentEntryQueryWithOrderID:(NSString *)OrderID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns the OData query for a specific MediaForSalesDocument entity with typed parameters.
+ Note: This method is relevant only for OData compliant services.
+ @param OrderID Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForSalesDocument unique identifier (of type Edm.String).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaCollectionForSalesDocumentEntryQueryTypedWithOrderID:(NSString *)OrderID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns a specific MediaForSalesDocument entity from the provided data.
+ @param aData The NSData containing the MediaForSalesDocument information to be parsed to a MediaForSalesDocument entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForSalesDocument entity. Returns nil if the data in invalid.
+*/
+- (MediaForSalesDocument *)getMediaCollectionForSalesDocumentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 #pragma mark Service Function Import methods

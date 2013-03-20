@@ -47,6 +47,7 @@ extern NSString * const kCVCLoadedDocs;
 /*Functions*/
 -(void)showDocumentViewWithSalesDocument:(SalesDocument*)sd;
 -(void)showPictureViewForKey:(NSString*)key;
+-(void)setViewInContainer:(UIViewController*)newViewController;
 
 
 @end

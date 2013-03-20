@@ -54,7 +54,8 @@ int selectedContact;
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"BW_View" owner:self options:nil];
         BWView *subView = [subviewArray objectAtIndex:0];
         [self.bottomView addSubview:subView];
-        [subView setupChartsForBusinessPartner:selectedBUPA];
+        [subView performSelectorInBackground:@selector(setupChartsForBusinessPartner:) withObject:selectedBUPA];
+//        [subView setupChartsForBusinessPartner:selectedBUPA];
     }
 
     
@@ -63,9 +64,8 @@ int selectedContact;
     
     [[RequestHandler uniqueInstance]loadContacts:selectedBUPA];
     self.picView.cvc = (CustomerViewController*)self.parentViewController;
-    [self.picView showPictures];
-
-    [self.TweetView getTweets];    
+//    [self.picView showPictures];
+//    [self.TweetView getTweets];    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -74,7 +74,8 @@ int selectedContact;
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-
+    [self.picView performSelectorInBackground:@selector(showPictures) withObject:nil];
+    [self.TweetView performSelectorInBackground:@selector(getTweets) withObject:nil];
 }
 
 -(void)viewDidDisappear:(BOOL)animated

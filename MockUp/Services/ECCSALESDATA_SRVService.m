@@ -44,11 +44,11 @@ static NSMutableDictionary *geoCodeLabels = nil;
 - (BOOL)setComplexTypePropertiesToSDMEntry:(SDMODataEntry *)aSDMEntry complexTypePropertyName:(NSString *)aComplexPropertyName error:(NSError * __autoreleasing *)error
 {
 	BOOL result = [super setComplexTypePropertiesToSDMEntry:aSDMEntry complexTypePropertyName:aComplexPropertyName error:error];
-	if (![BaseODataObject setDoubleValueForSDMEntry:aSDMEntry withValue:self.Longitude forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Longitude"] error:error]) {
+	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Longitude forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Longitude"] error:error]) {
 		result = NO;
 	}
 	
-	if (![BaseODataObject setDoubleValueForSDMEntry:aSDMEntry withValue:self.Latitude forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Latitude"] error:error]) {
+	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Latitude forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Latitude"] error:error]) {
 		result = NO;
 	}
 	
@@ -58,8 +58,8 @@ static NSMutableDictionary *geoCodeLabels = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_Longitude = [self getDoubleValueForSDMPropertyWithName:@"Longitude"];
-	m_Latitude = [self getDoubleValueForSDMPropertyWithName:@"Latitude"];
+	m_Longitude = [self getStringValueForSDMPropertyWithName:@"Longitude"];
+	m_Latitude = [self getStringValueForSDMPropertyWithName:@"Latitude"];
 }
 
 @end
@@ -291,9 +291,9 @@ static NSMutableDictionary *uRILabels = nil;
 #pragma mark DocumentStatus
 @implementation DocumentStatus 
 
-@synthesize Delivery_Status = m_Delivery_Status;
-@synthesize Invoice_Status = m_Invoice_Status;
 @synthesize Overall_Status = m_Overall_Status;
+@synthesize Invoice_Status = m_Invoice_Status;
+@synthesize Delivery_Status = m_Delivery_Status;
 
 static NSMutableDictionary *documentStatusLabels = nil;
 
@@ -313,7 +313,7 @@ static NSMutableDictionary *documentStatusLabels = nil;
 - (BOOL)setComplexTypePropertiesToSDMEntry:(SDMODataEntry *)aSDMEntry complexTypePropertyName:(NSString *)aComplexPropertyName error:(NSError * __autoreleasing *)error
 {
 	BOOL result = [super setComplexTypePropertiesToSDMEntry:aSDMEntry complexTypePropertyName:aComplexPropertyName error:error];
-	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Delivery_Status forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Delivery_Status"] error:error]) {
+	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Overall_Status forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Overall_Status"] error:error]) {
 		result = NO;
 	}
 	
@@ -321,7 +321,7 @@ static NSMutableDictionary *documentStatusLabels = nil;
 		result = NO;
 	}
 	
-	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Overall_Status forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Overall_Status"] error:error]) {
+	if (![BaseODataObject setStringValueForSDMEntry:aSDMEntry withValue:self.Delivery_Status forSDMPropertyWithName:[aComplexPropertyName stringByAppendingString:@"\\Delivery_Status"] error:error]) {
 		result = NO;
 	}
 	
@@ -331,9 +331,9 @@ static NSMutableDictionary *documentStatusLabels = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_Delivery_Status = [self getStringValueForSDMPropertyWithName:@"Delivery_Status"];
-	m_Invoice_Status = [self getStringValueForSDMPropertyWithName:@"Invoice_Status"];
 	m_Overall_Status = [self getStringValueForSDMPropertyWithName:@"Overall_Status"];
+	m_Invoice_Status = [self getStringValueForSDMPropertyWithName:@"Invoice_Status"];
+	m_Delivery_Status = [self getStringValueForSDMPropertyWithName:@"Delivery_Status"];
 }
 
 @end
@@ -560,6 +560,8 @@ static SDMODataEntitySchema *contactPersonEntitySchema = nil;
 @synthesize ContactPersons = m_ContactPersons;
 @synthesize MediaCollectionQuery = m_MediaCollectionQuery;
 @synthesize MediaCollection = m_MediaCollection;
+@synthesize SalesDocumentsQuery = m_SalesDocumentsQuery;
+@synthesize SalesDocuments = m_SalesDocuments;
 
 static NSMutableDictionary *businessPartnerLabels = nil;
 static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
@@ -586,6 +588,9 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
     }
     if ([self.MediaCollection count] > 0) {
         [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.MediaCollection] forKey:@"MediaCollection"];
+    }
+    if ([self.SalesDocuments count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.SalesDocuments] forKey:@"SalesDocuments"];
     }
     return dictionary;
 }
@@ -673,6 +678,7 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
     [super loadNavigationPropertyQueries];
     m_ContactPersonsQuery = [self getRelatedLinkForNavigationName:@"ContactPersons"];
     m_MediaCollectionQuery = [self getRelatedLinkForNavigationName:@"MediaCollection"];
+    m_SalesDocumentsQuery = [self getRelatedLinkForNavigationName:@"SalesDocuments"];
 }
 
 - (void)loadNavigationPropertyData
@@ -686,6 +692,9 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
 
     entries = [self getInlinedRelatedEntriesForNavigationName:@"MediaCollection"];
     m_MediaCollection = [MediaForBusinessPartner createMediaForBusinessPartnerEntriesForSDMEntries:entries];
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"SalesDocuments"];
+    m_SalesDocuments = [SalesDocument createSalesDocumentEntriesForSDMEntries:entries];
 
 }
 
@@ -754,6 +763,15 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
     return YES;
 }
 
+- (BOOL)loadSalesDocumentsWithData:(NSData *)aData error:(NSError **)error
+{
+    self.SalesDocuments = [SalesDocument parseSalesDocumentEntriesWithData:aData error:error];
+    if (!self.SalesDocuments) {
+    	return NO;
+    }
+    return YES;
+}
+
 
 @end
 
@@ -769,6 +787,7 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
 @synthesize EANCode = m_EANCode;
 @synthesize SalesOrganization = m_SalesOrganization;
 @synthesize MaterialGroup = m_MaterialGroup;
+@synthesize Price = m_Price;
 @synthesize MediaCollectionQuery = m_MediaCollectionQuery;
 @synthesize MediaCollection = m_MediaCollection;
 
@@ -812,6 +831,7 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.EANCode forSDMPropertyWithName:@"EANCode" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.SalesOrganization forSDMPropertyWithName:@"SalesOrganization" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MaterialGroup forSDMPropertyWithName:@"MaterialGroup" error:&innerError];
+    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.Price forSDMPropertyWithName:@"Price" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -861,6 +881,7 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
 	m_EANCode = [self getStringValueForSDMPropertyWithName:@"EANCode"];
 	m_SalesOrganization = [self getStringValueForSDMPropertyWithName:@"SalesOrganization"];
 	m_MaterialGroup = [self getStringValueForSDMPropertyWithName:@"MaterialGroup"];
+	m_Price = [self getDecimalValueForSDMPropertyWithName:@"Price"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -876,7 +897,7 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
     NSMutableArray *entries = nil;
 
     entries = [self getInlinedRelatedEntriesForNavigationName:@"MediaCollection"];
-    m_MediaCollection = [MediaForMaterials createMediaForMaterialsEntriesForSDMEntries:entries];
+    m_MediaCollection = [MediaForMaterial createMediaForMaterialEntriesForSDMEntries:entries];
 
 }
 
@@ -929,7 +950,7 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
 #pragma mark Entity Navigation Property loading methods
 - (BOOL)loadMediaCollectionWithData:(NSData *)aData error:(NSError **)error
 {
-    self.MediaCollection = [MediaForMaterials parseMediaForMaterialsEntriesWithData:aData error:error];
+    self.MediaCollection = [MediaForMaterial parseMediaForMaterialEntriesWithData:aData error:error];
     if (!self.MediaCollection) {
     	return NO;
     }
@@ -1073,7 +1094,7 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
     NSMutableArray *entries = nil;
 
     entries = [self getInlinedRelatedEntriesForNavigationName:@"Items"];
-    m_Items = [SalesDocumentItem createSalesDocumentItemEntriesForSDMEntries:entries];
+    m_Items = [SalesDocItem createSalesDocItemEntriesForSDMEntries:entries];
 
 }
 
@@ -1126,7 +1147,7 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
 #pragma mark Entity Navigation Property loading methods
 - (BOOL)loadItemsWithData:(NSData *)aData error:(NSError **)error
 {
-    self.Items = [SalesDocumentItem parseSalesDocumentItemEntriesWithData:aData error:error];
+    self.Items = [SalesDocItem parseSalesDocItemEntriesWithData:aData error:error];
     if (!self.Items) {
     	return NO;
     }
@@ -1136,30 +1157,30 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
 
 @end
 
-#pragma mark - SalesDocumentItem
-@implementation SalesDocumentItem 
+#pragma mark - SalesDocItem
+@implementation SalesDocItem 
 
 @synthesize Status = m_Status;
-@synthesize NetValue = m_NetValue;
-@synthesize NetPrice = m_NetPrice;
-@synthesize UoM = m_UoM;
-@synthesize Quantity = m_Quantity;
-@synthesize Plant = m_Plant;
-@synthesize Description = m_Description;
-@synthesize Material = m_Material;
-@synthesize ItemNumber = m_ItemNumber;
 @synthesize OrderID = m_OrderID;
+@synthesize ItemNumber = m_ItemNumber;
+@synthesize Material = m_Material;
+@synthesize Description = m_Description;
+@synthesize Plant = m_Plant;
+@synthesize Quantity = m_Quantity;
+@synthesize UoM = m_UoM;
+@synthesize NetPrice = m_NetPrice;
+@synthesize NetValue = m_NetValue;
 @synthesize SalesDocumentQuery = m_SalesDocumentQuery;
 @synthesize SalesDocument = m_SalesDocument;
 
-static NSMutableDictionary *salesDocumentItemLabels = nil;
-static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
+static NSMutableDictionary *salesDocItemLabels = nil;
+static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:salesDocumentItemEntitySchema error:nil];
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:salesDocItemEntitySchema error:nil];
         if (!m_SDMEntry) {
             return nil;
         }        
@@ -1184,15 +1205,15 @@ static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
     if (m_SDMEntry) {
         NSError *innerError = nil;
 		[self.Status setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Status" error:&innerError];
-    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
-    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetPrice forSDMPropertyWithName:@"NetPrice" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.UoM forSDMPropertyWithName:@"UoM" error:&innerError];
-    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.Quantity forSDMPropertyWithName:@"Quantity" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Plant forSDMPropertyWithName:@"Plant" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Material forSDMPropertyWithName:@"Material" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ItemNumber forSDMPropertyWithName:@"ItemNumber" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ItemNumber forSDMPropertyWithName:@"ItemNumber" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Material forSDMPropertyWithName:@"Material" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Plant forSDMPropertyWithName:@"Plant" error:&innerError];
+    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.Quantity forSDMPropertyWithName:@"Quantity" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.UoM forSDMPropertyWithName:@"UoM" error:&innerError];
+    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetPrice forSDMPropertyWithName:@"NetPrice" error:&innerError];
+    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1206,20 +1227,20 @@ static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
 
 + (void)loadEntitySchema:(SDMODataServiceDocument *)aService
 {
-    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"SalesDocumentItems" workspaceOfCollection:nil];
-    salesDocumentItemEntitySchema = collectionSchema.entitySchema;
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"SalesDocItems" workspaceOfCollection:nil];
+    salesDocItemEntitySchema = collectionSchema.entitySchema;
 }
 
 + (void)loadLabels:(SDMODataServiceDocument *)aService
 {
-		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"SalesDocumentItems" andService:aService];
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"SalesDocItems" andService:aService];
     	if (properties) {    
-	    	salesDocumentItemLabels = [NSMutableDictionary dictionary];
+	    	salesDocItemLabels = [NSMutableDictionary dictionary];
 	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
 				if ([property.name isEqualToString:@"Status"]) {
 	                [DocumentStatus loadLabels:property.children];
 	            }
-	        	[salesDocumentItemLabels setValue:property.label forKey:property.name];
+	        	[salesDocItemLabels setValue:property.label forKey:property.name];
 	    	}
 	    }
 	    else {
@@ -1230,22 +1251,22 @@ static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
 
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName
 {
-    return [BaseODataObject getLabelFromDictionary:salesDocumentItemLabels forProperty:aPropertyName];
+    return [BaseODataObject getLabelFromDictionary:salesDocItemLabels forProperty:aPropertyName];
 }
 
 - (void)loadProperties
 {
     [super loadProperties];
 	m_Status = [[DocumentStatus alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Status"]];
-	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
-	m_NetPrice = [self getDecimalValueForSDMPropertyWithName:@"NetPrice"];
-	m_UoM = [self getStringValueForSDMPropertyWithName:@"UoM"];
-	m_Quantity = [self getIntValueForSDMPropertyWithName:@"Quantity"];
-	m_Plant = [self getStringValueForSDMPropertyWithName:@"Plant"];
-	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
-	m_Material = [self getStringValueForSDMPropertyWithName:@"Material"];
-	m_ItemNumber = [self getStringValueForSDMPropertyWithName:@"ItemNumber"];
 	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
+	m_ItemNumber = [self getStringValueForSDMPropertyWithName:@"ItemNumber"];
+	m_Material = [self getStringValueForSDMPropertyWithName:@"Material"];
+	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
+	m_Plant = [self getStringValueForSDMPropertyWithName:@"Plant"];
+	m_Quantity = [self getIntValueForSDMPropertyWithName:@"Quantity"];
+	m_UoM = [self getStringValueForSDMPropertyWithName:@"UoM"];
+	m_NetPrice = [self getDecimalValueForSDMPropertyWithName:@"NetPrice"];
+	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -1265,49 +1286,49 @@ static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
 
 }
 
-+ (NSMutableArray *)createSalesDocumentItemEntriesForSDMEntries:(NSMutableArray *)sdmEntries
++ (NSMutableArray *)createSalesDocItemEntriesForSDMEntries:(NSMutableArray *)sdmEntries
 {
     NSMutableArray *entries = [NSMutableArray array];
     for (SDMODataEntry *entry in sdmEntries) {
-        SalesDocumentItem *salesDocumentItemObject = [[SalesDocumentItem alloc] initWithSDMEntry:entry];
-        [entries addObject:salesDocumentItemObject];
+        SalesDocItem *salesDocItemObject = [[SalesDocItem alloc] initWithSDMEntry:entry];
+        [entries addObject:salesDocItemObject];
     }
     return entries;
 }
 
 
-+ (NSMutableArray *)parseSalesDocumentItemEntriesWithData:(NSData *)aData error:(NSError **)error
++ (NSMutableArray *)parseSalesDocItemEntriesWithData:(NSData *)aData error:(NSError **)error
 {
-    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:salesDocumentItemEntitySchema andData:aData error:error];
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:salesDocItemEntitySchema andData:aData error:error];
     if (!sdmEntries) {
     	return nil;
     }
-	return [SalesDocumentItem createSalesDocumentItemEntriesForSDMEntries:sdmEntries];
+	return [SalesDocItem createSalesDocItemEntriesForSDMEntries:sdmEntries];
 }
 
-+ (NSMutableArray *)parseExpandedSalesDocumentItemEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
++ (NSMutableArray *)parseExpandedSalesDocItemEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
 {
-    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:salesDocumentItemEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:salesDocItemEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
     if (!sdmEntries) {
     	return nil;
     }
-	return [SalesDocumentItem createSalesDocumentItemEntriesForSDMEntries:sdmEntries];
+	return [SalesDocItem createSalesDocItemEntriesForSDMEntries:sdmEntries];
 }
 
-+ (SalesDocumentItem *)parseSalesDocumentItemEntryWithData:(NSData *)aData error:(NSError **)error
++ (SalesDocItem *)parseSalesDocItemEntryWithData:(NSData *)aData error:(NSError **)error
 {
-    NSMutableArray *salesDocumentItemEntries = [SalesDocumentItem parseSalesDocumentItemEntriesWithData:aData error:error];
-    if (!salesDocumentItemEntries) {
+    NSMutableArray *salesDocItemEntries = [SalesDocItem parseSalesDocItemEntriesWithData:aData error:error];
+    if (!salesDocItemEntries) {
     	return nil;
     }
-    return (SalesDocumentItem *)[SalesDocumentItem getFirstObjectFromArray:salesDocumentItemEntries];
+    return (SalesDocItem *)[SalesDocItem getFirstObjectFromArray:salesDocItemEntries];
 }
 
-+ (SalesDocumentItem *)parseExpandedSalesDocumentItemEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
++ (SalesDocItem *)parseExpandedSalesDocItemEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
 {
-	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:salesDocumentItemEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
-    NSMutableArray *salesDocumentItemEntries = [SalesDocumentItem createSalesDocumentItemEntriesForSDMEntries:sdmEntries];
-	return (SalesDocumentItem *)[SalesDocumentItem getFirstObjectFromArray:salesDocumentItemEntries];
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:salesDocItemEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *salesDocItemEntries = [SalesDocItem createSalesDocItemEntriesForSDMEntries:sdmEntries];
+	return (SalesDocItem *)[SalesDocItem getFirstObjectFromArray:salesDocItemEntries];
 }
 
 
@@ -1327,13 +1348,11 @@ static SDMODataEntitySchema *salesDocumentItemEntitySchema = nil;
 #pragma mark - MediaForBusinessPartner
 @implementation MediaForBusinessPartner 
 
+@synthesize MediaType = m_MediaType;
 @synthesize BusinessPartnerID = m_BusinessPartnerID;
-@synthesize FileSize = m_FileSize;
-@synthesize FileName = m_FileName;
-@synthesize MimeType = m_MimeType;
-@synthesize MediaID = m_MediaID;
-@synthesize mediaLinkRead = m_mediaLinkRead;
-@synthesize mediaLinkEdit = m_mediaLinkEdit;
+@synthesize Keyword = m_Keyword;
+@synthesize MediaQuery = m_MediaQuery;
+@synthesize Media = m_Media;
 
 static NSMutableDictionary *mediaForBusinessPartnerLabels = nil;
 static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
@@ -1352,17 +1371,24 @@ static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
     return self;
 }
 
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.Media count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.Media] forKey:@"Media"];
+    }
+    return dictionary;
+}
 
 
 - (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerID forSDMPropertyWithName:@"BusinessPartnerID" error:&innerError];
-    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.FileSize forSDMPropertyWithName:@"FileSize" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.FileName forSDMPropertyWithName:@"FileName" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MimeType forSDMPropertyWithName:@"MimeType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaID forSDMPropertyWithName:@"MediaID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
                 *error = innerError;
@@ -1402,18 +1428,26 @@ static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
 	m_BusinessPartnerID = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerID"];
-	m_FileSize = [self getIntValueForSDMPropertyWithName:@"FileSize"];
-	m_FileName = [self getStringValueForSDMPropertyWithName:@"FileName"];
-	m_MimeType = [self getStringValueForSDMPropertyWithName:@"MimeType"];
-	m_MediaID = [self getStringValueForSDMPropertyWithName:@"MediaID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 }
 
-- (void)loadMediaLinkProperties
+- (void)loadNavigationPropertyQueries
 {
-	[super loadMediaLinkProperties];
-	m_mediaLinkRead = [self getMediaLinkForReading];
-	m_mediaLinkEdit = [self getMediaLinkForEditing];
+    [super loadNavigationPropertyQueries];
+    m_MediaQuery = [self getRelatedLinkForNavigationName:@"Media"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"Media"];
+    m_Media = [Media createMediaEntriesForSDMEntries:entries];
+
 }
 
 + (NSMutableArray *)createMediaForBusinessPartnerEntriesForSDMEntries:(NSMutableArray *)sdmEntries
@@ -1461,6 +1495,16 @@ static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
 	return (MediaForBusinessPartner *)[MediaForBusinessPartner getFirstObjectFromArray:mediaForBusinessPartnerEntries];
 }
 
+
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError **)error
+{
+    self.Media = [Media parseMediaEntriesWithData:aData error:error];
+    if (!self.Media) {
+    	return NO;
+    }
+    return YES;
+}
 
 
 @end
@@ -1749,14 +1793,12 @@ static SDMODataEntitySchema *materialGroupEntitySchema = nil;
 #pragma mark - MediaForContactPerson
 @implementation MediaForContactPerson 
 
-@synthesize RelatedPartnerID = m_RelatedPartnerID;
-@synthesize FileSize = m_FileSize;
-@synthesize FileName = m_FileName;
-@synthesize MimeType = m_MimeType;
-@synthesize MediaID = m_MediaID;
+@synthesize Keyword = m_Keyword;
 @synthesize ContactPersonID = m_ContactPersonID;
-@synthesize mediaLinkRead = m_mediaLinkRead;
-@synthesize mediaLinkEdit = m_mediaLinkEdit;
+@synthesize RelatedPartnerID = m_RelatedPartnerID;
+@synthesize MediaType = m_MediaType;
+@synthesize MediaQuery = m_MediaQuery;
+@synthesize Media = m_Media;
 
 static NSMutableDictionary *mediaForContactPersonLabels = nil;
 static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
@@ -1775,18 +1817,25 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
     return self;
 }
 
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.Media count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.Media] forKey:@"Media"];
+    }
+    return dictionary;
+}
 
 
 - (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.RelatedPartnerID forSDMPropertyWithName:@"RelatedPartnerID" error:&innerError];
-    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.FileSize forSDMPropertyWithName:@"FileSize" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.FileName forSDMPropertyWithName:@"FileName" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MimeType forSDMPropertyWithName:@"MimeType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaID forSDMPropertyWithName:@"MediaID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ContactPersonID forSDMPropertyWithName:@"ContactPersonID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.RelatedPartnerID forSDMPropertyWithName:@"RelatedPartnerID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
                 *error = innerError;
@@ -1799,13 +1848,13 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 
 + (void)loadEntitySchema:(SDMODataServiceDocument *)aService
 {
-    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaForContactPersonSet" workspaceOfCollection:nil];
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaCollectionForContactPerson" workspaceOfCollection:nil];
     mediaForContactPersonEntitySchema = collectionSchema.entitySchema;
 }
 
 + (void)loadLabels:(SDMODataServiceDocument *)aService
 {
-		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaForContactPersonSet" andService:aService];
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaCollectionForContactPerson" andService:aService];
     	if (properties) {    
 	    	mediaForContactPersonLabels = [NSMutableDictionary dictionary];
 	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
@@ -1826,19 +1875,27 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_RelatedPartnerID = [self getStringValueForSDMPropertyWithName:@"RelatedPartnerID"];
-	m_FileSize = [self getIntValueForSDMPropertyWithName:@"FileSize"];
-	m_FileName = [self getStringValueForSDMPropertyWithName:@"FileName"];
-	m_MimeType = [self getStringValueForSDMPropertyWithName:@"MimeType"];
-	m_MediaID = [self getStringValueForSDMPropertyWithName:@"MediaID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 	m_ContactPersonID = [self getStringValueForSDMPropertyWithName:@"ContactPersonID"];
+	m_RelatedPartnerID = [self getStringValueForSDMPropertyWithName:@"RelatedPartnerID"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
 }
 
-- (void)loadMediaLinkProperties
+- (void)loadNavigationPropertyQueries
 {
-	[super loadMediaLinkProperties];
-	m_mediaLinkRead = [self getMediaLinkForReading];
-	m_mediaLinkEdit = [self getMediaLinkForEditing];
+    [super loadNavigationPropertyQueries];
+    m_MediaQuery = [self getRelatedLinkForNavigationName:@"Media"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"Media"];
+    m_Media = [Media createMediaEntriesForSDMEntries:entries];
+
 }
 
 + (NSMutableArray *)createMediaForContactPersonEntriesForSDMEntries:(NSMutableArray *)sdmEntries
@@ -1887,28 +1944,34 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 }
 
 
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError **)error
+{
+    self.Media = [Media parseMediaEntriesWithData:aData error:error];
+    if (!self.Media) {
+    	return NO;
+    }
+    return YES;
+}
+
 
 @end
 
-#pragma mark - MediaForMaterials
-@implementation MediaForMaterials 
+#pragma mark - MediaForMaterial
+@implementation MediaForMaterial 
 
-@synthesize FileSize = m_FileSize;
-@synthesize FileName = m_FileName;
-@synthesize MimeType = m_MimeType;
-@synthesize MediaID = m_MediaID;
 @synthesize MaterialNumber = m_MaterialNumber;
-@synthesize mediaLinkRead = m_mediaLinkRead;
-@synthesize mediaLinkEdit = m_mediaLinkEdit;
+@synthesize Keyword = m_Keyword;
+@synthesize MediaType = m_MediaType;
 
-static NSMutableDictionary *mediaForMaterialsLabels = nil;
-static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
+static NSMutableDictionary *mediaForMaterialLabels = nil;
+static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaForMaterialsEntitySchema error:nil];
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaForMaterialEntitySchema error:nil];
         if (!m_SDMEntry) {
             return nil;
         }        
@@ -1924,11 +1987,9 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
-    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.FileSize forSDMPropertyWithName:@"FileSize" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.FileName forSDMPropertyWithName:@"FileName" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MimeType forSDMPropertyWithName:@"MimeType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaID forSDMPropertyWithName:@"MediaID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MaterialNumber forSDMPropertyWithName:@"MaterialNumber" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
         if (innerError) {
             if (error) {
                 *error = innerError;
@@ -1941,17 +2002,17 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 
 + (void)loadEntitySchema:(SDMODataServiceDocument *)aService
 {
-    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaForMaterialsSet" workspaceOfCollection:nil];
-    mediaForMaterialsEntitySchema = collectionSchema.entitySchema;
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaCollectionForMaterial" workspaceOfCollection:nil];
+    mediaForMaterialEntitySchema = collectionSchema.entitySchema;
 }
 
 + (void)loadLabels:(SDMODataServiceDocument *)aService
 {
-		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaForMaterialsSet" andService:aService];
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaCollectionForMaterial" andService:aService];
     	if (properties) {    
-	    	mediaForMaterialsLabels = [NSMutableDictionary dictionary];
+	    	mediaForMaterialLabels = [NSMutableDictionary dictionary];
 	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
-	        	[mediaForMaterialsLabels setValue:property.label forKey:property.name];
+	        	[mediaForMaterialLabels setValue:property.label forKey:property.name];
 	    	}
 	    }
 	    else {
@@ -1962,17 +2023,155 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName
 {
-    return [BaseODataObject getLabelFromDictionary:mediaForMaterialsLabels forProperty:aPropertyName];
+    return [BaseODataObject getLabelFromDictionary:mediaForMaterialLabels forProperty:aPropertyName];
 }
 
 - (void)loadProperties
 {
     [super loadProperties];
-	m_FileSize = [self getIntValueForSDMPropertyWithName:@"FileSize"];
-	m_FileName = [self getStringValueForSDMPropertyWithName:@"FileName"];
-	m_MimeType = [self getStringValueForSDMPropertyWithName:@"MimeType"];
-	m_MediaID = [self getStringValueForSDMPropertyWithName:@"MediaID"];
 	m_MaterialNumber = [self getStringValueForSDMPropertyWithName:@"MaterialNumber"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
++ (NSMutableArray *)createMediaForMaterialEntriesForSDMEntries:(NSMutableArray *)sdmEntries
+{
+    NSMutableArray *entries = [NSMutableArray array];
+    for (SDMODataEntry *entry in sdmEntries) {
+        MediaForMaterial *mediaForMaterialObject = [[MediaForMaterial alloc] initWithSDMEntry:entry];
+        [entries addObject:mediaForMaterialObject];
+    }
+    return entries;
+}
+
+
++ (NSMutableArray *)parseMediaForMaterialEntriesWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaForMaterialEntitySchema andData:aData error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForMaterial createMediaForMaterialEntriesForSDMEntries:sdmEntries];
+}
+
++ (NSMutableArray *)parseExpandedMediaForMaterialEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForMaterialEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForMaterial createMediaForMaterialEntriesForSDMEntries:sdmEntries];
+}
+
++ (MediaForMaterial *)parseMediaForMaterialEntryWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *mediaForMaterialEntries = [MediaForMaterial parseMediaForMaterialEntriesWithData:aData error:error];
+    if (!mediaForMaterialEntries) {
+    	return nil;
+    }
+    return (MediaForMaterial *)[MediaForMaterial getFirstObjectFromArray:mediaForMaterialEntries];
+}
+
++ (MediaForMaterial *)parseExpandedMediaForMaterialEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForMaterialEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *mediaForMaterialEntries = [MediaForMaterial createMediaForMaterialEntriesForSDMEntries:sdmEntries];
+	return (MediaForMaterial *)[MediaForMaterial getFirstObjectFromArray:mediaForMaterialEntries];
+}
+
+
+
+@end
+
+#pragma mark - Media
+@implementation Media 
+
+@synthesize Keyword = m_Keyword;
+@synthesize RelatedID = m_RelatedID;
+@synthesize Source = m_Source;
+@synthesize ContentType = m_ContentType;
+@synthesize MediaType = m_MediaType;
+@synthesize FileName = m_FileName;
+@synthesize FileSize = m_FileSize;
+@synthesize mediaLinkRead = m_mediaLinkRead;
+@synthesize mediaLinkEdit = m_mediaLinkEdit;
+
+static NSMutableDictionary *mediaLabels = nil;
+static SDMODataEntitySchema *mediaEntitySchema = nil;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaEntitySchema error:nil];
+        if (!m_SDMEntry) {
+            return nil;
+        }        
+        m_properties = nil;
+        m_baseUrl = nil;
+    }
+    return self;
+}
+
+
+
+- (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
+{
+    if (m_SDMEntry) {
+        NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.RelatedID forSDMPropertyWithName:@"RelatedID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Source forSDMPropertyWithName:@"Source" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ContentType forSDMPropertyWithName:@"ContentType" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.FileName forSDMPropertyWithName:@"FileName" error:&innerError];
+    	[BaseODataObject setIntValueForSDMEntry:m_SDMEntry withValue:self.FileSize forSDMPropertyWithName:@"FileSize" error:&innerError];
+        if (innerError) {
+            if (error) {
+                *error = innerError;
+            }
+            return nil;
+        }
+	}
+    return m_SDMEntry;
+}
+
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService
+{
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"Mediaset" workspaceOfCollection:nil];
+    mediaEntitySchema = collectionSchema.entitySchema;
+}
+
++ (void)loadLabels:(SDMODataServiceDocument *)aService
+{
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"Mediaset" andService:aService];
+    	if (properties) {    
+	    	mediaLabels = [NSMutableDictionary dictionary];
+	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
+	        	[mediaLabels setValue:property.label forKey:property.name];
+	    	}
+	    }
+	    else {
+        	LOGERROR(@"Failed to load SAP labels from service metadata");
+    	}
+}
+
+
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName
+{
+    return [BaseODataObject getLabelFromDictionary:mediaLabels forProperty:aPropertyName];
+}
+
+- (void)loadProperties
+{
+    [super loadProperties];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_RelatedID = [self getStringValueForSDMPropertyWithName:@"RelatedID"];
+	m_Source = [self getStringValueForSDMPropertyWithName:@"Source"];
+	m_ContentType = [self getStringValueForSDMPropertyWithName:@"ContentType"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+	m_FileName = [self getStringValueForSDMPropertyWithName:@"FileName"];
+	m_FileSize = [self getIntValueForSDMPropertyWithName:@"FileSize"];
 }
 
 - (void)loadMediaLinkProperties
@@ -1982,49 +2181,175 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 	m_mediaLinkEdit = [self getMediaLinkForEditing];
 }
 
-+ (NSMutableArray *)createMediaForMaterialsEntriesForSDMEntries:(NSMutableArray *)sdmEntries
++ (NSMutableArray *)createMediaEntriesForSDMEntries:(NSMutableArray *)sdmEntries
 {
     NSMutableArray *entries = [NSMutableArray array];
     for (SDMODataEntry *entry in sdmEntries) {
-        MediaForMaterials *mediaForMaterialsObject = [[MediaForMaterials alloc] initWithSDMEntry:entry];
-        [entries addObject:mediaForMaterialsObject];
+        Media *mediaObject = [[Media alloc] initWithSDMEntry:entry];
+        [entries addObject:mediaObject];
     }
     return entries;
 }
 
 
-+ (NSMutableArray *)parseMediaForMaterialsEntriesWithData:(NSData *)aData error:(NSError **)error
++ (NSMutableArray *)parseMediaEntriesWithData:(NSData *)aData error:(NSError **)error
 {
-    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaForMaterialsEntitySchema andData:aData error:error];
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaEntitySchema andData:aData error:error];
     if (!sdmEntries) {
     	return nil;
     }
-	return [MediaForMaterials createMediaForMaterialsEntriesForSDMEntries:sdmEntries];
+	return [Media createMediaEntriesForSDMEntries:sdmEntries];
 }
 
-+ (NSMutableArray *)parseExpandedMediaForMaterialsEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
++ (NSMutableArray *)parseExpandedMediaEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
 {
-    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForMaterialsEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
     if (!sdmEntries) {
     	return nil;
     }
-	return [MediaForMaterials createMediaForMaterialsEntriesForSDMEntries:sdmEntries];
+	return [Media createMediaEntriesForSDMEntries:sdmEntries];
 }
 
-+ (MediaForMaterials *)parseMediaForMaterialsEntryWithData:(NSData *)aData error:(NSError **)error
++ (Media *)parseMediaEntryWithData:(NSData *)aData error:(NSError **)error
 {
-    NSMutableArray *mediaForMaterialsEntries = [MediaForMaterials parseMediaForMaterialsEntriesWithData:aData error:error];
-    if (!mediaForMaterialsEntries) {
+    NSMutableArray *mediaEntries = [Media parseMediaEntriesWithData:aData error:error];
+    if (!mediaEntries) {
     	return nil;
     }
-    return (MediaForMaterials *)[MediaForMaterials getFirstObjectFromArray:mediaForMaterialsEntries];
+    return (Media *)[Media getFirstObjectFromArray:mediaEntries];
 }
 
-+ (MediaForMaterials *)parseExpandedMediaForMaterialsEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
++ (Media *)parseExpandedMediaEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
 {
-	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForMaterialsEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
-    NSMutableArray *mediaForMaterialsEntries = [MediaForMaterials createMediaForMaterialsEntriesForSDMEntries:sdmEntries];
-	return (MediaForMaterials *)[MediaForMaterials getFirstObjectFromArray:mediaForMaterialsEntries];
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *mediaEntries = [Media createMediaEntriesForSDMEntries:sdmEntries];
+	return (Media *)[Media getFirstObjectFromArray:mediaEntries];
+}
+
+
+
+@end
+
+#pragma mark - MediaForSalesDocument
+@implementation MediaForSalesDocument 
+
+@synthesize OrderID = m_OrderID;
+@synthesize Keyword = m_Keyword;
+@synthesize MediaType = m_MediaType;
+
+static NSMutableDictionary *mediaForSalesDocumentLabels = nil;
+static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaForSalesDocumentEntitySchema error:nil];
+        if (!m_SDMEntry) {
+            return nil;
+        }        
+        m_properties = nil;
+        m_baseUrl = nil;
+    }
+    return self;
+}
+
+
+
+- (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
+{
+    if (m_SDMEntry) {
+        NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        if (innerError) {
+            if (error) {
+                *error = innerError;
+            }
+            return nil;
+        }
+	}
+    return m_SDMEntry;
+}
+
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService
+{
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaCollectionForSalesDocument" workspaceOfCollection:nil];
+    mediaForSalesDocumentEntitySchema = collectionSchema.entitySchema;
+}
+
++ (void)loadLabels:(SDMODataServiceDocument *)aService
+{
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaCollectionForSalesDocument" andService:aService];
+    	if (properties) {    
+	    	mediaForSalesDocumentLabels = [NSMutableDictionary dictionary];
+	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
+	        	[mediaForSalesDocumentLabels setValue:property.label forKey:property.name];
+	    	}
+	    }
+	    else {
+        	LOGERROR(@"Failed to load SAP labels from service metadata");
+    	}
+}
+
+
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName
+{
+    return [BaseODataObject getLabelFromDictionary:mediaForSalesDocumentLabels forProperty:aPropertyName];
+}
+
+- (void)loadProperties
+{
+    [super loadProperties];
+	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
++ (NSMutableArray *)createMediaForSalesDocumentEntriesForSDMEntries:(NSMutableArray *)sdmEntries
+{
+    NSMutableArray *entries = [NSMutableArray array];
+    for (SDMODataEntry *entry in sdmEntries) {
+        MediaForSalesDocument *mediaForSalesDocumentObject = [[MediaForSalesDocument alloc] initWithSDMEntry:entry];
+        [entries addObject:mediaForSalesDocumentObject];
+    }
+    return entries;
+}
+
+
++ (NSMutableArray *)parseMediaForSalesDocumentEntriesWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaForSalesDocumentEntitySchema andData:aData error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForSalesDocument createMediaForSalesDocumentEntriesForSDMEntries:sdmEntries];
+}
+
++ (NSMutableArray *)parseExpandedMediaForSalesDocumentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForSalesDocumentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForSalesDocument createMediaForSalesDocumentEntriesForSDMEntries:sdmEntries];
+}
+
++ (MediaForSalesDocument *)parseMediaForSalesDocumentEntryWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *mediaForSalesDocumentEntries = [MediaForSalesDocument parseMediaForSalesDocumentEntriesWithData:aData error:error];
+    if (!mediaForSalesDocumentEntries) {
+    	return nil;
+    }
+    return (MediaForSalesDocument *)[MediaForSalesDocument getFirstObjectFromArray:mediaForSalesDocumentEntries];
+}
+
++ (MediaForSalesDocument *)parseExpandedMediaForSalesDocumentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForSalesDocumentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *mediaForSalesDocumentEntries = [MediaForSalesDocument createMediaForSalesDocumentEntriesForSDMEntries:sdmEntries];
+	return (MediaForSalesDocument *)[MediaForSalesDocument getFirstObjectFromArray:mediaForSalesDocumentEntries];
 }
 
 
@@ -2041,12 +2366,14 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 @synthesize BusinessPartnersQuery = m_BusinessPartnersQuery;
 @synthesize MaterialsQuery = m_MaterialsQuery;
 @synthesize SalesDocumentsQuery = m_SalesDocumentsQuery;
-@synthesize SalesDocumentItemsQuery = m_SalesDocumentItemsQuery;
+@synthesize SalesDocItemsQuery = m_SalesDocItemsQuery;
 @synthesize MediaCollectionForBusinessPartnerQuery = m_MediaCollectionForBusinessPartnerQuery;
 @synthesize UserSettingCollectionQuery = m_UserSettingCollectionQuery;
 @synthesize MaterialGroupsQuery = m_MaterialGroupsQuery;
-@synthesize MediaForContactPersonSetQuery = m_MediaForContactPersonSetQuery;
-@synthesize MediaForMaterialsSetQuery = m_MediaForMaterialsSetQuery;
+@synthesize MediaCollectionForContactPersonQuery = m_MediaCollectionForContactPersonQuery;
+@synthesize MediaCollectionForMaterialQuery = m_MediaCollectionForMaterialQuery;
+@synthesize MediasetQuery = m_MediasetQuery;
+@synthesize MediaCollectionForSalesDocumentQuery = m_MediaCollectionForSalesDocumentQuery;
 
 - (NSString *)getServiceDocumentFilename
 {
@@ -2065,12 +2392,14 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
     m_BusinessPartnersQuery = [self getQueryForRelativePath:@"BusinessPartners"];
     m_MaterialsQuery = [self getQueryForRelativePath:@"Materials"];
     m_SalesDocumentsQuery = [self getQueryForRelativePath:@"SalesDocuments"];
-    m_SalesDocumentItemsQuery = [self getQueryForRelativePath:@"SalesDocumentItems"];
+    m_SalesDocItemsQuery = [self getQueryForRelativePath:@"SalesDocItems"];
     m_MediaCollectionForBusinessPartnerQuery = [self getQueryForRelativePath:@"MediaCollectionForBusinessPartner"];
     m_UserSettingCollectionQuery = [self getQueryForRelativePath:@"UserSettingCollection"];
     m_MaterialGroupsQuery = [self getQueryForRelativePath:@"MaterialGroups"];
-    m_MediaForContactPersonSetQuery = [self getQueryForRelativePath:@"MediaForContactPersonSet"];
-    m_MediaForMaterialsSetQuery = [self getQueryForRelativePath:@"MediaForMaterialsSet"];
+    m_MediaCollectionForContactPersonQuery = [self getQueryForRelativePath:@"MediaCollectionForContactPerson"];
+    m_MediaCollectionForMaterialQuery = [self getQueryForRelativePath:@"MediaCollectionForMaterial"];
+    m_MediasetQuery = [self getQueryForRelativePath:@"Mediaset"];
+    m_MediaCollectionForSalesDocumentQuery = [self getQueryForRelativePath:@"MediaCollectionForSalesDocument"];
 }
 
 - (void)loadEntitySchemaForAllEntityTypes
@@ -2080,12 +2409,14 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
     [BusinessPartner loadEntitySchema:m_serviceDocument];
     [Material loadEntitySchema:m_serviceDocument];
     [SalesDocument loadEntitySchema:m_serviceDocument];
-    [SalesDocumentItem loadEntitySchema:m_serviceDocument];
+    [SalesDocItem loadEntitySchema:m_serviceDocument];
     [MediaForBusinessPartner loadEntitySchema:m_serviceDocument];
     [UserSetting loadEntitySchema:m_serviceDocument];
     [MaterialGroup loadEntitySchema:m_serviceDocument];
     [MediaForContactPerson loadEntitySchema:m_serviceDocument];
-    [MediaForMaterials loadEntitySchema:m_serviceDocument];
+    [MediaForMaterial loadEntitySchema:m_serviceDocument];
+    [Media loadEntitySchema:m_serviceDocument];
+    [MediaForSalesDocument loadEntitySchema:m_serviceDocument];
 }
 
 - (void)loadLabels
@@ -2095,12 +2426,14 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
     [BusinessPartner loadLabels:m_serviceDocument];
     [Material loadLabels:m_serviceDocument];
     [SalesDocument loadLabels:m_serviceDocument];
-    [SalesDocumentItem loadLabels:m_serviceDocument];
+    [SalesDocItem loadLabels:m_serviceDocument];
     [MediaForBusinessPartner loadLabels:m_serviceDocument];
     [UserSetting loadLabels:m_serviceDocument];
     [MaterialGroup loadLabels:m_serviceDocument];
     [MediaForContactPerson loadLabels:m_serviceDocument];
-    [MediaForMaterials loadLabels:m_serviceDocument];
+    [MediaForMaterial loadLabels:m_serviceDocument];
+    [Media loadLabels:m_serviceDocument];
+    [MediaForSalesDocument loadLabels:m_serviceDocument];
 }
 
  
@@ -2215,33 +2548,33 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 	return [SalesDocument parseExpandedSalesDocumentEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (NSMutableArray *)getSalesDocumentItemsWithData:(NSData *)aData error:(NSError **)error
+- (NSMutableArray *)getSalesDocItemsWithData:(NSData *)aData error:(NSError **)error
 {
-	return [SalesDocumentItem parseExpandedSalesDocumentItemEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+	return [SalesDocItem parseExpandedSalesDocItemEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getSalesDocumentItemsEntryQueryWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID
+- (ODataQuery *)getSalesDocItemsEntryQueryWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber
 {
-	ItemNumber = [ODataQuery encodeURLParameter:ItemNumber];
 	OrderID = [ODataQuery encodeURLParameter:OrderID];
-	NSString *relativePath = [NSString stringWithFormat:@"SalesDocumentItems(ItemNumber=%@,OrderID=%@)", ItemNumber, OrderID];
+	ItemNumber = [ODataQuery encodeURLParameter:ItemNumber];
+	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(OrderID=%@,ItemNumber=%@)", OrderID, ItemNumber];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getSalesDocumentItemsEntryQueryTypedWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID
+- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *ItemNumberUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ItemNumber]];
 	NSString *OrderIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:OrderID]];
-	NSString *relativePath = [NSString stringWithFormat:@"SalesDocumentItems(ItemNumber=%@,OrderID=%@)", ItemNumberUri, OrderIDUri];
+	NSString *ItemNumberUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ItemNumber]];
+	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(OrderID=%@,ItemNumber=%@)", OrderIDUri, ItemNumberUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (SalesDocumentItem *)getSalesDocumentItemsEntryWithData:(NSData *)aData error:(NSError **)error
+- (SalesDocItem *)getSalesDocItemsEntryWithData:(NSData *)aData error:(NSError **)error
 {
-	return [SalesDocumentItem parseExpandedSalesDocumentItemEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+	return [SalesDocItem parseExpandedSalesDocItemEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
 - (NSMutableArray *)getMediaCollectionForBusinessPartnerWithData:(NSData *)aData error:(NSError **)error
@@ -2249,21 +2582,23 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 	return [MediaForBusinessPartner parseExpandedMediaForBusinessPartnerEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithBusinessPartnerID:(NSString *)BusinessPartnerID andMediaID:(NSString *)MediaID
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword
 {
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
 	BusinessPartnerID = [ODataQuery encodeURLParameter:BusinessPartnerID];
-	MediaID = [ODataQuery encodeURLParameter:MediaID];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(BusinessPartnerID=%@,MediaID=%@)", BusinessPartnerID, MediaID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(MediaType=%@,BusinessPartnerID=%@,Keyword=%@)", MediaType, BusinessPartnerID, Keyword];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithBusinessPartnerID:(NSString *)BusinessPartnerID andMediaID:(NSString *)MediaID
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
 	NSString *BusinessPartnerIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:BusinessPartnerID]];
-	NSString *MediaIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaID]];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(BusinessPartnerID=%@,MediaID=%@)", BusinessPartnerIDUri, MediaIDUri];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(MediaType=%@,BusinessPartnerID=%@,Keyword=%@)", MediaTypeUri, BusinessPartnerIDUri, KeywordUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
@@ -2327,64 +2662,130 @@ static SDMODataEntitySchema *mediaForMaterialsEntitySchema = nil;
 	return [MaterialGroup parseExpandedMaterialGroupEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (NSMutableArray *)getMediaForContactPersonSetWithData:(NSData *)aData error:(NSError **)error
+- (NSMutableArray *)getMediaCollectionForContactPersonWithData:(NSData *)aData error:(NSError **)error
 {
 	return [MediaForContactPerson parseExpandedMediaForContactPersonEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getMediaForContactPersonSetEntryQueryWithRelatedPartnerID:(NSString *)RelatedPartnerID andMediaID:(NSString *)MediaID andContactPersonID:(NSString *)ContactPersonID
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType
 {
-	RelatedPartnerID = [ODataQuery encodeURLParameter:RelatedPartnerID];
-	MediaID = [ODataQuery encodeURLParameter:MediaID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
 	ContactPersonID = [ODataQuery encodeURLParameter:ContactPersonID];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaForContactPersonSet(RelatedPartnerID=%@,MediaID=%@,ContactPersonID=%@)", RelatedPartnerID, MediaID, ContactPersonID];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(Keyword=%@,ContactPersonID=%@,MediaType=%@)", Keyword, ContactPersonID, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getMediaForContactPersonSetEntryQueryTypedWithRelatedPartnerID:(NSString *)RelatedPartnerID andMediaID:(NSString *)MediaID andContactPersonID:(NSString *)ContactPersonID
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *RelatedPartnerIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:RelatedPartnerID]];
-	NSString *MediaIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaID]];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
 	NSString *ContactPersonIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ContactPersonID]];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaForContactPersonSet(RelatedPartnerID=%@,MediaID=%@,ContactPersonID=%@)", RelatedPartnerIDUri, MediaIDUri, ContactPersonIDUri];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(Keyword=%@,ContactPersonID=%@,MediaType=%@)", KeywordUri, ContactPersonIDUri, MediaTypeUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (MediaForContactPerson *)getMediaForContactPersonSetEntryWithData:(NSData *)aData error:(NSError **)error
+- (MediaForContactPerson *)getMediaCollectionForContactPersonEntryWithData:(NSData *)aData error:(NSError **)error
 {
 	return [MediaForContactPerson parseExpandedMediaForContactPersonEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (NSMutableArray *)getMediaForMaterialsSetWithData:(NSData *)aData error:(NSError **)error
+- (NSMutableArray *)getMediaCollectionForMaterialWithData:(NSData *)aData error:(NSError **)error
 {
-	return [MediaForMaterials parseExpandedMediaForMaterialsEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+	return [MediaForMaterial parseExpandedMediaForMaterialEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getMediaForMaterialsSetEntryQueryWithMediaID:(NSString *)MediaID andMaterialNumber:(NSString *)MaterialNumber
+- (ODataQuery *)getMediaCollectionForMaterialEntryQueryWithMaterialNumber:(NSString *)MaterialNumber andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
 {
-	MediaID = [ODataQuery encodeURLParameter:MediaID];
 	MaterialNumber = [ODataQuery encodeURLParameter:MaterialNumber];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaForMaterialsSet(MediaID=%@,MaterialNumber=%@)", MediaID, MaterialNumber];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForMaterial(MaterialNumber=%@,Keyword=%@,MediaType=%@)", MaterialNumber, Keyword, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getMediaForMaterialsSetEntryQueryTypedWithMediaID:(NSString *)MediaID andMaterialNumber:(NSString *)MaterialNumber
+- (ODataQuery *)getMediaCollectionForMaterialEntryQueryTypedWithMaterialNumber:(NSString *)MaterialNumber andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *MediaIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaID]];
 	NSString *MaterialNumberUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MaterialNumber]];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaForMaterialsSet(MediaID=%@,MaterialNumber=%@)", MediaIDUri, MaterialNumberUri];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForMaterial(MaterialNumber=%@,Keyword=%@,MediaType=%@)", MaterialNumberUri, KeywordUri, MediaTypeUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (MediaForMaterials *)getMediaForMaterialsSetEntryWithData:(NSData *)aData error:(NSError **)error
+- (MediaForMaterial *)getMediaCollectionForMaterialEntryWithData:(NSData *)aData error:(NSError **)error
 {
-	return [MediaForMaterials parseExpandedMediaForMaterialsEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+	return [MediaForMaterial parseExpandedMediaForMaterialEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (NSMutableArray *)getMediasetWithData:(NSData *)aData error:(NSError **)error
+{
+	return [Media parseExpandedMediaEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (ODataQuery *)getMediasetEntryQueryWithKeyword:(NSString *)Keyword andRelatedID:(NSString *)RelatedID andSource:(NSString *)Source andMediaType:(NSString *)MediaType
+{
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	RelatedID = [ODataQuery encodeURLParameter:RelatedID];
+	Source = [ODataQuery encodeURLParameter:Source];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"Mediaset(Keyword=%@,RelatedID=%@,Source=%@,MediaType=%@)", Keyword, RelatedID, Source, MediaType];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (ODataQuery *)getMediasetEntryQueryTypedWithKeyword:(NSString *)Keyword andRelatedID:(NSString *)RelatedID andSource:(NSString *)Source andMediaType:(NSString *)MediaType
+{
+	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *RelatedIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:RelatedID]];
+	NSString *SourceUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Source]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"Mediaset(Keyword=%@,RelatedID=%@,Source=%@,MediaType=%@)", KeywordUri, RelatedIDUri, SourceUri, MediaTypeUri];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (Media *)getMediasetEntryWithData:(NSData *)aData error:(NSError **)error
+{
+	return [Media parseExpandedMediaEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (NSMutableArray *)getMediaCollectionForSalesDocumentWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForSalesDocument parseExpandedMediaForSalesDocumentEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (ODataQuery *)getMediaCollectionForSalesDocumentEntryQueryWithOrderID:(NSString *)OrderID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	OrderID = [ODataQuery encodeURLParameter:OrderID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForSalesDocument(OrderID=%@,Keyword=%@,MediaType=%@)", OrderID, Keyword, MediaType];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (ODataQuery *)getMediaCollectionForSalesDocumentEntryQueryTypedWithOrderID:(NSString *)OrderID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *OrderIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:OrderID]];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForSalesDocument(OrderID=%@,Keyword=%@,MediaType=%@)", OrderIDUri, KeywordUri, MediaTypeUri];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (MediaForSalesDocument *)getMediaCollectionForSalesDocumentEntryWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForSalesDocument parseExpandedMediaForSalesDocumentEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
 

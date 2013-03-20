@@ -204,12 +204,14 @@ BOOL imageAvailable;
 
 - (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction
 {
-    SalesDocumentItem *item = [[SalesDocumentItem alloc]initWithSDMDictionary:nil];
+    SalesDocItem *item = [[SalesDocItem alloc]init];
     item.Quantity = [NSNumber numberWithInt:quant];
     item.Material = material.MaterialNumber;
     item.Description = material.Description;
     item.UoM = material.UoM;
     item.ItemNumber = docAction;
+    item.OrderID = item.Plant = item.Status.Delivery_Status = item.Status.Overall_Status = item.Status.Invoice_Status = @" ";
+    item.NetPrice = item.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];
     DocumentViewController *ndvc = (DocumentViewController*)self. navigationController.viewControllers[0];
     
     [ndvc.tempSalesDocument.Items addObject:item];

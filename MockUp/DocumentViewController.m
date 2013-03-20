@@ -17,6 +17,7 @@ AddPopover *addPopover;
 UIPopoverController *upc;
 ItemViewController *ivc;
 BOOL rowSelected;
+LGViewHUD *creatingDocs;
 
 
 
@@ -39,6 +40,10 @@ BOOL rowSelected;
     }
     cvc = (CustomerViewController*)self.navigationController.parentViewController;
     rowSelected = NO;
+    creatingDocs = [[LGViewHUD alloc]initWithFrame:CGRectMake(0, 0, 150, 150)];
+    creatingDocs.activityIndicatorOn = YES;
+    creatingDocs.topText = @"Creating Documents";
+    creatingDocs.bottomText = @"Please wait!";
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -51,6 +56,10 @@ BOOL rowSelected;
         tempSalesDocument.SalesOrganization = @"1000";
         tempSalesDocument.Division = @"10";
         tempSalesDocument.DistributionChannel = @"10";
+        tempSalesDocument.OrderID = @" ";
+        tempSalesDocument.Currency = @"EUR";
+        tempSalesDocument.DocumentDate = [NSDate date];
+        tempSalesDocument.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];
     }
     [self setHeaderLabelView];
     [self.ItemsTable reloadData];
@@ -61,6 +70,8 @@ BOOL rowSelected;
     if(self.changeMode)
     {
         [self.AddButton setHidden:YES];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loadingItemsCompleted:) name:kLoadSalesDocumentItemsCompletedNotification object:nil];
+        [[RequestHandler uniqueInstance]loadSalesDocumentItems:tempSalesDocument];
     }
     else
         [self.AddButton setHidden:NO];
@@ -86,7 +97,6 @@ BOOL rowSelected;
     {
         view.hidden = YES;
     }
-    [self.ItemInfoView setHidden:YES];
     return tempSalesDocument.Items.count;
 }
 
@@ -170,6 +180,56 @@ BOOL rowSelected;
     }
 }
 
+- (IBAction)saveDocs:(id)sender {
+    [creatingDocs performSelectorOnMainThread:@selector(showInView:) withObject:self.view waitUntilDone:YES];
+    [self performSelectorInBackground:@selector(tryingToSaveDocuments) withObject:nil];
+}
+
+-(void)tryingToSaveDocuments
+{
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    for(SalesDocItem *item in tempSalesDocument.Items)
+    {
+        NSMutableArray *actionItem = [dic objectForKey:item.ItemNumber];
+        if(actionItem == nil)
+            actionItem = [NSMutableArray arrayWithObject:item];
+        else
+            [actionItem addObject:item];
+        [dic setObject:actionItem forKey:[NSString stringWithString:item.ItemNumber]];
+    }
+    NSArray *allkeys = [dic allKeys];
+    
+    BOOL allSuccess = YES;
+    
+    for(NSString *key in allkeys)
+    {
+        NSMutableArray *temp = [dic objectForKey:key];
+        tempSalesDocument.Items = temp;
+        for(int i =0;i<tempSalesDocument.Items.count;i++)
+        {
+            SalesDocItem *tempItem = tempSalesDocument.Items[i];
+            tempItem.ItemNumber = [NSString stringWithFormat:@"%i",(i+1)*10];
+        }
+        tempSalesDocument.OrderType = key;
+        tempSalesDocument.Description = key;
+        if([[RequestHandler uniqueInstance]createSalesDocument:tempSalesDocument])
+        {
+            
+        }
+        else
+        {
+            allSuccess = NO;
+        }
+    }
+    [creatingDocs hideWithAnimation:YES];
+    if(allSuccess)
+    {
+        [[RequestHandler uniqueInstance]loadSalesDocuments:cvc.selectedBusinessPartner.SalesDocumentsQuery];
+        [cvc performSelectorOnMainThread:@selector(setViewInContainer:) withObject:cvc.childViewControllers[1] waitUntilDone:NO];
+    }
+    
+}
+
 - (IBAction)changeItem:(id)sender {
     switch ([sender tag]) {
         case 2:
@@ -177,7 +237,6 @@ BOOL rowSelected;
             break;
         case 3:
             [tempSalesDocument.Items removeObjectAtIndex:self.ItemsTable.indexPathForSelectedRow.row];
-            [self.ItemInfoView setHidden:YES];
             [self.ItemsTable reloadData];
             for(UIButton *button in self.ItemActionButtons)
             {
@@ -218,5 +277,13 @@ BOOL rowSelected;
                 break;
         }
     }
+}
+
+-(void)loadingItemsCompleted:(NSNotification*)notification
+{
+    NSMutableArray *temp = [notification.userInfo objectForKey:kResponseItems];
+    tempSalesDocument.Items = temp;
+    [self.ItemsTable reloadData];
+    
 }
 @end

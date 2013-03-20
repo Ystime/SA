@@ -47,12 +47,7 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     CustomerOverViewController *sub1 = [self.storyboard instantiateViewControllerWithIdentifier:@"COVC"];
     sub1.selectedBUPA = selectedBusinessPartner;
     [self addChildViewController:(UIViewController*)sub1];
-    UIViewController *sub2 = [self.storyboard instantiateViewControllerWithIdentifier:@"SOS"];
-    [self addChildViewController:sub2];
-    UIViewController *sub3 = [self.storyboard instantiateViewControllerWithIdentifier:@"PVC"];
-    [self addChildViewController:sub3];
-    UINavigationController *sub4 = [self.storyboard instantiateViewControllerWithIdentifier:@"NSN"];
-    [self addChildViewController:sub4];
+
     [self setViewInContainer:self.childViewControllers[0]];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(bupaPicturesLoaded:) name:kPicuresLoaded object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialsLoaded:) name:kLoadMaterialCompletedNotification object:nil];
@@ -67,12 +62,12 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
 {
     //    PullUpView.openedCenter = CGPointMake((self.view.frame.size.width/2),self.view.frame.size.height-25 );
     [PullUpView setupPullableView:PullUpView.frame];
-    self.InsidePullView.layer.borderColor = [[UIColor blackColor]CGColor];
+    self.InsidePullView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
     self.InsidePullView.layer.borderWidth = 2.0;
     [UIView changeLayoutToDefaultProjectSettings:self.InsidePullView];
     
-    PullUpView.openedCenter = CGPointMake(640,718);
-    PullUpView.closedCenter = CGPointMake(640,798);
+    PullUpView.openedCenter = CGPointMake(641,718);
+    PullUpView.closedCenter = CGPointMake(641,798);
     PullUpView.center = PullUpView.closedCenter;
     PullUpView.handleView.frame = self.PullHandle.frame;
     PullUpView.delegate = self;
@@ -127,9 +122,15 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
                 [button setHidden:YES];
         }
         documentsLoaded = NO;
+        UIViewController *sub2 = [self.storyboard instantiateViewControllerWithIdentifier:@"SOS"];
+        [self addChildViewController:sub2];
+        UIViewController *sub3 = [self.storyboard instantiateViewControllerWithIdentifier:@"PVC"];
+        [self addChildViewController:sub3];
+        UINavigationController *sub4 = [self.storyboard instantiateViewControllerWithIdentifier:@"NSN"];
+        [self addChildViewController:sub4];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(salesDocumentsLoaded:) name:kLoadSalesDocumentsCompletedNotification object:nil];
-        if([SettingsUtilities getDemoStatus])
-            [[RequestHandler uniqueInstance]loadSalesDocuments:selectedBusinessPartner.BusinessPartnerID];
+
+        [[RequestHandler uniqueInstance]loadSalesDocuments:selectedBusinessPartner.SalesDocumentsQuery];
     }
     
 }

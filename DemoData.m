@@ -29,8 +29,8 @@ static DemoData *instance = nil;
 {
     DemoBUPA *temp = [[DemoBUPA alloc]init];
     bupas = [temp getDemoBupas];
-    salesDocs = [DemoDocs loadDemoSalesDocuments];
     materials = [DemoMaterials loadDemoMaterials];
+    salesDocs = [DemoDocs loadDemoSalesDocuments];
 }
 
 -(void)addProspect:(BusinessPartner*)prospect;

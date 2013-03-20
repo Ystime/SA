@@ -51,24 +51,26 @@ int selectedRow;
     cvc = (CustomerViewController*)self.parentViewController;
     
     [self.DocumentTable addPullToRefreshWithActionHandler:^{
-        _NothingLabel.text = @"Loading Sales Documents, please wait....";
+        [_NothingLabel setText:@"Loading Sales Documents, please wait...." ];
         allSDs = salesDocuments = selectedSDItems =   nil;
         [self.ItemTable reloadData];
         [self.DocumentTable reloadData];
             [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSalesDocs) name:kCVCLoadedDocs object:nil];
-        [[RequestHandler uniqueInstance]loadSalesDocuments:selectedBUPA.BusinessPartnerID];
+        [[RequestHandler uniqueInstance]loadSalesDocuments:selectedBUPA.SalesDocumentsQuery];
         [self.DocumentTable.pullToRefreshView stopAnimating];
     }];
     [self setUpPullUp];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
+    [self.DocumentTable reloadData];
     salesDocuments = [[NSMutableArray alloc]init];
     selectedBUPA = cvc.selectedBusinessPartner;
     //    [self.CustomerInfo setBUPA:selectedBUPA];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSalesDocs) name:kCVCLoadedDocs object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(salesDocumentItemsLoaded:) name:kLoadSalesDocumentItemsCompletedNotification object:nil];
     [self performSelectorInBackground:@selector(getSalesDocs) withObject:nil];
+    
     lastSortedSD = -1;
 }
 
@@ -110,13 +112,13 @@ int selectedRow;
     {
         switch (button.tag) {
             case 1:
-                [self orderType:@"B" visible:button.selected];
+                [self orderType:@"QUOTATION" visible:button.selected];
                 break;
             case 2:
-                [self orderType:@"C" visible:button.selected];
+                [self orderType:@"ORDER" visible:button.selected];
                 break;
             case 3:
-                [self orderType:@"H" visible:button.selected];
+                [self orderType:@"RETURN_ORDER" visible:button.selected];
                 break;
             default:
                 break;
@@ -222,7 +224,10 @@ int selectedRow;
     {
         if((indexPath.row+1 < salesDocuments.count) && self.ItemView.hidden)
             [self.DocumentTable scrollToNearestSelectedRowAtScrollPosition:UITableViewScrollPositionTop animated:YES];
-        [loadingItems showInView:self.DocumentView];
+        if(self.ItemView.hidden)
+            [loadingItems showInView:self.DocumentView];
+        else
+            [loadingItems showInView:self.ItemView];
         SalesDocument *selectedSD = [salesDocuments objectAtIndex:indexPath.row];
         [[RequestHandler uniqueInstance]loadSalesDocumentItems:selectedSD];
         
@@ -279,7 +284,7 @@ int selectedRow;
     /*Shorten Document View*/
     [self changeLengthOfView:self.DocumentView withY:+330.0];
     
-    /*Move up the Items view*/
+    /*Move down the Items view*/
     self.ItemView.hidden = YES;
     CGRect old = self.ItemView.frame;
     old.origin.y = old.origin.y+323;
@@ -295,7 +300,7 @@ int selectedRow;
 {
     if ([segue.identifier isEqualToString:@"itemDetail"]) {
         ItemViewController *ivc = (ItemViewController*)segue.destinationViewController;
-        SalesDocumentItem *item = [selectedSDItems objectAtIndex:self.ItemTable.indexPathForSelectedRow.row];
+        SalesDocItem *item = [selectedSDItems objectAtIndex:self.ItemTable.indexPathForSelectedRow.row];
         if(cvc.materialPictures)
             [ivc setItem:item andImage:[cvc.materialPictures objectForKey:item.Material]];
         else
@@ -420,13 +425,13 @@ int selectedRow;
         button.selected = YES;
     switch (button.tag) {
         case 1:
-            [self orderType:@"B" visible:button.selected];
+            [self orderType:@"QUOTATION" visible:button.selected];
             break;
         case 2:
-            [self orderType:@"C" visible:button.selected];
+            [self orderType:@"ORDER" visible:button.selected];
             break;
         case 3:
-            [self orderType:@"H" visible:button.selected];
+            [self orderType:@"RETURN_ORDER" visible:button.selected];
             break;
         default:
             break;
