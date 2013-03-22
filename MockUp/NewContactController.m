@@ -13,7 +13,7 @@
 @end
 
 @implementation NewContactController
-@synthesize editContact;
+@synthesize editContact,relBUPA;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,10 +36,18 @@
     if(editContact)
     {
         [self setupLabels:editContact];
+        [self.saveButton setTitle:@"Update" forState:UIControlStateNormal];
+        self.saveButton.hidden = self.scanButton.hidden = YES;
     }
     else
     {
-
+        self.saveButton.hidden = self.scanButton.hidden = NO;
+        [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
+        editContact = [[ContactPerson alloc]init];
+        editContact.PhoneNumber = [[Phone alloc]init];
+        editContact.FaxNumber = [[Phone alloc]init];
+        editContact.Email = [[URI alloc]init];
+        editContact.Website = [[URI alloc]init];
     }
 }
 
@@ -86,6 +94,7 @@
 - (IBAction)clickedButton:(id)sender {
     switch ([sender tag]) {
         case 1:
+            [self saveContactPerson];
             break;
         case 2:
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -133,7 +142,6 @@
 
 -(void)fillInContactInformation:(NSArray *)details
 {
-    editContact = [[ContactPerson alloc]initWithSDMDictionary:nil];
     for(NSString *detail in details)
     {
         if ([detail hasPrefix:@"N:"])
@@ -160,5 +168,56 @@
         }
     }
     [self setupLabels:editContact];
+}
+
+-(void)saveContactPerson
+{
+    for(UITextField *input in self.InputFieldCollection)
+    {
+        input.enabled = NO;
+        switch (input.tag) {
+            case 1:
+                editContact.Gender = input.text;
+                break;
+            case 2:
+                editContact.FirstName = input.text;
+                break;
+            case 3:
+                editContact.LastName = input.text;
+                break;
+            case 4:
+                editContact.Email.URL =  input.text;
+                break;
+            case 5:
+                editContact.PhoneNumber.PhoneNumber = input.text;
+                break;
+            case 6:
+                editContact.PhoneNumber.PhoneNumber = input.text;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    editContact.RelatedPartnerID = self.relBUPA.BusinessPartnerID;
+    editContact.ContactPersonID = @" ";
+    
+    if([editContact.LastName isEqualToString:@""]|| [editContact.FirstName isEqualToString:@""])
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Name" message:@"First and last name are required!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+    else
+    {
+        ContactPerson *success = [[RequestHandler uniqueInstance]createContactPerson:editContact forBusinessPartner:relBUPA];
+        if(success)
+        {
+            BusinessPartner *temp = relBUPA;
+            [self dismissViewControllerAnimated:YES completion:^{
+                [[RequestHandler uniqueInstance]loadContacts:temp];
+            }];
+        }
+    }
+    
 }
 @end

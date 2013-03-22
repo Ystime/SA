@@ -578,36 +578,36 @@
 #pragma mark - SalesDocument
 @interface SalesDocument : BaseEntityType {
 	DocumentStatus *m_Status;
+	NSString *m_OrderID;
 	NSString *m_CustomerPurchaseOrderNumber;
 	NSDate *m_RequestedDeliveryDate;
+	NSString *m_OrderType;
 	NSString *m_Currency;
 	NSDecimalNumber *m_NetValue;
 	NSString *m_Division;
+	NSString *m_Description;
 	NSString *m_DistributionChannel;
 	NSString *m_SalesOrganization;
 	NSString *m_CustomerID;
 	NSDate *m_DocumentDate;
-	NSString *m_Description;
-	NSString *m_OrderType;
-	NSString *m_OrderID;
     ODataQuery *m_ItemsQuery;
 	NSMutableArray *m_Items;
 
 }
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
+@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 @property (strong, nonatomic) NSString *CustomerPurchaseOrderNumber; ///< CustomerPurchaseOrderNumber - Edm.String
 @property (strong, nonatomic) NSDate *RequestedDeliveryDate; ///< RequestedDeliveryDate - Edm.DateTime
+@property (strong, nonatomic) NSString *OrderType; ///< OrderType - Edm.String
 @property (strong, nonatomic) NSString *Currency; ///< Currency - Edm.String
 @property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
 @property (strong, nonatomic) NSString *Division; ///< Division - Edm.String
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
 @property (strong, nonatomic) NSString *DistributionChannel; ///< DistributionChannel - Edm.String
 @property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
 @property (strong, nonatomic) NSString *CustomerID; ///< CustomerID - Edm.String
 @property (strong, nonatomic) NSDate *DocumentDate; ///< DocumentDate - Edm.DateTime
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSString *OrderType; ///< OrderType - Edm.String
-@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *ItemsQuery;
 @property (strong, nonatomic) NSMutableArray *Items;
@@ -965,15 +965,15 @@
 
 #pragma mark - MaterialGroup
 @interface MaterialGroup : BaseEntityType {
-	NSString *m_Description;
 	NSString *m_MaterialGroupID;
+	NSString *m_Description;
     ODataQuery *m_MaterialSetQuery;
 	NSMutableArray *m_MaterialSet;
 
 }
 
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
 @property (strong, nonatomic) NSString *MaterialGroupID; ///< Material Group - Edm.String
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *MaterialSetQuery;
 @property (strong, nonatomic) NSMutableArray *MaterialSet;
@@ -1056,8 +1056,8 @@
 
 #pragma mark - MediaForContactPerson
 @interface MediaForContactPerson : BaseEntityType {
-	NSString *m_Keyword;
 	NSString *m_ContactPersonID;
+	NSString *m_Keyword;
 	NSString *m_RelatedPartnerID;
 	NSString *m_MediaType;
     ODataQuery *m_MediaQuery;
@@ -1065,8 +1065,8 @@
 
 }
 
-@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
 @property (strong, nonatomic) NSString *ContactPersonID; ///< ContactPersonID - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
 @property (strong, nonatomic) NSString *RelatedPartnerID; ///< RelatedPartnerID - Edm.String
 @property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
 #pragma mark Entity Navigation Properties
@@ -1154,12 +1154,17 @@
 	NSString *m_MaterialNumber;
 	NSString *m_Keyword;
 	NSString *m_MediaType;
+    ODataQuery *m_MediaQuery;
+	NSMutableArray *m_Media;
 
 }
 
 @property (strong, nonatomic) NSString *MaterialNumber; ///< MaterialNumber - Edm.String
 @property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
 @property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *MediaQuery;
+@property (strong, nonatomic) NSMutableArray *Media;
 
 #pragma mark Static Methods
 /**
@@ -1224,6 +1229,15 @@
 */
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName;
 
+
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads Media details for this entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 @end
@@ -1325,12 +1339,17 @@
 	NSString *m_OrderID;
 	NSString *m_Keyword;
 	NSString *m_MediaType;
+    ODataQuery *m_MediaQuery;
+	NSMutableArray *m_Media;
 
 }
 
 @property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 @property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
 @property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *MediaQuery;
+@property (strong, nonatomic) NSMutableArray *Media;
 
 #pragma mark Static Methods
 /**
@@ -1395,6 +1414,15 @@
 */
 + (NSString *)getLabelForProperty:(NSString *)aPropertyName;
 
+
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads Media details for this entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 @end
@@ -1775,25 +1803,25 @@ The OData query for the MediaForSalesDocument collection.
 
 /**
  Returns the OData query for a specific MediaForContactPerson entity.
- @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param ContactPersonID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param MediaType Part of the MediaForContactPerson unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType;
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithContactPersonID:(NSString *)ContactPersonID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
 
 /**
  Returns the OData query for a specific MediaForContactPerson entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param ContactPersonID Part of the MediaForContactPerson unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @param MediaType Part of the MediaForContactPerson unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType;
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithContactPersonID:(NSString *)ContactPersonID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
 
 /**
  Returns a specific MediaForContactPerson entity from the provided data.

@@ -12,8 +12,7 @@
 #import "SuspectAnnotation.h"
 #import "GooglePlacesDetail.h"
 #import "LGViewHUD.h"
-#import "CustomerViewController.h"
-
+@class MainViewController;
 @interface DetailViewController : UIViewController <UIAlertViewDelegate>
 
 /*Outlet Collection*/
@@ -37,6 +36,7 @@
 /*Objects*/
 @property (strong, nonatomic) SuspectAnnotation *prospect;
 @property (strong, nonatomic) BusinessPartner *bupa;
+@property (strong, nonatomic) MainViewController *mvc;
 
 /*Button actions*/
 - (IBAction)clickedCancel:(id)sender;

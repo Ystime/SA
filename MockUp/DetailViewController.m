@@ -7,14 +7,14 @@
 //
 
 #import "DetailViewController.h"
-
+#import "MainViewController.h"
 
 @interface DetailViewController ()
 
 @end
 
 @implementation DetailViewController
-@synthesize prospect,bupa;
+@synthesize prospect,bupa,mvc;
 LGViewHUD *createHUD;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -134,7 +134,16 @@ LGViewHUD *createHUD;
 - (IBAction)saveAs:(id)sender
 {
     if(bupa == nil)
+    {
         bupa = [[BusinessPartner alloc]init];
+        bupa.Address = [[Address alloc]init];
+        bupa.Email = [[URI alloc]init];
+        bupa.Website = [[URI alloc]init];
+        bupa.PhoneNumber = [[Phone alloc]init];
+        bupa.FaxNumber = [[Phone alloc]init];
+        bupa.Address.GeoCode = [[GeoCode alloc]init];
+        
+    }
     bupa.BusinessPartnerName = self.CompanyField.text;
     bupa.Address.Street = self.StreetField.text;
     bupa.Address.HouseNumber = self.HouseNumberField.text;
@@ -143,32 +152,22 @@ LGViewHUD *createHUD;
     bupa.PhoneNumber.PhoneNumber = self.PhoneField.text;
     bupa.Email.URL = self.EmailField.text;
     bupa.Website.URL = self.URLField.text;
-    bupa.BusinessPartnerID = @"999";
+    bupa.BusinessPartnerID = @"x";
+    bupa.Address.CountryCodeISO = @"NL";
+    bupa.Address.Country = @"NL";
+    [createHUD showInView:self.view];
     switch ([sender tag]) {
         case 1:
-            [createHUD showInView:self.view];
             bupa.BusinessPartnerType = @"Prospect";
-            bupa.Address.Country = @"NL";
-            [self performSegueWithIdentifier:@"CustomerOverview" sender:bupa];
-            /*Uncommented for non-dbug mode
-            [self performSelectorInBackground:@selector(createNewAccount:) withObject:bupa];
-             */
-            [createHUD hideWithAnimation:YES];
             break;
         case 2:
-            [createHUD showInView:self.view];
             bupa.BusinessPartnerType = @"Competitor";
-            bupa.Address.Country = @"NL";
-            /*Uncommented for non-dbug mode
-             [self performSelectorInBackground:@selector(createNewAccount:) withObject:bupa];
-             */
-            [createHUD hideWithAnimation:YES];
-            [self performSegueWithIdentifier:@"CustomerOverview" sender:bupa];
             break;
         default:
             break;
     }
-
+    [self createNewAccount:bupa];
+    
     
 }
 
@@ -185,7 +184,7 @@ LGViewHUD *createHUD;
 
 -(void)createNewAccount:(BusinessPartner*)newBupa
 {
-    BOOL result = [[RequestHandler uniqueInstance]createBusinessPartner:newBupa];
+    BusinessPartner* result = [[RequestHandler uniqueInstance]createBusinessPartner:newBupa];
     [createHUD hideWithAnimation:YES];
     
     UIAlertView *resultCreation;
@@ -208,8 +207,14 @@ LGViewHUD *createHUD;
 {
     switch (alertView.tag) {
         case 1:
-            [self dismissViewControllerAnimated:YES completion:nil];
-            [self performSegueWithIdentifier:@"CustomerOverview" sender:bupa];
+        {
+            BusinessPartner *temp = bupa;
+            [self dismissViewControllerAnimated:NO completion:
+             ^{
+                 [mvc performSegueWithIdentifier:@"CustomerOverview" sender:temp];
+             }
+             ];
+        }
             break;
         case 2:
             [self dismissViewControllerAnimated:YES completion:nil];

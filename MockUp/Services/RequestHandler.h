@@ -74,7 +74,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (BOOL)isServiceValid;
 
 
--(BOOL)createBusinessPartner:(BusinessPartner*)bussPartner;
+-(BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
 
 /**
  Load the service entity-set BusinessPartners items, parsed into BusinessPartner objects. 
@@ -87,7 +87,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 
 -(void)loadContacts:(BusinessPartner*)bupa;
 
--(BOOL) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa;
+-(ContactPerson*) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa;
 
 - (void)loadMaterials;
 

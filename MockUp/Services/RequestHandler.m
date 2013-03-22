@@ -123,30 +123,24 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     }
 }
 
--(BOOL)createBusinessPartner:(BusinessPartner*)bussPartner
+-(BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner
 {
-    BOOL success = NO;
+    BusinessPartner* success = nil;
     NSError *error;
     
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
     
     NSString* test = [service getXMLForCreateRequest:bussPartner error:&error];
-    NSLog(@"%@",test);
+//    NSLog(@"%@",test);
     
     if (csrf) {
         id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery: service.BusinessPartnersQuery andBody:test andCSRFData:csrf];
         
         
-        NSLog(@"REQUEST: %@", request);
-        //         BusinessPartner *busspart = [BusinessPartner parseBusinessPartnerEntryWithData:request.responseData error:&error];
-        
-        if(!error)
-        {
-            success = YES;
-        }
-        else
-            success = NO;
-        
+        NSLog(@"REQUEST: %@", [request responseString]);
+        success = [BusinessPartner parseBusinessPartnerEntryWithData:request.responseData error:&error];
+        if(error)
+            success = nil;
     }
     return success;
 }
@@ -195,7 +189,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     
 }
 
--(BOOL) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa
+-(ContactPerson*) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa
 {
     NSError *error;
     
@@ -208,10 +202,10 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         
         if(!request.error)
         {
-            return YES;
+            return [ContactPerson parseContactPersonEntryWithData:request.responseData error:&error];
         }
     }
-    return NO;
+    return nil;
 }
 
 #pragma mark - Instance Methods Materials
@@ -308,8 +302,6 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
     [self loginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error];
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
-//    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:[[ODataQuery alloc]initWithURL:[NSURL URLWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/"]]];
-
     
     NSString *test = [service getXMLForCreateRequest:salesdoc error:&error];
     
@@ -365,18 +357,50 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(void)loadImagesforBusinessPartner:(BusinessPartner*)bupa
 {
+    NSMutableDictionary *images= [NSMutableDictionary dictionary];
     if([SettingsUtilities getDemoStatus])
     {
         if([bupa.BusinessPartnerID isEqualToString:@"1"])
         {
-            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-            [dic setObject:[UIImage imageNamed:@"Scheer Front.jpg"] forKey:@"Scheer Front"];
-            [dic setObject:[UIImage imageNamed:@"Scheer Inside.jpg"] forKey:@"Scheer Inside"];
-            [dic setObject:[UIImage imageNamed:@"Scheer Tower.jpg"] forKey:@"Scheer Tower"];
-            NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
-            [[NSNotificationCenter defaultCenter]postNotificationName:kPicuresLoaded object:self userInfo:temp];
+            [images setObject:[UIImage imageNamed:@"Scheer Front.jpg"] forKey:@"Scheer Front"];
+            [images setObject:[UIImage imageNamed:@"Scheer Inside.jpg"] forKey:@"Scheer Inside"];
+            [images setObject:[UIImage imageNamed:@"Scheer Tower.jpg"] forKey:@"Scheer Tower"];
         }
     }
+    else
+    {
+        NSError *error;
+
+        id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:bupa.MediaCollectionQuery];
+        NSMutableArray *tempResults = [service getMediaCollectionForBusinessPartnerWithData:[request responseData] error:&error];
+        NSMutableArray *tempImagesEntries = [NSMutableArray array];
+        
+        for(MediaForBusinessPartner* temp in tempResults)
+        {
+            if([temp.MediaType isEqualToString:@"Attachment"])
+            {
+                [tempImagesEntries addObject:temp];
+            }
+        }
+        for(MediaForBusinessPartner *temp in tempImagesEntries)
+        {
+            id<SDMRequesting>requestAttachment = [connectivityHelper executeBasicSyncRequestWithQuery:temp.MediaQuery];
+            Media *tempMedia = [service getMediasetEntryWithData:[requestAttachment responseData] error:&error];
+            if([tempMedia.ContentType hasPrefix:@"image/"])
+            {
+                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
+                UIImage *result = [UIImage imageWithData:requestImage.responseData];
+                [images setObject:result forKey:tempMedia.Keyword];
+            }
+        }
+    }
+    NSDictionary *temp ;
+    NSString *noImages = @"No Images found!";
+    if(images.count > 0)
+        temp = [NSDictionary dictionaryWithObject:images forKey:kResponseItems];
+    else
+        temp = [NSDictionary dictionaryWithObject:noImages forKey:kResponseError];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kPicuresLoaded object:self userInfo:temp];
 }
 
 

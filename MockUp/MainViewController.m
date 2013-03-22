@@ -713,7 +713,7 @@ NSMutableArray *visibleTypes;
     if([segue.identifier isEqualToString:@"Details"])
     {
         DetailViewController *dvc = (DetailViewController*)segue.destinationViewController;
-        
+        dvc.mvc = self;
         if([sender isKindOfClass:[SuspectAnnotation class]])
         {
             dvc.prospect = (SuspectAnnotation*)sender;

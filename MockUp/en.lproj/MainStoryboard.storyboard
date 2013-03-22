@@ -460,7 +460,6 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                         <outletCollection property="TextFieldCollection" destination="Fn7-o9-qMq" id="Cep-JF-o6d"/>
                         <outletCollection property="views" destination="vZt-NN-wmK" id="mUK-yB-FJm"/>
                         <outletCollection property="views" destination="otQ-V3-ZPC" id="aQa-DM-QaZ"/>
-                        <segue destination="EVM-xj-dP0" kind="modal" identifier="CustomerOverview" id="BQe-g2-0mC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TXm-X1-v1e" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1561,7 +1560,6 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 </state>
                                 <connections>
                                     <action selector="clickedButton:" destination="iI6-w0-vnh" eventType="touchUpInside" id="vnu-4c-Npn"/>
-                                    <action selector="saveAs:" destination="0tC-CF-xZS" eventType="touchUpInside" id="yCt-Ga-ztK"/>
                                 </connections>
                             </button>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="IfA-hF-b9J">
@@ -1606,6 +1604,9 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                     </view>
                     <connections>
                         <outlet property="ContactImage" destination="Kk3-pG-s1q" id="M9y-zW-bIk"/>
+                        <outlet property="cancelButton" destination="IfA-hF-b9J" id="TA1-0z-mtH"/>
+                        <outlet property="saveButton" destination="K6l-KT-Uck" id="cYN-y2-WCr"/>
+                        <outlet property="scanButton" destination="XhG-ZW-pgC" id="tAe-Ha-Gdz"/>
                         <outletCollection property="ViewCollection" destination="K6l-KT-Uck" id="ZRi-fr-EdO"/>
                         <outletCollection property="ViewCollection" destination="IfA-hF-b9J" id="tAk-al-BaL"/>
                         <outletCollection property="ViewCollection" destination="tF0-NN-Y2E" id="eoV-WE-Rof"/>
@@ -4009,9 +4010,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="38x-Yb-Bzs"/>
-        <segue reference="2se-5Z-MDJ"/>
-        <segue reference="BQe-g2-0mC"/>
         <segue reference="VHG-8a-30V"/>
+        <segue reference="2se-5Z-MDJ"/>
+        <segue reference="38x-Yb-Bzs"/>
     </inferredMetricsTieBreakers>
 </document>

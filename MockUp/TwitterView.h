@@ -18,5 +18,6 @@
 
 -(void)getTweets;
 @property (strong)IBOutlet UITableView *tweetTable;
+@property (strong, nonatomic)NSString *searchTerm;
 
 @end

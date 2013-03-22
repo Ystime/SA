@@ -106,9 +106,16 @@ NSArray *keys;
 
 -(void)picturesProcessed:(NSNotification*)notification
 {
-    picDic = notification.userInfo;
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-    [self showPicturesfromDictionary:picDic];
+    if([notification.userInfo objectForKey:kResponseError])
+    {
+        
+    }
+    else
+    {
+        picDic = [notification.userInfo objectForKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]removeObserver:self];
+        [self showPicturesfromDictionary:picDic];
+    }
 }
 
 -(void)showPVCWithPictureForKey:(NSString*)picKey

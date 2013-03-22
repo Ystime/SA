@@ -964,18 +964,18 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
 @implementation SalesDocument 
 
 @synthesize Status = m_Status;
+@synthesize OrderID = m_OrderID;
 @synthesize CustomerPurchaseOrderNumber = m_CustomerPurchaseOrderNumber;
 @synthesize RequestedDeliveryDate = m_RequestedDeliveryDate;
+@synthesize OrderType = m_OrderType;
 @synthesize Currency = m_Currency;
 @synthesize NetValue = m_NetValue;
 @synthesize Division = m_Division;
+@synthesize Description = m_Description;
 @synthesize DistributionChannel = m_DistributionChannel;
 @synthesize SalesOrganization = m_SalesOrganization;
 @synthesize CustomerID = m_CustomerID;
 @synthesize DocumentDate = m_DocumentDate;
-@synthesize Description = m_Description;
-@synthesize OrderType = m_OrderType;
-@synthesize OrderID = m_OrderID;
 @synthesize ItemsQuery = m_ItemsQuery;
 @synthesize Items = m_Items;
 
@@ -1011,18 +1011,18 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
     if (m_SDMEntry) {
         NSError *innerError = nil;
 		[self.Status setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Status" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerPurchaseOrderNumber forSDMPropertyWithName:@"CustomerPurchaseOrderNumber" error:&innerError];
     	[BaseODataObject setDateTimeValueForSDMEntry:m_SDMEntry withValue:self.RequestedDeliveryDate forSDMPropertyWithName:@"RequestedDeliveryDate" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderType forSDMPropertyWithName:@"OrderType" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Currency forSDMPropertyWithName:@"Currency" error:&innerError];
     	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Division forSDMPropertyWithName:@"Division" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.DistributionChannel forSDMPropertyWithName:@"DistributionChannel" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.SalesOrganization forSDMPropertyWithName:@"SalesOrganization" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerID forSDMPropertyWithName:@"CustomerID" error:&innerError];
     	[BaseODataObject setDateTimeValueForSDMEntry:m_SDMEntry withValue:self.DocumentDate forSDMPropertyWithName:@"DocumentDate" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderType forSDMPropertyWithName:@"OrderType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1067,18 +1067,18 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
 {
     [super loadProperties];
 	m_Status = [[DocumentStatus alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Status"]];
+	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
 	m_CustomerPurchaseOrderNumber = [self getStringValueForSDMPropertyWithName:@"CustomerPurchaseOrderNumber"];
 	m_RequestedDeliveryDate = [self getDateTimeValueForSDMPropertyWithName:@"RequestedDeliveryDate"];
+	m_OrderType = [self getStringValueForSDMPropertyWithName:@"OrderType"];
 	m_Currency = [self getStringValueForSDMPropertyWithName:@"Currency"];
 	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
 	m_Division = [self getStringValueForSDMPropertyWithName:@"Division"];
+	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
 	m_DistributionChannel = [self getStringValueForSDMPropertyWithName:@"DistributionChannel"];
 	m_SalesOrganization = [self getStringValueForSDMPropertyWithName:@"SalesOrganization"];
 	m_CustomerID = [self getStringValueForSDMPropertyWithName:@"CustomerID"];
 	m_DocumentDate = [self getDateTimeValueForSDMPropertyWithName:@"DocumentDate"];
-	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
-	m_OrderType = [self getStringValueForSDMPropertyWithName:@"OrderType"];
-	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -1632,8 +1632,8 @@ static SDMODataEntitySchema *userSettingEntitySchema = nil;
 #pragma mark - MaterialGroup
 @implementation MaterialGroup 
 
-@synthesize Description = m_Description;
 @synthesize MaterialGroupID = m_MaterialGroupID;
+@synthesize Description = m_Description;
 @synthesize MaterialSetQuery = m_MaterialSetQuery;
 @synthesize MaterialSet = m_MaterialSet;
 
@@ -1668,8 +1668,8 @@ static SDMODataEntitySchema *materialGroupEntitySchema = nil;
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MaterialGroupID forSDMPropertyWithName:@"MaterialGroupID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1710,8 +1710,8 @@ static SDMODataEntitySchema *materialGroupEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
 	m_MaterialGroupID = [self getStringValueForSDMPropertyWithName:@"MaterialGroupID"];
+	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -1793,8 +1793,8 @@ static SDMODataEntitySchema *materialGroupEntitySchema = nil;
 #pragma mark - MediaForContactPerson
 @implementation MediaForContactPerson 
 
-@synthesize Keyword = m_Keyword;
 @synthesize ContactPersonID = m_ContactPersonID;
+@synthesize Keyword = m_Keyword;
 @synthesize RelatedPartnerID = m_RelatedPartnerID;
 @synthesize MediaType = m_MediaType;
 @synthesize MediaQuery = m_MediaQuery;
@@ -1831,8 +1831,8 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ContactPersonID forSDMPropertyWithName:@"ContactPersonID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.RelatedPartnerID forSDMPropertyWithName:@"RelatedPartnerID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
@@ -1875,8 +1875,8 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 	m_ContactPersonID = [self getStringValueForSDMPropertyWithName:@"ContactPersonID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 	m_RelatedPartnerID = [self getStringValueForSDMPropertyWithName:@"RelatedPartnerID"];
 	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
 }
@@ -1963,6 +1963,8 @@ static SDMODataEntitySchema *mediaForContactPersonEntitySchema = nil;
 @synthesize MaterialNumber = m_MaterialNumber;
 @synthesize Keyword = m_Keyword;
 @synthesize MediaType = m_MediaType;
+@synthesize MediaQuery = m_MediaQuery;
+@synthesize Media = m_Media;
 
 static NSMutableDictionary *mediaForMaterialLabels = nil;
 static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
@@ -1981,6 +1983,14 @@ static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
     return self;
 }
 
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.Media count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.Media] forKey:@"Media"];
+    }
+    return dictionary;
+}
 
 
 - (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
@@ -1990,6 +2000,7 @@ static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MaterialNumber forSDMPropertyWithName:@"MaterialNumber" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
                 *error = innerError;
@@ -2032,6 +2043,23 @@ static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
 	m_MaterialNumber = [self getStringValueForSDMPropertyWithName:@"MaterialNumber"];
 	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
+- (void)loadNavigationPropertyQueries
+{
+    [super loadNavigationPropertyQueries];
+    m_MediaQuery = [self getRelatedLinkForNavigationName:@"Media"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"Media"];
+    m_Media = [Media createMediaEntriesForSDMEntries:entries];
+
 }
 
 + (NSMutableArray *)createMediaForMaterialEntriesForSDMEntries:(NSMutableArray *)sdmEntries
@@ -2079,6 +2107,16 @@ static SDMODataEntitySchema *mediaForMaterialEntitySchema = nil;
 	return (MediaForMaterial *)[MediaForMaterial getFirstObjectFromArray:mediaForMaterialEntries];
 }
 
+
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError **)error
+{
+    self.Media = [Media parseMediaEntriesWithData:aData error:error];
+    if (!self.Media) {
+    	return NO;
+    }
+    return YES;
+}
 
 
 @end
@@ -2236,6 +2274,8 @@ static SDMODataEntitySchema *mediaEntitySchema = nil;
 @synthesize OrderID = m_OrderID;
 @synthesize Keyword = m_Keyword;
 @synthesize MediaType = m_MediaType;
+@synthesize MediaQuery = m_MediaQuery;
+@synthesize Media = m_Media;
 
 static NSMutableDictionary *mediaForSalesDocumentLabels = nil;
 static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
@@ -2254,6 +2294,14 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
     return self;
 }
 
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.Media count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.Media] forKey:@"Media"];
+    }
+    return dictionary;
+}
 
 
 - (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
@@ -2263,6 +2311,7 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
                 *error = innerError;
@@ -2305,6 +2354,23 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
 	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
 	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
+- (void)loadNavigationPropertyQueries
+{
+    [super loadNavigationPropertyQueries];
+    m_MediaQuery = [self getRelatedLinkForNavigationName:@"Media"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"Media"];
+    m_Media = [Media createMediaEntriesForSDMEntries:entries];
+
 }
 
 + (NSMutableArray *)createMediaForSalesDocumentEntriesForSDMEntries:(NSMutableArray *)sdmEntries
@@ -2352,6 +2418,16 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	return (MediaForSalesDocument *)[MediaForSalesDocument getFirstObjectFromArray:mediaForSalesDocumentEntries];
 }
 
+
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError **)error
+{
+    self.Media = [Media parseMediaEntriesWithData:aData error:error];
+    if (!self.Media) {
+    	return NO;
+    }
+    return YES;
+}
 
 
 @end
@@ -2667,23 +2743,23 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	return [MediaForContactPerson parseExpandedMediaForContactPersonEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryWithContactPersonID:(NSString *)ContactPersonID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
 {
-	Keyword = [ODataQuery encodeURLParameter:Keyword];
 	ContactPersonID = [ODataQuery encodeURLParameter:ContactPersonID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
 	MediaType = [ODataQuery encodeURLParameter:MediaType];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(Keyword=%@,ContactPersonID=%@,MediaType=%@)", Keyword, ContactPersonID, MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(ContactPersonID=%@,Keyword=%@,MediaType=%@)", ContactPersonID, Keyword, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithKeyword:(NSString *)Keyword andContactPersonID:(NSString *)ContactPersonID andMediaType:(NSString *)MediaType
+- (ODataQuery *)getMediaCollectionForContactPersonEntryQueryTypedWithContactPersonID:(NSString *)ContactPersonID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
 	NSString *ContactPersonIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ContactPersonID]];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
 	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(Keyword=%@,ContactPersonID=%@,MediaType=%@)", KeywordUri, ContactPersonIDUri, MediaTypeUri];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(ContactPersonID=%@,Keyword=%@,MediaType=%@)", ContactPersonIDUri, KeywordUri, MediaTypeUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }

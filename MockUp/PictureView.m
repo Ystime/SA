@@ -35,10 +35,7 @@ NSArray *keys;
     {
         [self showPicturesFromDictionary:cvc.bupaPictures];
     }
-    else
-    {
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicuresProcesssed object:nil];
-    }
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicuresProcesssed object:nil];
 }
 
 -(void)picturesProcessed:(NSNotification*)notification
@@ -50,12 +47,14 @@ NSArray *keys;
     }
     else
     {
-        [self showPicturesFromDictionary:notification.userInfo];
+        [self showPicturesFromDictionary:[notification.userInfo objectForKey:kResponseItems]];
     }
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 -(void)showPicturesFromDictionary:(NSDictionary*)dic
 {
+    if(pictureFlow)
+        [pictureFlow removeFromSuperview];
     pictureFlow = [[AFOpenFlowView alloc]initWithFrame:CGRectMake(0, 0, 359, 321)];
     keys = dic.allKeys;
     pictureFlow.numberOfImages = keys.count;
@@ -86,4 +85,5 @@ NSArray *keys;
 {
     [cvc showPictureViewForKey:self.picName.text];
 }
+
 @end

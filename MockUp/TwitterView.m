@@ -47,12 +47,13 @@ NSMutableDictionary *twitPics;
                      {
                          twitterAccount = ac;
                      }
-                 }                 
-                 NSURL *requestURL = [NSURL URLWithString:@"http://api.twitter.com/1/statuses/home_timeline.json"];
+                 }
+                 NSString *url =[NSString stringWithFormat:@"https://api.twitter.com/1.1/search/tweets.json?q='%@'",self.searchTerm];
+                 NSURL *requestURL = [NSURL URLWithString:url];
                  
                  NSMutableDictionary *parameters =
                  [[NSMutableDictionary alloc] init];
-                 [parameters setObject:@"20" forKey:@"count"];
+                 [parameters setObject:@"50" forKey:@"count"];
                  [parameters setObject:@"1" forKey:@"include_entities"];
                  
                  SLRequest *postRequest = [SLRequest

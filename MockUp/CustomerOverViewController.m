@@ -21,6 +21,7 @@ int selectedContact;
 
 
 
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -55,7 +56,6 @@ int selectedContact;
         BWView *subView = [subviewArray objectAtIndex:0];
         [self.bottomView addSubview:subView];
         [subView performSelectorInBackground:@selector(setupChartsForBusinessPartner:) withObject:selectedBUPA];
-//        [subView setupChartsForBusinessPartner:selectedBUPA];
     }
 
     
@@ -64,8 +64,7 @@ int selectedContact;
     
     [[RequestHandler uniqueInstance]loadContacts:selectedBUPA];
     self.picView.cvc = (CustomerViewController*)self.parentViewController;
-//    [self.picView showPictures];
-//    [self.TweetView getTweets];    
+    self.TweetView.searchTerm = selectedBUPA.BusinessPartnerName;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -81,10 +80,14 @@ int selectedContact;
 -(void)viewDidDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
-    UIView *temp = self.bottomView.subviews[0];
-    if(temp)
-        [[NSNotificationCenter defaultCenter]removeObserver:temp];
+    if(self.bottomView.subviews.count >0)
+    {
+        [[NSNotificationCenter defaultCenter]removeObserver:self.bottomView.subviews[0]];
+    }
+    [[NSNotificationCenter defaultCenter]removeObserver:self.picView];
+
 }
+
 
 - (void)didReceiveMemoryWarning
 {

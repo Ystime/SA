@@ -246,7 +246,7 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     else
     {
         bupaPictures = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kPicuresProcesssed object:self userInfo:bupaPictures];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kPicuresProcesssed object:self userInfo:notification.userInfo];
     }
 }
 
@@ -323,6 +323,14 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     centeredView = newViewController;
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"newContacts"])
+    {
+        NewContactController *ncc = (NewContactController*)segue.destinationViewController;
+        ncc.relBUPA = selectedBusinessPartner;
+    }
+}
 
 #pragma mark - Pull Up View Delegate
 - (void)pullableView:(PullableView *)pView didChangeState:(BOOL)opened {
