@@ -2811,7 +2811,7 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	RelatedID = [ODataQuery encodeURLParameter:RelatedID];
 	Source = [ODataQuery encodeURLParameter:Source];
 	MediaType = [ODataQuery encodeURLParameter:MediaType];
-	NSString *relativePath = [NSString stringWithFormat:@"Mediaset(Keyword=%@,RelatedID=%@,Source=%@,MediaType=%@)", Keyword, RelatedID, Source, MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"Mediaset(Keyword='%@',RelatedID='%@',Source='%@',MediaType='%@')", Keyword, RelatedID, Source, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }

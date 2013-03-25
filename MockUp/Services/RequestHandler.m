@@ -131,7 +131,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
     
     NSString* test = [service getXMLForCreateRequest:bussPartner error:&error];
-//    NSLog(@"%@",test);
+    //    NSLog(@"%@",test);
     
     if (csrf) {
         id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery: service.BusinessPartnersQuery andBody:test andCSRFData:csrf];
@@ -287,9 +287,9 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSError *error;
     if([self executeLoginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error])
     {
-//        NSURL *url = [service.SalesDocumentsQuery.URL copy];
-//        ODataQuery *query = [[ODataQuery alloc]initWithURL:url];
-//        [query filter:[NSString stringWithFormat:@"CustomerID eq '%@'",bupaID ]];
+        //        NSURL *url = [service.SalesDocumentsQuery.URL copy];
+        //        ODataQuery *query = [[ODataQuery alloc]initWithURL:url];
+        //        [query filter:[NSString stringWithFormat:@"CustomerID eq '%@'",bupaID ]];
         //[query expand:@"Items"];
         [connectivityHelper executeBasicAsyncRequestWithQuery:bupaDocQuery andRequestDelegate:self andDidFinishSelector:@selector(loadSalesDocumentsCompleted:) andUserInfo:nil];
     }
@@ -299,7 +299,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 -(BOOL) createSalesDocument:(SalesDocument*)salesdoc
 {
     NSError *error;
-
+    
     [self loginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error];
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
     
@@ -307,9 +307,9 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     
     if(csrf)
     {
-//        NSURL *url = [[NSURL alloc]initWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/SalesDocuments"];
-//        ODataQuery *sdQuery = [[ODataQuery alloc]initWithURL:url];
-//        NSLog(@"%@",sdQuery.URL);
+        //        NSURL *url = [[NSURL alloc]initWithString:@"http://knowledge.nl4b.com/sap/opu/odata/FEXS/SALESAPP_SRV/SalesDocuments"];
+        //        ODataQuery *sdQuery = [[ODataQuery alloc]initWithURL:url];
+        //        NSLog(@"%@",sdQuery.URL);
         
         id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery:service.SalesDocumentsQuery andBody:test andCSRFData:csrf];
         NSLog(@"REQUEST: %@", [request responseString]);
@@ -370,7 +370,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else
     {
         NSError *error;
-
+        
         id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:bupa.MediaCollectionQuery];
         NSMutableArray *tempResults = [service getMediaCollectionForBusinessPartnerWithData:[request responseData] error:&error];
         NSMutableArray *tempImagesEntries = [NSMutableArray array];
@@ -390,7 +390,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
             {
                 id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
                 UIImage *result = [UIImage imageWithData:requestImage.responseData];
-                [images setObject:result forKey:tempMedia.Keyword];
+                if(result)
+                    [images setObject:result forKey:tempMedia.Keyword];
             }
         }
     }
@@ -417,6 +418,43 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
     }
 }
+
+-(void)loadImagesforContacts:(NSArray*)contacts;
+{
+    NSMutableDictionary *photos = [NSMutableDictionary dictionary];
+    NSString *noImages;
+    if([SettingsUtilities getDemoStatus])
+    {
+    }
+    else
+    {
+        
+        for(ContactPerson *cp in contacts)
+        {
+            NSError *error;
+            id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:[service getMediasetEntryQueryWithKeyword:@"Passphoto" andRelatedID:cp.ContactPersonID andSource:@"MediaForContactPerson" andMediaType:@"Attachment"]];
+            Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
+            if(!error)
+            {
+                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
+                UIImage *passPhoto = [UIImage imageWithData:requestImage.responseData];
+                [photos setObject:passPhoto forKey:cp.ContactPersonID];
+            }
+            else
+            {
+                if(!noImages)
+                    noImages = @"No Images found!";
+            }
+        }
+    }
+    NSMutableDictionary *temp = [NSMutableDictionary dictionary];
+    
+    if(photos.count > 0)
+        [temp setObject:photos forKey:kResponseItems];
+    if(noImages)
+        [temp setObject:noImages forKey:kResponseError];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
+}
 #pragma mark - Instance Methods Hierarchy
 
 -(void)loadHierarchyWithRootNode:(NSString*)bupaID
@@ -440,7 +478,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         if([bupaID isEqualToString:@""])
         {
             [dic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
-
+            
         }
         [dic setObject:[UIImage imageNamed:@"logoAH.png"] forKey:@"Albert Heijn"];
         [dic setObject:[UIImage imageNamed:@"ETOS.png"] forKey:@"Etos"];

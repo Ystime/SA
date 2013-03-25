@@ -287,15 +287,7 @@ NSMutableArray *visibleTypes;
 {
     if (annotation == mapView.userLocation)
     {
-        MKAnnotationView *av = (MKAnnotationView*) [mapView dequeueReusableAnnotationViewWithIdentifier:@"Userlocation"];
-        if(av == nil)
-        {
-            av= [[MKAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:@"Userlocation"];
-        }
-        else
-            av.annotation = annotation;
-        av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Blue_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
-        return av;
+        return nil;
     }
     else if([annotation isKindOfClass:[CustomerAnnotation class]])
     {

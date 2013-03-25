@@ -41,6 +41,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 
 #define ERROR_DOMAIN @"SAP Netweaver Gateway Application"
 #define kPicuresLoaded @"BUPA Pictures have been recieved"
+#define kPassPhotosLoaded @"Contact Pictures have been recieved"
 #define kMaterialPicuresLoaded @"Material pictures have been recieved"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
 #define LOGIN_ERROR_CODE 1002
@@ -102,6 +103,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 
 -(void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
 -(void)loadImagesforMaterials:(NSArray*)materials;
+-(void)loadImagesforContacts:(NSArray*)contacts;
 -(void)loadHierarchyWithRootNode:(NSString*)bupaID;
 
 

@@ -48,7 +48,8 @@ NSMutableDictionary *twitPics;
                          twitterAccount = ac;
                      }
                  }
-                 NSString *url =[NSString stringWithFormat:@"https://api.twitter.com/1.1/search/tweets.json?q='%@'",self.searchTerm];
+                 NSString *url =[NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
+//                 NSString *url = @"https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames&since_id=24012619984051000&max_id=250126199840518145&result_type=mixed&count=4 ";
                  NSURL *requestURL = [NSURL URLWithString:url];
                  
                  NSMutableDictionary *parameters =
@@ -73,7 +74,7 @@ NSMutableDictionary *twitPics;
                                      JSONObjectWithData:responseData
                                      options:NSJSONReadingMutableLeaves
                                      error:&error];
-                          if (tweets.count > 1) {
+                          if (tweets.count > 0) {
                               dispatch_async(dispatch_get_main_queue(), ^{
                                   [self.tweetTable reloadData];
                                   [self performSelectorInBackground:@selector(loadPictures) withObject:nil];

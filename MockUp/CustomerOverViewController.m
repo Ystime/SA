@@ -16,6 +16,7 @@
 @implementation CustomerOverViewController
 AFOpenFlowView *ContactFlow;
 NSMutableArray *contacts;
+NSDictionary *contactsPhotos;
 int selectedContact;
 @synthesize selectedBUPA;
 
@@ -140,6 +141,8 @@ int selectedContact;
         selectedContact = 0;
         [self openFlowView:ContactFlow selectionDidChange:selectedContact];
         self.EmailButton.hidden = NO;
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showContactPhotos:) name:kPassPhotosLoaded object:nil];
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforContacts:) withObject:contacts];
     }
     else
     {
@@ -149,6 +152,25 @@ int selectedContact;
     UITapGestureRecognizer *tappedContact = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tappedContacts)];
     tappedContact.numberOfTapsRequired = 2;
     [ContactFlow addGestureRecognizer:tappedContact];
+    
+}
+
+-(void)showContactPhotos:(NSNotification*)notification
+{
+    contactsPhotos = [notification.userInfo objectForKey:kResponseItems];
+    for(NSString *key in contactsPhotos.allKeys)
+    {
+        for(int i = 0;i<contacts.count;i++)
+        {
+            ContactPerson *temp = contacts[i];
+            if([temp.ContactPersonID isEqualToString:key])
+            {
+               [ContactFlow setImage:[UIImage imageWithImage:[contactsPhotos objectForKey:key] scaledToSize:CGSizeMake(150,150)] forIndex:i];
+                break;
+            }
+        }
+    }
+    
 }
 
 -(void)tappedContacts

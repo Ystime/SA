@@ -54,7 +54,9 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialPicturesLoaded:) name:kMaterialPicuresLoaded object:nil];
 
     
-    [[RequestHandler uniqueInstance]loadImagesforBusinessPartner:selectedBusinessPartner];
+//    [[RequestHandler uniqueInstance]loadImagesforBusinessPartner:selectedBusinessPartner];
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
+
     [[RequestHandler uniqueInstance]loadMaterials];
 }
 
