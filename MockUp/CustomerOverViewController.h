@@ -29,5 +29,6 @@
 @property (strong, nonatomic) IBOutlet UIView *bottomView;
 @property (strong, nonatomic) IBOutlet PictureView *picView;
 @property (strong, nonatomic)BusinessPartner *selectedBUPA;
+@property (strong) CustomerViewController *cvc;
 
 @end

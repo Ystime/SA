@@ -70,11 +70,15 @@ LGViewHUD *creatingDocs;
     if(self.changeMode)
     {
         [self.AddButton setHidden:YES];
+        self.SaveButton.hidden = YES;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loadingItemsCompleted:) name:kLoadSalesDocumentItemsCompletedNotification object:nil];
         [[RequestHandler uniqueInstance]loadSalesDocumentItems:tempSalesDocument];
     }
     else
+    {
         [self.AddButton setHidden:NO];
+        self.SaveButton.hidden = NO;
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -225,7 +229,9 @@ LGViewHUD *creatingDocs;
     if(allSuccess)
     {
         [[RequestHandler uniqueInstance]loadSalesDocuments:cvc.selectedBusinessPartner.SalesDocumentsQuery];
-        [cvc performSelectorOnMainThread:@selector(setViewInContainer:) withObject:cvc.childViewControllers[1] waitUntilDone:NO];
+        UIButton *temp = [[UIButton alloc]init];
+        temp.tag = 2;
+        [cvc performSelectorOnMainThread:@selector(clickedTab:) withObject:temp waitUntilDone:NO];
     }
     
 }

@@ -40,7 +40,8 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 
 
 #define ERROR_DOMAIN @"SAP Netweaver Gateway Application"
-#define kPicuresLoaded @"BUPA Pictures have been recieved"
+#define kPicturesLoaded @"BUPA Pictures have been recieved"
+#define kNotesLoaded @"BUPA Notes have been recieved"
 #define kPassPhotosLoaded @"Contact Pictures have been recieved"
 #define kMaterialPicuresLoaded @"Material pictures have been recieved"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
@@ -62,7 +63,8 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 }
 
 @property (strong, nonatomic, readonly) NSString *serviceDocumentURL; ///< SALES_INFORMATION service document URL retrieved from the application settings at instance initialization (used as base URL for service requests). 
-@property (strong, nonatomic, readonly) NSString *client; ///< SAP client retrieved from the application settings at instance initialization (may be empty or nil for default client). 
+@property (strong, nonatomic, readonly) NSString *client;
+@property BOOL viewVisible;///< SAP client retrieved from the application settings at instance initialization (may be empty or nil for default client).
 
 /**
  @return RequestHandler singleton instance.
@@ -75,7 +77,6 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (BOOL)isServiceValid;
 
 
--(BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
 
 /**
  Load the service entity-set BusinessPartners items, parsed into BusinessPartner objects. 
@@ -84,29 +85,28 @@ extern NSString * const kLoadHierarchyCompletedNotification;
  - kRequestErrorNotification for request failure, along with the request error message (for kResponseError key).
  - kAuthenticationNeededNotification for request authentication challenge.
  */
+/*RequestHandler Methods for Business Partner Object*/
 - (void)loadBusinessPartners;
+- (BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
+- (void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
+- (void)loadNotesForBusinessPartner:(BusinessPartner*)bupa;
+- (void)loadHierarchyWithRootNode:(NSString*)bupaID;
 
--(void)loadContacts:(BusinessPartner*)bupa;
+/*RequestHandler Methods for Contact Person Object*/
+- (void)loadContacts:(BusinessPartner*)bupa;
+- (ContactPerson*) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa;
+- (void)loadImagesforContacts:(NSArray*)contacts;
 
--(ContactPerson*) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa;
-
+/*RequestHandler Methods for Material Object*/
 - (void)loadMaterials;
-
--(Material*)loadMaterial:(NSString*)barcode;
-
-
--(void)loadSalesDocuments:(ODataQuery*)bupaDocQuery;
-
--(BOOL) createSalesDocument:(SalesDocument*)salesdoc;
-
--(void)loadSalesDocumentItems:(SalesDocument*)sd;
-
--(void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
--(void)loadImagesforMaterials:(NSArray*)materials;
--(void)loadImagesforContacts:(NSArray*)contacts;
--(void)loadHierarchyWithRootNode:(NSString*)bupaID;
+- (Material*)loadMaterial:(NSString*)barcode;
+- (void)loadImagesforMaterials:(NSArray*)materials;
 
 
+/*RequestHandler Methods for Sales Document Object*/
+- (void)loadSalesDocuments:(ODataQuery*)bupaDocQuery;
+- (BOOL)createSalesDocument:(SalesDocument*)salesdoc;
+- (void)loadSalesDocumentItems:(SalesDocument*)sd;
 
 /**
  Authenticates the given user name and password against the service.

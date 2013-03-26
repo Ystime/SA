@@ -18,7 +18,7 @@ AFOpenFlowView *ContactFlow;
 NSMutableArray *contacts;
 NSDictionary *contactsPhotos;
 int selectedContact;
-@synthesize selectedBUPA;
+@synthesize selectedBUPA,cvc;
 
 
 
@@ -42,13 +42,15 @@ int selectedContact;
         view.layer.cornerRadius = 8.0;
         view.layer.masksToBounds = YES;
     }
-
+    
     
     NSString *type = selectedBUPA.BusinessPartnerType;
     if([type isEqualToString:@"Prospect"] || [type isEqualToString:@"Competitor"])
     {
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"NoteView" owner:self options:nil];
         NoteView *subView = [subviewArray objectAtIndex:0];
+        subView.cvc = cvc;
+        [subView setNotes:cvc.notes];
         [self.bottomView addSubview:subView];
     }
     else if([type isEqualToString:@"Customer"])
@@ -58,7 +60,7 @@ int selectedContact;
         [self.bottomView addSubview:subView];
         [subView performSelectorInBackground:@selector(setupChartsForBusinessPartner:) withObject:selectedBUPA];
     }
-
+    
     
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showContacts:) name:kLoadContactsCompletedNotification object:nil];
@@ -86,7 +88,7 @@ int selectedContact;
         [[NSNotificationCenter defaultCenter]removeObserver:self.bottomView.subviews[0]];
     }
     [[NSNotificationCenter defaultCenter]removeObserver:self.picView];
-
+    
 }
 
 
@@ -115,39 +117,37 @@ int selectedContact;
     ContactFlow = nil;
     NSDictionary *userInfoDict = [notification userInfo];
     NSMutableArray *unsortedContacts = [userInfoDict objectForKey:kResponseItems];
-    if(unsortedContacts.count > 0)
+    contacts = (NSMutableArray*)[unsortedContacts sortedArrayUsingComparator:^NSComparisonResult(id a, id b)
+                                 {
+                                     
+                                     NSString *first = [(ContactPerson*)a LastName];
+                                     NSString *second = [(ContactPerson*)b LastName];
+                                     NSString *firstUpper = [first uppercaseString];
+                                     NSString *secondUpper = [second uppercaseString];
+                                     return [firstUpper compare:secondUpper];
+                                 }];
+    ContactFlow = [[AFOpenFlowView alloc]initWithFrame:CGRectMake(0, 0, 250, 200)];
+    ContactFlow.numberOfImages = contacts.count+1;
+    
+    for (int i = 0; i<contacts.count; i++) {
+        [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"group_icon.png"] scaledToSize:CGSizeMake(150, 150)]
+                     forIndex:i];
+    }
+    [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"add_contact.png"] scaledToSize:CGSizeMake(150, 150)] forIndex:contacts.count];
+    ContactFlow.frame = self.ContactView.bounds;
+    ContactFlow.viewDelegate = self;
+    [self.ContactView insertSubview:ContactFlow atIndex:0];
+    
+    selectedContact = 0;
+    [self openFlowView:ContactFlow selectionDidChange:selectedContact];
+    if(contacts.count >0)
     {
-        contacts = (NSMutableArray*)[unsortedContacts sortedArrayUsingComparator:^NSComparisonResult(id a, id b)
-                                     {
-                                         
-                                         NSString *first = [(ContactPerson*)a LastName];
-                                         NSString *second = [(ContactPerson*)b LastName];
-                                         NSString *firstUpper = [first uppercaseString];
-                                         NSString *secondUpper = [second uppercaseString];
-                                         return [firstUpper compare:secondUpper];
-                                     }];
-        ContactFlow = [[AFOpenFlowView alloc]initWithFrame:CGRectMake(0, 0, 250, 200)];
-        ContactFlow.numberOfImages = contacts.count;
-        
-        for (int i = 0; i<contacts.count; i++) {
-            [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"group_icon.png"] scaledToSize:CGSizeMake(150, 150)]
-                         forIndex:i];
-        }
-        
-        ContactFlow.frame = self.ContactView.bounds;
-        ContactFlow.viewDelegate = self;
-        [self.ContactView insertSubview:ContactFlow atIndex:0];
-        
-        selectedContact = 0;
-        [self openFlowView:ContactFlow selectionDidChange:selectedContact];
-        self.EmailButton.hidden = NO;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showContactPhotos:) name:kPassPhotosLoaded object:nil];
         [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforContacts:) withObject:contacts];
+        self.EmailButton.hidden = NO;
     }
     else
-    {
-        self.NoContactsLabel.hidden = NO;
-    }
+        self.EmailButton.hidden = YES;
     
     UITapGestureRecognizer *tappedContact = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tappedContacts)];
     tappedContact.numberOfTapsRequired = 2;
@@ -165,7 +165,7 @@ int selectedContact;
             ContactPerson *temp = contacts[i];
             if([temp.ContactPersonID isEqualToString:key])
             {
-               [ContactFlow setImage:[UIImage imageWithImage:[contactsPhotos objectForKey:key] scaledToSize:CGSizeMake(150,150)] forIndex:i];
+                [ContactFlow setImage:[UIImage imageWithImage:[contactsPhotos objectForKey:key] scaledToSize:CGSizeMake(150,150)] forIndex:i];
                 break;
             }
         }
@@ -176,29 +176,56 @@ int selectedContact;
 -(void)tappedContacts
 {
     NSLog(@"Gesture Recogned");
-    [self performSegueWithIdentifier:@"contactDetails" sender:contacts[selectedContact]];
+    if(selectedContact < contacts.count)
+        [self performSegueWithIdentifier:@"contactDetails" sender:contacts[selectedContact]];
+    else
+        [cvc performSegueWithIdentifier:@"newContacts" sender:nil];
 }
 
 #pragma mark - Open Flow Delegate
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
     selectedContact = index;
-    ContactPerson *temp = [contacts objectAtIndex:index];
-    for(UILabel *label in self.contactLabels)
+    if(index == contacts.count)
     {
-        switch (label.tag) {
-            case 1:
-                label.text = [NSString stringWithFormat:@"%@ %@",temp.FirstName,temp.LastName];
-                break;
-            case 2:
-                label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.URL];
-                break;
-            case 3:
-                label.text = [NSString stringWithFormat:@"Phone: %@",temp.PhoneNumber.PhoneNumber];
-                break;
-                
-            default:
-                break;
+
+        for(UILabel *label in self.contactLabels)
+        {
+            switch (label.tag) {
+                case 1:
+                    label.text = @"";
+                    break;
+                case 2:
+                    label.text = @"";
+                    break;
+                case 3:
+                    label.text = @"Add Contact";
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+    }
+    else
+    {
+        ContactPerson *temp = [contacts objectAtIndex:index];
+        for(UILabel *label in self.contactLabels)
+        {
+            switch (label.tag) {
+                case 1:
+                    label.text = [NSString stringWithFormat:@"%@ %@",temp.FirstName,temp.LastName];
+                    break;
+                case 2:
+                    label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.URL];
+                    break;
+                case 3:
+                    label.text = [NSString stringWithFormat:@"Phone: %@",temp.PhoneNumber.PhoneNumber];
+                    break;
+                    
+                default:
+                    break;
+            }
         }
     }
 }

@@ -568,6 +568,28 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                     <outlet property="CustomerPhone" destination="6O9-hX-dXk" id="PHT-Bm-VuT"/>
                                                 </connections>
                                             </tableViewCell>
+                                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="addBUPACell" textLabel="Cq6-El-6Ae" imageView="pfK-sy-TEe" style="IBUITableViewCellStyleDefault" id="O7y-hZ-nFx" customClass="CustomerCell">
+                                                <rect key="frame" x="0.0" y="66" width="210" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                    <rect key="frame" x="0.0" y="0.0" width="177" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Prospect/Competitor" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Cq6-El-6Ae">
+                                                            <rect key="frame" x="53" y="0.0" width="114" height="43"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </label>
+                                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="add_icon.png" id="pfK-sy-TEe">
+                                                            <rect key="frame" x="0.0" y="0.0" width="43" height="43"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </view>
+                                            </tableViewCell>
                                         </prototypes>
                                         <sections/>
                                         <connections>
@@ -1137,11 +1159,10 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                         <outletCollection property="TopButtons" destination="c0c-kB-vvW" id="nZf-l0-Iw3"/>
                         <outletCollection property="TopButtons" destination="bfo-aj-klx" id="WTc-vC-Ojf"/>
                         <outletCollection property="BottomButtons" destination="gVC-hx-vZH" id="jMZ-gq-Vsc"/>
-                        <outletCollection property="BottomButtons" destination="5ti-J0-qFA" id="BA2-4L-D6l"/>
-                        <outletCollection property="BottomButtons" destination="i1B-Ui-daz" id="pdX-ZC-hnZ"/>
                         <outletCollection property="BottomButtons" destination="Omt-gq-dOf" id="Pgg-Uy-CcN"/>
                         <outletCollection property="BottomButtons" destination="Gh1-ge-9oE" id="yeA-oR-f97"/>
                         <outletCollection property="BottomButtons" destination="jk6-Wd-cRW" id="OrJ-qg-p6c"/>
+                        <segue destination="YGR-EC-NE0" kind="modal" identifier="addNote" modalPresentationStyle="formSheet" id="3ff-c0-EMT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sqd-cR-3Ec" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1223,9 +1244,15 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" id="EKR-61-mVP">
+                                        <rect key="frame" x="161" y="142" width="37" height="37"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <connections>
+                                    <outlet property="loadingSign" destination="EKR-61-mVP" id="gkR-ce-gUq"/>
                                     <outlet property="picName" destination="kdl-WF-7Cd" id="fKF-Bn-Byw"/>
                                 </connections>
                             </view>
@@ -1320,9 +1347,9 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
         <!--New Text Controller-->
         <scene sceneID="ItL-K6-wcu">
             <objects>
-                <viewController id="YGR-EC-NE0" customClass="NewTextController" sceneMemberID="viewController">
+                <viewController autoresizesArchivedViewToFullSize="NO" id="YGR-EC-NE0" customClass="NewTextController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="09Y-GQ-59s">
-                        <rect key="frame" x="0.0" y="20" width="400" height="400"/>
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Title Note:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4c8-8a-76T">
@@ -1340,14 +1367,14 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="gNx-An-UWn">
-                                <rect key="frame" x="20" y="106" width="360" height="30"/>
+                                <rect key="frame" x="20" y="106" width="500" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="You can enter text here" id="qaR-c1-lYD">
-                                <rect key="frame" x="20" y="173" width="360" height="207"/>
+                                <rect key="frame" x="20" y="173" width="500" height="427"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1373,7 +1400,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 </connections>
                             </button>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="rhI-P0-kf0">
-                                <rect key="frame" x="260" y="20" width="120" height="30"/>
+                                <rect key="frame" x="400" y="20" width="120" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1393,9 +1420,11 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="NoteText" destination="qaR-c1-lYD" id="t2w-fw-T20"/>
+                        <outlet property="NoteTitle" destination="gNx-An-UWn" id="7qR-xI-4sM"/>
                         <outletCollection property="ViewCollection" destination="tCK-t3-KKB" id="aQB-uZ-8Bb"/>
                         <outletCollection property="ViewCollection" destination="rhI-P0-kf0" id="FiC-mr-pbz"/>
                         <outletCollection property="ViewCollection" destination="09Y-GQ-59s" id="Ozv-vn-1KO"/>
@@ -1404,7 +1433,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hMR-8D-6EO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2030" y="1036"/>
+            <point key="canvasLocation" x="1910" y="1064"/>
         </scene>
         <!--New Contact Controller-->
         <scene sceneID="gZ3-St-quk">
@@ -1818,6 +1847,28 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                     <outletCollection property="LabelCollection" destination="xVH-gn-VQQ" id="J3v-Cb-MrW"/>
                                                     <outletCollection property="LabelCollection" destination="YVe-6B-RVy" id="zK5-kC-TUu"/>
                                                 </connections>
+                                            </tableViewCell>
+                                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="addDocCell" textLabel="OVd-Um-rqq" imageView="hYq-rA-rqF" style="IBUITableViewCellStyleDefault" id="YHV-ha-vck" customClass="SalesHeaderCell">
+                                                <rect key="frame" x="0.0" y="66" width="666" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                    <rect key="frame" x="0.0" y="0.0" width="633" height="43"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Create New Sales Document" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="OVd-Um-rqq">
+                                                            <rect key="frame" x="53" y="0.0" width="570" height="43"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </label>
+                                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="add_icon.png" id="hYq-rA-rqF">
+                                                            <rect key="frame" x="0.0" y="0.0" width="43" height="43"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </view>
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
@@ -2808,6 +2859,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                     <connections>
                         <outlet property="AddButton" destination="Ta1-65-ei5" id="Ox8-2J-pgd"/>
                         <outlet property="ItemsTable" destination="nOt-vI-G8O" id="SDs-3l-LWl"/>
+                        <outlet property="SaveButton" destination="Tin-td-JbH" id="Xbl-3n-P6m"/>
                         <outletCollection property="ViewCollection" destination="Auz-j6-3Av" id="W75-vk-hGB"/>
                         <outletCollection property="ViewCollection" destination="JHH-0p-ch5" id="0Cd-zO-BNe"/>
                         <outletCollection property="ViewCollection" destination="nOt-vI-G8O" id="16v-8a-p1j"/>
@@ -3981,6 +4033,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="Sales_OFF.png" width="160" height="60"/>
         <image name="Sales_ON.png" width="160" height="60"/>
         <image name="Suspect.png" width="200" height="200"/>
+        <image name="add_icon.png" width="64" height="64"/>
         <image name="comp_ON.png" width="160" height="60"/>
         <image name="cust_OFF.png" width="160" height="60"/>
         <image name="cust_ON.png" width="160" height="60"/>
@@ -4084,6 +4137,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="action" name="saveDocs:"/>
                 <relationship kind="outlet" name="AddButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="ItemsTable" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="SaveButton" candidateClass="UIButton"/>
                 <relationship kind="outletCollection" name="HeaderLabel" candidateClass="UILabel"/>
                 <relationship kind="outletCollection" name="ItemActionButtons" candidateClass="UIButton"/>
                 <relationship kind="outletCollection" name="ViewCollection" candidateClass="UIView"/>
@@ -4204,12 +4258,15 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewTextController.h"/>
             <relationships>
                 <relationship kind="action" name="clickedButton:"/>
+                <relationship kind="outlet" name="NoteText" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="NoteTitle" candidateClass="UITextField"/>
                 <relationship kind="outletCollection" name="ViewCollection" candidateClass="UIView"/>
             </relationships>
         </class>
         <class className="PictureView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/PictureView.h"/>
             <relationships>
+                <relationship kind="outlet" name="loadingSign" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="picName" candidateClass="UILabel"/>
             </relationships>
         </class>
@@ -4322,8 +4379,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="VHG-8a-30V"/>
-        <segue reference="2se-5Z-MDJ"/>
         <segue reference="38x-Yb-Bzs"/>
+        <segue reference="2se-5Z-MDJ"/>
+        <segue reference="VHG-8a-30V"/>
     </inferredMetricsTieBreakers>
 </document>

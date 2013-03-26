@@ -10,8 +10,8 @@
 
 @implementation PictureView
 AFOpenFlowView *pictureFlow;
-NSArray *keys;
-@synthesize cvc,picName;
+NSMutableArray *keys;
+@synthesize cvc,picName,loadingSign;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -22,33 +22,31 @@ NSArray *keys;
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 -(void)showPictures
 {
     if(cvc.bupaPictures)
     {
         [self showPicturesFromDictionary:cvc.bupaPictures];
+        [loadingSign stopAnimating];
     }
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicuresProcesssed object:nil];
+    else
+    {
+        [loadingSign startAnimating];
+    }
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicturesProcesssed object:nil];
 }
 
 -(void)picturesProcessed:(NSNotification*)notification
 {
-    NSError *error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        
-    }
-    else
-    {
-        [self showPicturesFromDictionary:[notification.userInfo objectForKey:kResponseItems]];
-    }
+    [loadingSign stopAnimating];
+    [self showPicturesFromDictionary:cvc.bupaPictures];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 -(void)showPicturesFromDictionary:(NSDictionary*)dic
@@ -56,8 +54,9 @@ NSArray *keys;
     if(pictureFlow)
         [pictureFlow removeFromSuperview];
     pictureFlow = [[AFOpenFlowView alloc]initWithFrame:CGRectMake(0, 0, 359, 321)];
-    keys = dic.allKeys;
-    pictureFlow.numberOfImages = keys.count;
+    
+    keys = [NSMutableArray arrayWithArray:dic.allKeys];
+    pictureFlow.numberOfImages = keys.count+1;
     pictureFlow.viewDelegate = self;
     for(int i = 0;i<keys.count;i++)
     {
@@ -65,6 +64,11 @@ NSArray *keys;
         temp = [UIImage imageWithImage:temp scaledToSize:CGSizeMake(200, 200)];
         [pictureFlow setImage:temp forIndex:i];
     }
+    [pictureFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"add_photo.png"] scaledToSize:CGSizeMake(200, 200)] forIndex:keys.count];
+    if(!keys)
+        keys = [NSMutableArray arrayWithObject:@"Add Picture"];
+    else
+        [keys insertObject:@"Add Picture" atIndex:keys.count];
     [self addSubview:pictureFlow];
     [pictureFlow setSelectedCover:0];
     self.picName.text = keys[0];
@@ -83,7 +87,22 @@ NSArray *keys;
 
 -(void)picViewTapped
 {
-    [cvc showPictureViewForKey:self.picName.text];
+    if([picName.text isEqualToString:keys.lastObject])
+    {
+        if ([UIImagePickerController isSourceTypeAvailable:
+             UIImagePickerControllerSourceTypeCamera] == NO)
+            return ;
+        UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+        cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
+
+        cameraUI.allowsEditing = NO;
+        cameraUI.delegate = cvc;
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicturesProcesssed object:nil];
+        [self.cvc presentViewController:cameraUI animated:YES completion:nil];
+    }
+    
+    else
+        [cvc showPictureViewForKey:self.picName.text];
 }
 
 @end

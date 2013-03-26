@@ -52,11 +52,11 @@ NSMutableArray *visibleTypes;
     firstTime = YES;
     
     
-
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processingResultGetBusinessPartners:) name:kLoadBusinessPartnersCompletedNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kLoadHierarchyCompletedNotification object:nil];
     [[RequestHandler uniqueInstance]loadHierarchyWithRootNode:@""];
-
+    
     
     //Start requesting BUPAs
     
@@ -80,7 +80,7 @@ NSMutableArray *visibleTypes;
     }];
     [self setupPullView];
     [self setupFilterView];
-
+    
 }
 
 
@@ -96,7 +96,7 @@ NSMutableArray *visibleTypes;
     /*
      Set the labels on the default HUD
      */
-
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -133,52 +133,70 @@ NSMutableArray *visibleTypes;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    selectedRow = indexPath.row;
-    BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
-    [self setMapRegion:CLLocationCoordinate2DMake(bp.Address.GeoCode.Latitude.doubleValue, bp.Address.GeoCode.Longitude.doubleValue)forKilometers:10];
+    if(indexPath.row <VisibleBusinessPartners.count)
+    {
+        selectedRow = indexPath.row;
+        BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
+        [self setMapRegion:CLLocationCoordinate2DMake(bp.Address.GeoCode.Latitude.doubleValue, bp.Address.GeoCode.Longitude.doubleValue)forKilometers:10];
+    }
     
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return VisibleBusinessPartners.count;
+    return VisibleBusinessPartners.count+1;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CustomerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standardCell"];
-    if(cell == nil)
+    if(indexPath.row < VisibleBusinessPartners.count)
     {
-        cell = [[CustomerCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"standardCell"];
-    }
-    
-    BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
-    cell.CustomerName.text = bp.BusinessPartnerName;
-    cell.CustomerPhone.text = bp.Address.Street;
-    cell.CustomerCity.text = bp.Address.City;
-    
-    if([bp.BusinessPartnerType isEqualToString:@"Prospect"])
-    {
-        cell.CustomerIcon.image = [UIImage imageNamed:@"Brown_Pin.png"];
-    }
-    else if([bp.BusinessPartnerType isEqualToString:@"Customer"])
-    {
-        cell.CustomerIcon.image = [UIImage imageNamed:@"Green_Pin_Small.png"];
-    }
-    else if([bp.BusinessPartnerType isEqualToString:@"Competitor"])
-    {
-        cell.CustomerIcon.image = [UIImage imageNamed:@"Red_Pin.png"];
+        CustomerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"standardCell"];
+        if(cell == nil)
+        {
+            cell = [[CustomerCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"standardCell"];
+        }
+        
+        BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
+        cell.CustomerName.text = bp.BusinessPartnerName;
+        cell.CustomerPhone.text = bp.Address.Street;
+        cell.CustomerCity.text = bp.Address.City;
+        
+        if([bp.BusinessPartnerType isEqualToString:@"Prospect"])
+        {
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Brown_Pin.png"];
+        }
+        else if([bp.BusinessPartnerType isEqualToString:@"Customer"])
+        {
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Green_Pin_Small.png"];
+        }
+        else if([bp.BusinessPartnerType isEqualToString:@"Competitor"])
+        {
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Red_Pin.png"];
+        }
+        else
+            cell.CustomerIcon.image = [UIImage imageNamed:@"unknown.png"];
+        return cell;
     }
     else
-        cell.CustomerIcon.image = [UIImage imageNamed:@"unknown.png"];
-    return cell;
+    {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"addBUPACell"];
+        if(cell == nil)
+        {
+            cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"standardCell"];
+        }
+        return cell;
+    }
 }
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     if([self.CustomerSearchField isFirstResponder])
-       [self.CustomerSearchField resignFirstResponder];
-    [self performSegueWithIdentifier:@"CustomerOverview" sender:[VisibleBusinessPartners objectAtIndex:indexPath.row]];
+        [self.CustomerSearchField resignFirstResponder];
+    if(indexPath.row <VisibleBusinessPartners.count)
+        [self performSegueWithIdentifier:@"CustomerOverview" sender:[VisibleBusinessPartners objectAtIndex:indexPath.row]];
+    else
+        [self performSegueWithIdentifier:@"Details" sender:nil];
 }
 
 
@@ -302,8 +320,8 @@ NSMutableArray *visibleTypes;
         
         if([annot.bupa.BusinessPartnerType isEqualToString:@"Competitor"])
         {
-            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Orange_Pin.png"] scaledToSize:CGSizeMake(40, 40)];
-
+            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Orange_Pin2.png"] scaledToSize:CGSizeMake(40, 40)];
+            
         }
         else if ([annot.bupa.BusinessPartnerType isEqualToString:@"Prospect"])
         {
@@ -381,22 +399,22 @@ NSMutableArray *visibleTypes;
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
     self.CustomerSearchField.text = @"";
-//    switch (index) {
-//        case 0:
-//            VisibleBusinessPartners = BusinessPartners;
-//            self.FlowLabel.text = @"All companies";
-//            break;
-//        case 1:
-//            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"Albert Heijn"];
-//            self.FlowLabel.text = @"Albert Heijn";
-//            break;
-//        case 2:
-//            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"C1000"];
-//            self.FlowLabel.text = @"C1000";
-//            break;
-//        default:
-//            break;
-//    }
+    //    switch (index) {
+    //        case 0:
+    //            VisibleBusinessPartners = BusinessPartners;
+    //            self.FlowLabel.text = @"All companies";
+    //            break;
+    //        case 1:
+    //            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"Albert Heijn"];
+    //            self.FlowLabel.text = @"Albert Heijn";
+    //            break;
+    //        case 2:
+    //            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"C1000"];
+    //            self.FlowLabel.text = @"C1000";
+    //            break;
+    //        default:
+    //            break;
+    //    }
     NSString *title = hierLabels[index];
     if([title isEqualToString:@"All"])
         VisibleBusinessPartners = BusinessPartners;
@@ -452,25 +470,25 @@ NSMutableArray *visibleTypes;
 {
     if([textView isEqual:self.CustomerSearchField])
     {
-//        for(UIView *shiftingView in self.shiftingViews)
-//        {
-//            if([shiftingView isKindOfClass:[UITableView class]] ||[shiftingView isEqual:self.FilterIconView] )
-//            {
-//                CGRect oldFrame = shiftingView.frame;
-//                oldFrame.size.height = oldFrame.size.height-150;
-//                shiftingView.frame = oldFrame;
-//            }
-//            else
-//            {
-//                [self changeView:shiftingView YoriginWith:-150];
-//            }
-//        }
-//        
-//        
-//        [self changeView:self.CustomerSearchField YoriginWith:(-350)];
-//        [self changeView:self.filterImage YoriginWith:(-350)];
-//        //        VisibleBusinessPartners = BusinessPartners;
-//        [self.CustomerTable reloadData];
+        //        for(UIView *shiftingView in self.shiftingViews)
+        //        {
+        //            if([shiftingView isKindOfClass:[UITableView class]] ||[shiftingView isEqual:self.FilterIconView] )
+        //            {
+        //                CGRect oldFrame = shiftingView.frame;
+        //                oldFrame.size.height = oldFrame.size.height-150;
+        //                shiftingView.frame = oldFrame;
+        //            }
+        //            else
+        //            {
+        //                [self changeView:shiftingView YoriginWith:-150];
+        //            }
+        //        }
+        //
+        //
+        //        [self changeView:self.CustomerSearchField YoriginWith:(-350)];
+        //        [self changeView:self.filterImage YoriginWith:(-350)];
+        //        //        VisibleBusinessPartners = BusinessPartners;
+        //        [self.CustomerTable reloadData];
     }
     textView.text = @"";
     VisibleBusinessPartners = [self filterBupaArray:bupasForLogo onText:@""];
@@ -483,23 +501,23 @@ NSMutableArray *visibleTypes;
 {
     if([textView isEqual:self.CustomerSearchField])
     {
-//        
-//        for(UIView *shiftingView in self.shiftingViews)
-//        {
-//            if([shiftingView isKindOfClass:[UITableView class]] ||[shiftingView isEqual:self.FilterIconView] )
-//            {
-//                CGRect oldFrame = shiftingView.frame;
-//                oldFrame.size.height = oldFrame.size.height+150;
-//                shiftingView.frame = oldFrame;
-//            }
-//            else
-//            {
-//                [self changeView:shiftingView YoriginWith:150];
-//            }
-//        }
-//        
-//        [self changeView:self.CustomerSearchField YoriginWith:(350)];
-//        [self changeView:self.filterImage YoriginWith:(350)];
+        //
+        //        for(UIView *shiftingView in self.shiftingViews)
+        //        {
+        //            if([shiftingView isKindOfClass:[UITableView class]] ||[shiftingView isEqual:self.FilterIconView] )
+        //            {
+        //                CGRect oldFrame = shiftingView.frame;
+        //                oldFrame.size.height = oldFrame.size.height+150;
+        //                shiftingView.frame = oldFrame;
+        //            }
+        //            else
+        //            {
+        //                [self changeView:shiftingView YoriginWith:150];
+        //            }
+        //        }
+        //
+        //        [self changeView:self.CustomerSearchField YoriginWith:(350)];
+        //        [self changeView:self.filterImage YoriginWith:(350)];
     }
 }
 
@@ -564,7 +582,7 @@ NSMutableArray *visibleTypes;
     self.FilterPullView.closedCenter = CGPointMake(125,487);
     self.FilterPullView.center = self.FilterPullView.closedCenter;
     self.FilterPullView.handleView.frame = self.filterHandle.frame;
-
+    
 }
 
 
@@ -660,7 +678,7 @@ NSMutableArray *visibleTypes;
             break;
         case 5:
             [self setFilterForType:@"Prospect" On:button];
-
+            
             break;
         case 6:
             [self setFilterForType:@"Competitor" On:button];

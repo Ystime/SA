@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomerViewController.h"
 
 @interface NoteView : UIView <UITableViewDataSource,UITableViewDelegate>
 @property IBOutlet UITableView *noteTable;
-@property IBOutlet UITextView *noteView;
-@property (strong,nonatomic)NSMutableArray *notes;
+@property (strong,nonatomic)NSMutableDictionary *notes;
+@property CustomerViewController *cvc;
 
 @end

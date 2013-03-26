@@ -13,7 +13,7 @@
 @end
 
 @implementation NewTextController
-
+@synthesize cvc;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -48,6 +48,21 @@
 - (IBAction)clickedButton:(id)sender {
     switch ([sender tag]) {
         case 1:
+            if([self.NoteText.text isEqualToString:@""] || [self.NoteTitle.text isEqualToString:@""])
+            {
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Missing text" message:@"Both fields have to be filled!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+            }
+            else
+            {
+                [cvc.notes setObject:self.NoteText.text forKey:self.NoteTitle.text];
+                NSDictionary *temp = [NSDictionary dictionaryWithObject:cvc.notes forKey:kResponseItems];
+                [[NSNotificationCenter defaultCenter]postNotificationName:kNotesProcesssed object:nil userInfo:temp];
+                [self dismissViewControllerAnimated:YES completion:^{
+
+                }
+                 ];
+            }
             break;
         case 2:
             [self dismissViewControllerAnimated:YES completion:nil];

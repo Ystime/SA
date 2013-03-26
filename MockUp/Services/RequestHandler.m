@@ -44,6 +44,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 @synthesize serviceDocumentURL = m_serviceDocumentURL;
 @synthesize client = m_client;
+@synthesize viewVisible;
 
 #pragma mark - Initialization
 
@@ -56,12 +57,11 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         m_client = [SettingsUtilities getServiceClientFromUserSettings];
         
         service = [[ECCSALESDATA_SRVService alloc] init];
-        //[service retain];
         
         if ([m_serviceDocumentURL length] > 0) {
             [service setServiceDocumentUrl:m_serviceDocumentURL];
         }
-		
+		viewVisible = NO;
         connectivityHelper = [[SDMConnectivityHelper alloc] init];
         if ([m_client length] > 0) {
             connectivityHelper.sapClient = m_client;
@@ -159,8 +159,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else {
         userInfoDict = [NSDictionary dictionaryWithObject:contacts forKey:kResponseItems];
     }
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadContactsCompletedNotification object:self userInfo:userInfoDict];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadContactsCompletedNotification object:self userInfo:userInfoDict];
     
 }
 
@@ -214,15 +214,25 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSDictionary *userInfoDict;
     NSError *error;
     
-    NSMutableArray *materials = [service getMaterialsWithData:request.responseData error:&error];
-    if(error) {
+    NSMutableArray *unsortedMaterials = [service getMaterialsWithData:request.responseData error:&error];
+    /*For now, manually filter materials starting with Y*/
+    NSMutableArray *materials = [NSMutableArray array];
+    for(Material *mat  in unsortedMaterials)
+    {
+        if([mat.MaterialNumber hasPrefix:@"Y"])
+            [materials addObject:mat];
+    }
+    
+    
+    
+    if(error || materials.count < 1) {
         userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
     }
     else {
         userInfoDict = [NSDictionary dictionaryWithObject:materials forKey:kResponseItems];
     }
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
     
 }
 
@@ -269,8 +279,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else {
         userInfoDict = [NSDictionary dictionaryWithObject:contacts forKey:kResponseItems];
     }
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadSalesDocumentsCompletedNotification object:self userInfo:userInfoDict];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadSalesDocumentsCompletedNotification object:self userInfo:userInfoDict];
     
 }
 
@@ -334,8 +344,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else {
         userInfoDict = [NSDictionary dictionaryWithObject:items forKey:kResponseItems];
     }
-    
-    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadSalesDocumentItemsCompletedNotification object:self userInfo:userInfoDict];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadSalesDocumentItemsCompletedNotification object:self userInfo:userInfoDict];
     
 }
 
@@ -384,6 +394,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         }
         for(MediaForBusinessPartner *temp in tempImagesEntries)
         {
+            if(!viewVisible)
+                return;
             id<SDMRequesting>requestAttachment = [connectivityHelper executeBasicSyncRequestWithQuery:temp.MediaQuery];
             Media *tempMedia = [service getMediasetEntryWithData:[requestAttachment responseData] error:&error];
             if([tempMedia.ContentType hasPrefix:@"image/"])
@@ -401,7 +413,55 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         temp = [NSDictionary dictionaryWithObject:images forKey:kResponseItems];
     else
         temp = [NSDictionary dictionaryWithObject:noImages forKey:kResponseError];
-    [[NSNotificationCenter defaultCenter]postNotificationName:kPicuresLoaded object:self userInfo:temp];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kPicturesLoaded object:self userInfo:temp];
+}
+
+-(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa
+{
+    NSMutableDictionary *notes= [NSMutableDictionary dictionary];
+    if([SettingsUtilities getDemoStatus])
+    {
+        
+    }
+    else
+    {
+        NSError *error;
+        
+        id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:bupa.MediaCollectionQuery];
+        NSMutableArray *tempResults = [service getMediaCollectionForBusinessPartnerWithData:[request responseData] error:&error];
+        NSMutableArray *tempNotesEntries = [NSMutableArray array];
+        
+        for(MediaForBusinessPartner* temp in tempResults)
+        {
+            if([temp.MediaType isEqualToString:@"Note"])
+            {
+                [tempNotesEntries addObject:temp];
+            }
+        }
+        for(MediaForBusinessPartner *temp in tempNotesEntries)
+        {
+            if(!viewVisible)
+                return;
+            id<SDMRequesting>requestAttachment = [connectivityHelper executeBasicSyncRequestWithQuery:temp.MediaQuery];
+            Media *tempMedia = [service getMediasetEntryWithData:[requestAttachment responseData] error:&error];
+            if([tempMedia.ContentType hasPrefix:@"text/"])
+            {
+                id<SDMRequesting>requestNote = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
+                NSString *result = [[NSString alloc]initWithData:requestNote.responseData encoding:NSUTF8StringEncoding];
+                if(result)
+                    [notes setObject:result forKey:tempMedia.Keyword];
+            }
+        }
+    }
+    NSDictionary *temp ;
+    NSString *noNotes = @"No Notes found!";
+    if(notes.count > 0)
+        temp = [NSDictionary dictionaryWithObject:notes forKey:kResponseItems];
+    else
+        temp = [NSDictionary dictionaryWithObject:noNotes forKey:kResponseError];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kNotesLoaded object:self userInfo:temp];
 }
 
 
@@ -431,6 +491,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         
         for(ContactPerson *cp in contacts)
         {
+            if(!viewVisible)
+                    return;
             NSError *error;
             id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:[service getMediasetEntryQueryWithKeyword:@"Passphoto" andRelatedID:cp.ContactPersonID andSource:@"MediaForContactPerson" andMediaType:@"Attachment"]];
             Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
@@ -453,7 +515,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         [temp setObject:photos forKey:kResponseItems];
     if(noImages)
         [temp setObject:noImages forKey:kResponseError];
-    [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
 }
 #pragma mark - Instance Methods Hierarchy
 
@@ -579,5 +642,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 {
     request.shouldPresentAuthenticationDialog = YES;
 }
+
+#pragma mark - Cancelling all ongoing transactions
 
 @end

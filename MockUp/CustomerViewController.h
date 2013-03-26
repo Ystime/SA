@@ -14,15 +14,19 @@
 #import "StyledPullableView.h"
 #import "NewContactController.h"
 #import "PictureViewController.h"
+#import "SalesOverViewController.h"
+#import "NewTextController.h"
 
-@interface CustomerViewController : UIViewController<PullableViewDelegate>
+@interface CustomerViewController : UIViewController<PullableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 
 /*Variable Objects*/
 @property (strong, nonatomic) BusinessPartner *selectedBusinessPartner;
 @property (strong, nonatomic) NSMutableArray *SalesDocuments;
 @property (strong, nonatomic) NSMutableArray *SDItems;
 @property (strong, nonatomic) NSMutableArray *materials;
-@property (strong, nonatomic) NSDictionary *bupaPictures;
+@property (strong, nonatomic) NSMutableDictionary *bupaPictures;
+@property (strong, nonatomic) NSMutableDictionary *notes;
+
 @property (strong, nonatomic) NSDictionary *materialPictures;
 
 @property  BOOL documentsLoaded;

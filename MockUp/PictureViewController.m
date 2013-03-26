@@ -36,12 +36,13 @@ NSArray *keys;
     picDic = cvc.bupaPictures;
     if(picDic)
         [self showPicturesfromDictionary:picDic];
-    else
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicuresProcesssed object:nil];
+    //Remove remaining 'self' observers
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicturesProcesssed object:nil];
     
 
     [UIView changeLayoutToDefaultProjectSettings:self.view];
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -49,7 +50,14 @@ NSArray *keys;
     // Dispose of any resources that can be recreated.
 }
 
+-(void)viewDidUnload
+{
+    NSLog(@"VIEW IS REMOVED");
+}
 
+-(void)dealloc
+{
+}
 
 #pragma mark - Collection DataSource
 
@@ -61,8 +69,16 @@ NSArray *keys;
     {
         Cell = [[thumbCell alloc]init];
     }
-    Cell.thumbLabel.text = keys[indexPath.row];
-    Cell.thumbPic.image = [UIImage makeRoundedImage:[picDic objectForKey:keys[indexPath.row]] radius:8.0];
+    if(indexPath.row < keys.count)
+    {
+        Cell.thumbLabel.text = keys[indexPath.row];
+        Cell.thumbPic.image = [UIImage makeRoundedImage:[picDic objectForKey:keys[indexPath.row]] radius:8.0];
+    }
+    else //Create the Add Cell
+    {
+        Cell.thumbLabel.text = @"Add new Picture";
+        Cell.thumbPic.image = [UIImage makeRoundedImage:[UIImage imageNamed:@"add_photo.png"] radius:8.0];
+    }
     Cell.layer.borderColor = [[UIColor lightGrayColor]CGColor];
     Cell.layer.cornerRadius = 8.0;
 
@@ -71,19 +87,34 @@ NSArray *keys;
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return keys.count;
+    return keys.count+1;
 }
 
 #pragma mark - Collection DataSource
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(!self.selectLabel.hidden)
+    if(!self.selectLabel.hidden && indexPath.row !=keys.count)
        [self.selectLabel setHidden:YES];
-    thumbCell *temp = (thumbCell*)[thumbCollection cellForItemAtIndexPath:indexPath];
-    self.mainPicture.image =  [UIImage makeRoundedImage:temp.thumbPic.image radius:16.0];
-    thumbCell *cell = (thumbCell*)[collectionView cellForItemAtIndexPath:indexPath];
-    cell.layer.borderWidth = 2.0;
+    if(indexPath.row < keys.count)
+    {
+        thumbCell *temp = (thumbCell*)[thumbCollection cellForItemAtIndexPath:indexPath];
+        self.mainPicture.image =  [UIImage makeRoundedImage:temp.thumbPic.image radius:16.0];
+        thumbCell *cell = (thumbCell*)[collectionView cellForItemAtIndexPath:indexPath];
+        cell.layer.borderWidth = 2.0;
+    }
+    else //Add cell was selected
+    {
+        if ([UIImagePickerController isSourceTypeAvailable:
+             UIImagePickerControllerSourceTypeCamera] == NO)
+            return ;
+        UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+        cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        cameraUI.allowsEditing = NO;
+        cameraUI.delegate = (CustomerViewController*)self.parentViewController;
+        [self.parentViewController presentViewController:cameraUI animated:YES completion:nil];
+    }
 
 }
 
@@ -113,7 +144,6 @@ NSArray *keys;
     else
     {
         picDic = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]removeObserver:self];
         [self showPicturesfromDictionary:picDic];
     }
 }

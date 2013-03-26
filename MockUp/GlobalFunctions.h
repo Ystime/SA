@@ -17,9 +17,11 @@
 #import "LGViewHUD.h"
 #import "StyledPullableView.h"
 
-#define kPicuresProcesssed @"Pictures have been processed"
+#define kPicturesProcesssed @"Pictures have been processed"
+#define kNotesProcesssed @"Notes have been processed"
 #define kMaterialPicuresProcesssed @"Material pictures have been processed"
 #define kMaterialsProcesssed @"Materials have been processed"
+#define kBackToHome @"App is returning to startscreen"
 
 
 

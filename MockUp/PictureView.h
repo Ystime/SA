@@ -14,5 +14,6 @@
 @interface PictureView : UIView <AFOpenFlowViewDelegate>
 @property CustomerViewController *cvc;
 @property IBOutlet UILabel *picName;
+@property IBOutlet UIActivityIndicatorView *loadingSign;
 -(void)showPictures;
 @end
