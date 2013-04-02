@@ -500,7 +500,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
             {
                 id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
                 UIImage *passPhoto = [UIImage imageWithData:requestImage.responseData];
-                [photos setObject:passPhoto forKey:cp.ContactPersonID];
+                if(passPhoto)
+                    [photos setObject:passPhoto forKey:cp.ContactPersonID];
             }
             else
             {

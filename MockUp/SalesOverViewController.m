@@ -55,7 +55,7 @@ int selectedRow;
         allSDs = salesDocuments = selectedSDItems =   nil;
         [self.ItemTable reloadData];
         [self.DocumentTable reloadData];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSalesDocs) name:kCVCLoadedDocs object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSalesDocs) name:kCVCLoadedDocs object:nil];
         [[RequestHandler uniqueInstance]loadSalesDocuments:selectedBUPA.SalesDocumentsQuery];
         [self.DocumentTable.pullToRefreshView stopAnimating];
     }];
@@ -168,10 +168,10 @@ int selectedRow;
         {
             selectedSDItems = nil;
             [self.ItemTable reloadData];
-            self.DocumentView.hidden = YES;
+            self.DocumentView.hidden = NO;
             self.NothingLabel.hidden = NO;
         }
-        return salesDocuments.count;
+        return salesDocuments.count+1;
     }
     else if(tableView.tag == 2)
     {
@@ -196,13 +196,24 @@ int selectedRow;
 {
     if(tableView.tag == 1)
     {
-        SalesHeaderCell *cell;
-        cell = [tableView dequeueReusableCellWithIdentifier:@"HeaderCell"];
-        if(cell)
-            [cell changeSalesDocument:[salesDocuments objectAtIndex:indexPath.row]];
+        if(indexPath.row < salesDocuments.count)
+        {
+            SalesHeaderCell *cell;
+            cell = [tableView dequeueReusableCellWithIdentifier:@"HeaderCell"];
+            if(cell)
+                [cell changeSalesDocument:[salesDocuments objectAtIndex:indexPath.row]];
+            else
+                cell = [[SalesHeaderCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"HeaderCell" andSalesDocument:[salesDocuments objectAtIndex:indexPath.row]];
+            return cell;
+        }
         else
-            cell = [[SalesHeaderCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"HeaderCell" andSalesDocument:[salesDocuments objectAtIndex:indexPath.row]];
-        return cell;
+        {
+            UITableViewCell *cell;
+            cell = [tableView dequeueReusableCellWithIdentifier:@"addDocCell"];
+            if(!cell)
+                cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"addDocCell"];
+            return cell;
+        }
     }
     else if(tableView.tag == 2)
     {
@@ -222,15 +233,21 @@ int selectedRow;
 {
     if(tableView.tag == 1)
     {
-        if((indexPath.row+1 < salesDocuments.count) && self.ItemView.hidden)
-            [self.DocumentTable scrollToNearestSelectedRowAtScrollPosition:UITableViewScrollPositionTop animated:YES];
-        if(self.ItemView.hidden)
-            [loadingItems showInView:self.DocumentView];
+        if(indexPath.row < salesDocuments.count)
+        {
+            if((indexPath.row+1 < salesDocuments.count) && self.ItemView.hidden)
+                [self.DocumentTable scrollToNearestSelectedRowAtScrollPosition:UITableViewScrollPositionTop animated:YES];
+            if(self.ItemView.hidden)
+                [loadingItems showInView:self.DocumentView];
+            else
+                [loadingItems showInView:self.ItemView];
+            SalesDocument *selectedSD = [salesDocuments objectAtIndex:indexPath.row];
+            [[RequestHandler uniqueInstance]loadSalesDocumentItems:selectedSD];
+        }
         else
-            [loadingItems showInView:self.ItemView];
-        SalesDocument *selectedSD = [salesDocuments objectAtIndex:indexPath.row];
-        [[RequestHandler uniqueInstance]loadSalesDocumentItems:selectedSD];
-        
+        {
+            
+        }
     }
     else if (tableView.tag == 2)
     {

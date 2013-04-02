@@ -158,8 +158,13 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     [super viewDidUnload];
 }
+
 - (IBAction)clickedBottomButton:(id)sender
 {
+    if([self.containerView.subviews[0] isKindOfClass:[UINavigationController class]])
+    {
+        NSLog(@"Testing");
+    }
     
     switch ([sender tag]) {
         case 4: //Home Button
@@ -175,7 +180,6 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
             break;
         case 6: //New Document Button
         {
-            
             [self showDocumentViewWithSalesDocument:nil];
         }
             break;

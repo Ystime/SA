@@ -139,7 +139,9 @@ NSMutableArray *visibleTypes;
         BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
         [self setMapRegion:CLLocationCoordinate2DMake(bp.Address.GeoCode.Latitude.doubleValue, bp.Address.GeoCode.Longitude.doubleValue)forKilometers:10];
     }
-    
+    else
+        [self performSegueWithIdentifier:@"Details" sender:nil];
+
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -164,15 +166,15 @@ NSMutableArray *visibleTypes;
         
         if([bp.BusinessPartnerType isEqualToString:@"Prospect"])
         {
-            cell.CustomerIcon.image = [UIImage imageNamed:@"Brown_Pin.png"];
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Prospect_Pin.png"];
         }
         else if([bp.BusinessPartnerType isEqualToString:@"Customer"])
         {
-            cell.CustomerIcon.image = [UIImage imageNamed:@"Green_Pin_Small.png"];
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Customer_Pin.png"];
         }
         else if([bp.BusinessPartnerType isEqualToString:@"Competitor"])
         {
-            cell.CustomerIcon.image = [UIImage imageNamed:@"Red_Pin.png"];
+            cell.CustomerIcon.image = [UIImage imageNamed:@"Competitor_Pin.png"];
         }
         else
             cell.CustomerIcon.image = [UIImage imageNamed:@"unknown.png"];
@@ -195,8 +197,6 @@ NSMutableArray *visibleTypes;
         [self.CustomerSearchField resignFirstResponder];
     if(indexPath.row <VisibleBusinessPartners.count)
         [self performSegueWithIdentifier:@"CustomerOverview" sender:[VisibleBusinessPartners objectAtIndex:indexPath.row]];
-    else
-        [self performSegueWithIdentifier:@"Details" sender:nil];
 }
 
 
@@ -224,8 +224,9 @@ NSMutableArray *visibleTypes;
                                                  NSString *secondUpper = [second uppercaseString];
                                                  return [firstUpper compare:secondUpper];
                                              }];
-        [logoFlow setSelectedCover:0];
         [logoFlow centerOnSelectedCover:YES];
+        [logoFlow setSelectedCover:0];
+//        [logoFlow centerOnSelectedCover:YES];
         self.FlowLabel.text = @"All companies";
         self.CustomerSearchField.text = self.ProspectSearchField.text = @"";
         bupasForLogo = BusinessPartners;
@@ -320,17 +321,17 @@ NSMutableArray *visibleTypes;
         
         if([annot.bupa.BusinessPartnerType isEqualToString:@"Competitor"])
         {
-            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Orange_Pin2.png"] scaledToSize:CGSizeMake(40, 40)];
+            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Competitor_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
             
         }
         else if ([annot.bupa.BusinessPartnerType isEqualToString:@"Prospect"])
         {
-            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Brown_Pin.png"] scaledToSize:CGSizeMake(40, 40)];
+            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Prospect_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
             
         }
         else
         {
-            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Green_Pin_Small.png"] scaledToSize:CGSizeMake(40, 40)];
+            av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Customer_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
         }
         av.canShowCallout = YES;
         //        UIImageView *details = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"search_glass.png"]];
@@ -350,7 +351,7 @@ NSMutableArray *visibleTypes;
         UIButton *addProspect = [UIButton buttonWithType:UIButtonTypeContactAdd];
         av.rightCalloutAccessoryView = addProspect;
         av.canShowCallout = YES;
-        av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Orange_Pin.png"] scaledToSize:CGSizeMake(40, 40)];
+        av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Suspect_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
         
         
         return av;

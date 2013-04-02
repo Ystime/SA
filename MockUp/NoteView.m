@@ -22,7 +22,18 @@ UITextView *noteText;
     }
     return self;
 }
-
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        // Initialization code
+        noteText.delegate = self;
+        noteText = [[UITextView alloc]initWithFrame:CGRectMake(367, 20, 339, 281)];
+        noteText.editable = NO;
+        [self addSubview:noteText];
+    }
+    return self;
+}
 -(void)setNotes:(NSMutableDictionary *)newNotes
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
@@ -48,12 +59,8 @@ UITextView *noteText;
 {
     if(indexPath.row <noteKeys.count)
     {
-        [noteText removeFromSuperview];
-        noteText = nil;
-        noteText = [[UITextView alloc]initWithFrame:CGRectMake(367, 20, 339, 281)];
-        NSLog(@"%@",noteKeys[indexPath.row]);
+        noteText.text = nil;
         noteText.text = [notes objectForKey:noteKeys[indexPath.row]];
-        [self addSubview:noteText];
     }
     else //The Add cell is clicked
     {
