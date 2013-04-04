@@ -77,7 +77,7 @@ LGViewHUD *createHUD;
         self.TitleLabel.text = @"Create new account";
         GooglePlacesDetail *gpd = [[GooglePlacesDetail alloc]init];
         prospect = [gpd findDetails:prospect.reference];
-        self.CompanyField.text  = prospect.name;
+        self.CompanyField.text  = [NSString stringWithFormat:@"%@ %@",prospect.name,prospect.city];
         self.StreetField.text = prospect.street;
         self.HouseNumberField.text = prospect.house_no;
         self.ZipField.text = prospect.postal;
@@ -212,12 +212,13 @@ LGViewHUD *createHUD;
             [self dismissViewControllerAnimated:NO completion:
              ^{
                  [mvc performSegueWithIdentifier:@"CustomerOverview" sender:temp];
+                 [[RequestHandler uniqueInstance]loadBusinessPartners];
              }
              ];
         }
             break;
         case 2:
-            [self dismissViewControllerAnimated:YES completion:nil];
+//            [self dismissViewControllerAnimated:YES completion:nil];
             break;
             
         default:

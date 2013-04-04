@@ -55,13 +55,18 @@
             }
             else
             {
-                [cvc.notes setObject:self.NoteText.text forKey:self.NoteTitle.text];
-                NSDictionary *temp = [NSDictionary dictionaryWithObject:cvc.notes forKey:kResponseItems];
-                [[NSNotificationCenter defaultCenter]postNotificationName:kNotesProcesssed object:nil userInfo:temp];
-                [self dismissViewControllerAnimated:YES completion:^{
-
+                if([[RequestHandler uniqueInstance]uploadNote:self.NoteText.text withTitle:self.NoteTitle.text forBusinessPartner:cvc.selectedBusinessPartner])
+                {
+                    [self dismissViewControllerAnimated:YES completion:^
+                    {
+                        [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:cvc.selectedBusinessPartner withPrefix:nil];
+                    }];
                 }
-                 ];
+                else
+                {
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failed" message:@"An error occured during the save of the note" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [alert show];
+                }
             }
             break;
         case 2:

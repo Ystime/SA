@@ -7,7 +7,7 @@
 //
 
 #import "SalesOverViewController.h"
-
+#import "AlertTable.h"
 @interface SalesOverViewController ()
 
 @end
@@ -49,7 +49,8 @@ int selectedRow;
     loadingItems.topText = @"Loading";
     loadingItems.bottomText = @"Items...";
     cvc = (CustomerViewController*)self.parentViewController;
-    
+    selectedBUPA = cvc.selectedBusinessPartner;
+    [self.AlertTable performSelectorInBackground:@selector(loadAlertsForBusinessPartner:) withObject:selectedBUPA];
     [self.DocumentTable addPullToRefreshWithActionHandler:^{
         [_NothingLabel setText:@"Loading Sales Documents, please wait...." ];
         allSDs = salesDocuments = selectedSDItems =   nil;
@@ -65,8 +66,7 @@ int selectedRow;
 {
     [self.DocumentTable reloadData];
     salesDocuments = [[NSMutableArray alloc]init];
-    selectedBUPA = cvc.selectedBusinessPartner;
-    //    [self.CustomerInfo setBUPA:selectedBUPA];
+
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(getSalesDocs) name:kCVCLoadedDocs object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(salesDocumentItemsLoaded:) name:kLoadSalesDocumentItemsCompletedNotification object:nil];
     [self performSelectorInBackground:@selector(getSalesDocs) withObject:nil];
@@ -246,7 +246,7 @@ int selectedRow;
         }
         else
         {
-            
+            [cvc showDocumentViewWithSalesDocument:nil];
         }
     }
     else if (tableView.tag == 2)
@@ -261,7 +261,8 @@ int selectedRow;
 {
     if(tableView.tag == 1)
     {
-        [cvc showDocumentViewWithSalesDocument:salesDocuments[indexPath.row]];
+        if(indexPath.row < salesDocuments.count)
+            [cvc showDocumentViewWithSalesDocument:salesDocuments[indexPath.row]];
     }
 }
 

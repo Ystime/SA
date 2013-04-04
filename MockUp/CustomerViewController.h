@@ -17,7 +17,7 @@
 #import "SalesOverViewController.h"
 #import "NewTextController.h"
 
-@interface CustomerViewController : UIViewController<PullableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface CustomerViewController : UIViewController<PullableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate>
 
 /*Variable Objects*/
 @property (strong, nonatomic) BusinessPartner *selectedBusinessPartner;

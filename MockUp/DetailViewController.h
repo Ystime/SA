@@ -28,6 +28,8 @@
 @property (strong, nonatomic) IBOutlet UITextField *PhoneField;
 @property (strong, nonatomic) IBOutlet UITextField *EmailField;
 @property (strong, nonatomic) IBOutlet UITextField *URLField;
+@property (strong, nonatomic) IBOutlet UITextField *TwitterField;
+@property (strong, nonatomic) IBOutlet UITextField *HashtagField;
 @property (strong, nonatomic) IBOutlet UIButton *ProspectButton;
 @property (strong, nonatomic) IBOutlet UIButton *CompetitorButton;
 @property (strong, nonatomic) IBOutlet UILabel *SaveAsLabel;

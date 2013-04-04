@@ -13,6 +13,9 @@
 @end
 
 @implementation NewContactController
+bool scanFlag,pictureFlag;
+UIImage *contactImage;
+
 @synthesize editContact,relBUPA;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -33,8 +36,15 @@
         temp.layer.masksToBounds = YES;
         
     }
+    self.ContactImage.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    self.ContactImage.layer.borderWidth = 1.0;
+    
     if(editContact)
     {
+        for(UITextField *tf  in self.InputFieldCollection)
+        {
+            tf.enabled = NO;
+        }
         [self setupLabels:editContact];
         [self.saveButton setTitle:@"Update" forState:UIControlStateNormal];
         self.saveButton.hidden = self.scanButton.hidden = YES;
@@ -49,13 +59,14 @@
         editContact.Email = [[URI alloc]init];
         editContact.Website = [[URI alloc]init];
     }
+    scanFlag = NO;
+    pictureFlag = NO;
 }
 
 -(void)setupLabels:(ContactPerson*)cp
 {
     for(UITextField *input in self.InputFieldCollection)
     {
-        input.enabled = NO;
         switch (input.tag) {
             case 1:
                 input.text = cp.Gender;
@@ -100,6 +111,17 @@
             [self dismissViewControllerAnimated:YES completion:nil];
             break;
         case 3:
+        {
+            if ([UIImagePickerController isSourceTypeAvailable:
+                 UIImagePickerControllerSourceTypeCamera] == NO)
+                return ;
+            UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+            cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
+            
+            cameraUI.allowsEditing = NO;
+            cameraUI.delegate = self;
+            [self presentViewController:cameraUI animated:YES completion:^{scanFlag = NO;pictureFlag = YES;}];
+        }
             break;
         default:
             break;
@@ -109,35 +131,55 @@
 {
     ZBarReaderViewController *reader = [ZBarReaderViewController new];
     reader.readerDelegate = self;
+    scanFlag = YES;
+    pictureFlag = NO;
     [self presentViewController:reader animated:YES completion:nil];
 }
 
 - (void) imagePickerController: (UIImagePickerController*) reader
  didFinishPickingMediaWithInfo: (NSDictionary*) info
 {
-    id<NSFastEnumeration> results =
-    [info objectForKey: ZBarReaderControllerResults];
-    ZBarSymbol *symbol = nil;
-    for(symbol in results)
-        break;
-    NSString *temp = symbol.data;
-    NSArray *splitDetails = [temp componentsSeparatedByString:@"\n"];
-    if([[splitDetails objectAtIndex:0]isEqualToString:@"BEGIN:VCARD"])
+    if(scanFlag)
     {
-        [self dismissViewControllerAnimated:YES completion:nil];
-        [self fillInContactInformation:splitDetails];
+        id<NSFastEnumeration> results =
+        [info objectForKey: ZBarReaderControllerResults];
+        ZBarSymbol *symbol = nil;
+        for(symbol in results)
+            break;
+        NSString *temp = symbol.data;
+        NSArray *splitDetails = [temp componentsSeparatedByString:@"\n"];
+        if([[splitDetails objectAtIndex:0]isEqualToString:@"BEGIN:VCARD"])
+        {
+            [self dismissViewControllerAnimated:YES completion:^{scanFlag = NO;}];
+            [self fillInContactInformation:splitDetails];
+            
+        }
+        else
+        {
+            LGViewHUD *hud = [[LGViewHUD alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
+            hud.topText = @"QR vCard";
+            hud.bottomText = @"not recognized!";
+            hud.image = [UIImage imageNamed:@"unknown.png"];
+            [hud showInView:reader.view];
+        }
         
+        NSLog(@"%@",symbol.data);
+    }
+    else if (pictureFlag)
+    {
+        UIImage *capturedImage = (UIImage *) [info objectForKey:
+                                              UIImagePickerControllerOriginalImage];
+        contactImage = [UIImage imageWithImage:capturedImage scaledToSize:CGSizeMake(640, 480)];
+        self.ContactImage.image = contactImage;
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
     else
     {
-        LGViewHUD *hud = [[LGViewHUD alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
-        hud.topText = @"QR vCard";
-        hud.bottomText = @"not recognized!";
-        hud.image = [UIImage imageNamed:@"unknown.png"];
-        [hud showInView:reader.view];
+        
     }
     
-    NSLog(@"%@",symbol.data);
+    pictureFlag = scanFlag = NO;
+    
 }
 
 -(void)fillInContactInformation:(NSArray *)details
@@ -174,7 +216,6 @@
 {
     for(UITextField *input in self.InputFieldCollection)
     {
-        input.enabled = NO;
         switch (input.tag) {
             case 1:
                 editContact.Gender = input.text;
@@ -209,13 +250,29 @@
     }
     else
     {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failure" message:@"" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         ContactPerson *success = [[RequestHandler uniqueInstance]createContactPerson:editContact forBusinessPartner:relBUPA];
-        if(success)
+        if(success && !(self.ContactImage.image == nil))
         {
             BusinessPartner *temp = relBUPA;
-            [self dismissViewControllerAnimated:YES completion:^{
-                [[RequestHandler uniqueInstance]loadContacts:temp];
-            }];
+//            NSString *slug = [NSString stringWithFormat:@"Keyword='Passphoto',RelatedID='%@',Source='MediaForContactPerson',MediaType='Attachment',Filename='PassPhotoOf_%@.jpeg'",success.ContactPersonID,success.FullName];
+            NSString *slug = [NSString stringWithFormat:@"Keyword='Passphoto',RelatedID='%@',Source='MediaForContactPerson',MediaType='Attachment'",success.ContactPersonID];
+            if([[RequestHandler uniqueInstance]uploadPicture:self.ContactImage.image forSlug:slug])
+            {
+                [self dismissViewControllerAnimated:YES completion:^{
+                    [[RequestHandler uniqueInstance]loadContacts:temp];
+                }];
+            }
+            else
+            {
+                alert.message =@"Could not save picture. Contact details are saved!";
+                [alert show];
+            }
+        }
+        else
+        {
+            alert.message =@"Could not save contact person";
+            [alert show];
         }
     }
     

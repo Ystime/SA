@@ -400,22 +400,7 @@ NSMutableArray *visibleTypes;
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
     self.CustomerSearchField.text = @"";
-    //    switch (index) {
-    //        case 0:
-    //            VisibleBusinessPartners = BusinessPartners;
-    //            self.FlowLabel.text = @"All companies";
-    //            break;
-    //        case 1:
-    //            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"Albert Heijn"];
-    //            self.FlowLabel.text = @"Albert Heijn";
-    //            break;
-    //        case 2:
-    //            VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:@"C1000"];
-    //            self.FlowLabel.text = @"C1000";
-    //            break;
-    //        default:
-    //            break;
-    //    }
+
     NSString *title = hierLabels[index];
     if([title isEqualToString:@"All"])
         VisibleBusinessPartners = BusinessPartners;

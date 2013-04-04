@@ -32,11 +32,13 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
         m_query2URL = @"http://knowledge.nl4b.com/sap/opu/odata/sap/ZAPP_ORDER02";
         m_query3URL = @"http://knowledge.nl4b.com/sap/opu/odata/sap/ZAPP_ORDER03";
         m_query4URL = @"http://knowledge.nl4b.com/sap/opu/odata/sap/ZAPP_AR01";
+        m_eqURL = @"http://knowledge.nl4b.com/sap/opu/odata/FEXS/EQ_SALESORDERS_1_SRV";
         
         ORDER01Service = [[ZAPP_ORDER01Service alloc]init];
         ORDER02Service = [[ZAPP_ORDER02Service alloc]init];
         ORDER03Service = [[ZAPP_ORDER03Service alloc]init];
         AR01Service = [[ZAPP_AR01Service alloc]init];
+        EQService = [[EQ_SALESORDERS_1_SRVService alloc]init];
 
         
         m_client = @"100";
@@ -52,6 +54,9 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
         }
         if ([m_query4URL length] > 0) {
             [AR01Service setServiceDocumentUrl:m_query4URL];
+        }
+        if ([m_eqURL length] > 0) {
+            [EQService setServiceDocumentUrl:m_eqURL];
         }
 		
         connectivityHelper = [[SDMConnectivityHelper alloc] init];
@@ -197,6 +202,60 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
         userInfoDict = [NSMutableDictionary dictionaryWithObject:items forKey:kResponseItems];
     }
     [userInfoDict setObject:[NSString stringWithFormat:@"4"] forKey:kQueryNumber];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
+}
+
+- (void)loadEQForBusinessPartner:(BusinessPartner*)bupa withFilters:(NSArray*)filters andSelectFields:(NSArray*)selects
+{
+    if([SettingsUtilities getDemoStatus])
+    {
+        
+    }
+    else
+    {
+        ODataQuery *query = [EQService getZAPP_ORDER03ResultsEntryQuery];
+        if(selects.count >0)
+        {
+            NSMutableString *select;
+            for(NSString *string in selects)
+            {
+                if(select==nil)
+                    select = [NSMutableString stringWithString:string];
+                else
+                    [select appendString:[NSString stringWithFormat:@",%@",string]];
+            }
+            [query select:select];
+        }
+
+        NSMutableString *filter;
+        if(filters.count > 0)
+        {
+            for(NSString *string in filters)
+            {
+                if(filter == nil)
+                    filter = [NSMutableString stringWithFormat:@"%@",string];
+                else
+                    [filter appendString:[NSString stringWithFormat:@" and %@",string]];
+            }
+        }
+        [query filter:filter];
+        [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadEQResultsCompleted:) andUserInfo:nil];
+    }
+}
+
+-(void)loadEQResultsCompleted:(id<SDMRequesting>)request
+{
+    NSMutableDictionary *userInfoDict;
+    NSError *error;
+    
+    NSMutableArray *items = [EQService getZAPP_ORDER03ResultsWithData:[request responseData] error:&error];
+    if (error) {
+        userInfoDict = [NSMutableDictionary dictionaryWithObject:error forKey:kResponseError];
+    }
+    else {
+        userInfoDict = [NSMutableDictionary dictionaryWithObject:items forKey:kResponseItems];
+    }
+    [userInfoDict setObject:[NSString stringWithFormat:@"99"] forKey:kQueryNumber];
     [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
 }
 

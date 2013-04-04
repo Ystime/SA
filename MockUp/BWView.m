@@ -12,18 +12,24 @@
 BusinessPartner *bupa;
 NSMutableDictionary *pieValues;
 NSMutableDictionary *chartValues;
+BasicPieChart *piechart;
 
 const NSString *kColors = @"kColors";
 const NSString *kPieValues = @"kPieValues";
 const NSString *kPieTitles = @"kPieTitles";
+const NSString *kPieTitlesID = @"kPieTitlesID";
 const NSString *kPieColors = @"kPieColors";
 const NSString *kPieDescriptions = @"kPieDescriptions";
 const NSString *kPieIcons = @"kPieIcons";
 const NSString *kChartValuesX = @"kChartValuesX";
 const NSString *kChartTitlesX = @"kChartTitlesX";
 const NSString *kChartValuesY = @"kChartValuesY";
-
-
+NSMutableArray *selects;
+NSMutableArray *filters;
+typedef enum {
+  kCustomer,KDocumentType
+}EQSelect;
+EQSelect EQSel;
 
 
 - (id)initWithFrame:(CGRect)frame
@@ -49,10 +55,15 @@ const NSString *kChartValuesY = @"kChartValuesY";
 {
     pieValues = [[NSMutableDictionary alloc]init];
     chartValues = [[NSMutableDictionary alloc]init];
+    selects = [[NSMutableArray alloc]initWithObjects:@"DocumentCategory",@"NetValue",@"DocumentCategoryId",@"NetValueStringFormat",nil];
+    filters = [[NSMutableArray alloc]initWithObjects:[NSString stringWithFormat:@"CustomerId eq '%@'",bupa.BusinessPartnerID], nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processErrorNotification:) name:kLoadQueryErrorNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processResultsQuery:) name:kLoadQueryCompletedNotification object:nil];
-    [[BWRequests uniqueInstance]loadQuery1ForBusinessPartner:bupa];
+//    [[BWRequests uniqueInstance]loadQuery1ForBusinessPartner:bupa];
     [[BWRequests uniqueInstance]loadQuery4ForBusinessPartner:bupa andDebit:bupa.BusinessPartnerID andKeyDate:[NSDate date]];
+    EQSel = kCustomer;
+    [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
+
 }
 
 
@@ -86,6 +97,9 @@ const NSString *kChartValuesY = @"kChartValuesY";
                 break;
             case 4:
                 [self processQuery4:result];
+                break;
+            case 99:
+                [self processEQ:result];
                 break;
             default:
                 break;
@@ -183,12 +197,60 @@ const NSString *kChartValuesY = @"kChartValuesY";
     [chartValues setObject:XValues forKey:kChartValuesY];
     [chartValues setObject:XTitles forKey:kChartTitlesX];
     [self setupBarGraph];
-    
-    
+}
+
+-(void)processEQ:(NSMutableArray*)results
+{
+    [pieValues removeAllObjects];
+    [piechart drawPieChart];
+//    [piechart removeFromSuperview];
+    NSMutableArray *values = [NSMutableArray array];
+    NSMutableArray *titles = [NSMutableArray array];
+    NSMutableArray *titlesID = [NSMutableArray array];
+
+    NSMutableArray *colors = [NSMutableArray array];
+    NSMutableArray *icons = [NSMutableArray array];
+    NSMutableArray *descriptions = [NSMutableArray array];
+    for(ZAPP_ORDER03Result *result in results)
+    {
+        switch (EQSel) {
+            case kCustomer:
+            {
+                [values addObject:result.NetValue];
+                [titles addObject:result.DocumentCategory];
+                [titlesID addObject:result.DocumentCategoryId];
+                NSString *description = [NSString stringWithFormat:@"The value of %@s requested by this customer is: %@ ",result.DocumentCategory,result.NetValueStringFormat];
+                [colors addObject:[MIMColorClass colorWithRed:arc4random()%256 Green:arc4random()%256 Blue:arc4random()%256 Alpha:1] ];
+                [descriptions addObject:description];
+                [icons addObject:@"searchglass_icon.png"];
+                break;
+            }
+            case KDocumentType:
+            {
+                [values addObject:result.NetValue];
+                [titles addObject:result.Material];
+                [colors addObject:[MIMColorClass colorWithRed:arc4random()%256 Green:arc4random()%256 Blue:arc4random()%256 Alpha:1] ];
+                NSString *description = [NSString stringWithFormat:@"The value of material %@ requested by this customer is: %@ ",result.Material,result.NetValueStringFormat];
+                [descriptions addObject:description];
+                [icons addObject:@"searchglass_icon.png"];
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    [pieValues setObject:values forKey:kPieValues];
+    [pieValues setObject:colors forKey:kPieColors];
+    [pieValues setObject:titlesID forKey:kPieTitlesID];
+    [pieValues setObject:titles forKey:kPieTitles];
+    [pieValues setObject:descriptions forKey:kPieDescriptions];
+    [pieValues setObject:icons forKey:kPieIcons];
+    [self setupPieChart];
 }
 -(void)setupPieChart
 {
-    BasicPieChart *piechart = [[BasicPieChart alloc]initWithFrame:CGRectMake(369,29,200,272)];
+
+    piechart = [[BasicPieChart alloc]initWithFrame:CGRectMake(369,29,200,272)];
     //    CGPoint temp = self.center;
     //    temp.x = 1.5*temp.x;
     //    piechart.center = temp;
@@ -199,10 +261,12 @@ const NSString *kChartValuesY = @"kChartValuesY";
     piechart.fontColor=[MIMColorClass colorWithComponent:@"0.8,0.2,0.2"];
     piechart.infoBoxStyle=INFOBOX_STYLE1;
     piechart.userTouchAllowed = YES;
-    piechart.detailPopUpType = mPIE_DETAIL_POPUP_TYPE1;
-    piechart.arrowDirection = DIRECTION_BOTTOM;
+    piechart.detailPopUpType = mPIE_DETAIL_POPUP_TYPE3;
+    piechart.arrowDirection = DIRECTION_RIGHT;
     piechart.layer.masksToBounds = NO;
     piechart.glossEffect = YES;
+    piechart.tint = REDTINT;
+
     [piechart drawPieChart];
     
     [self addSubview:piechart];
@@ -250,7 +314,13 @@ const NSString *kChartValuesY = @"kChartValuesY";
 
 -(NSArray *)colorsForPie:(id)pieChart
 {
+
     return [pieValues objectForKey:kPieColors];
+}
+
+-(NSArray*)IconForPie:(id)pieChart
+{
+    return [pieValues objectForKey:kPieIcons];
 }
 
 -(MIMColorClass *)colorForBackground:(id)pieChart
@@ -264,20 +334,40 @@ const NSString *kChartValuesY = @"kChartValuesY";
     return bgColor;
 }
 
-//-(NSArray *)IconForPie:(id)pieChart
-//{
-//    return [pieValues objectForKey:kPieIcons];
-//}
+-(UIView *)detailedViewForPieSectionAtIndex:(int)index
+{
+    NSLog(@"TESTING BITCHTES\n\n\nYES!");
+    return nil;
+}
+
+-(UIView *)viewForPopUpAtIndex:(int)index
+{
+    NSArray *temp = [pieValues objectForKey:kPieTitlesID];
+    NSString *tempStr = temp[index];
+    switch (EQSel) {
+        case kCustomer:
+        {
+            EQSel = KDocumentType;
+            [filters addObject:[NSString stringWithFormat:@"DocumentCategoryId eq '%@'",tempStr]];
+            [selects removeObject:@"DocumentCategory"];
+            [selects removeObject:@"DocumentCategoryId"];
+            [selects addObject:@"Material"];
+            [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
+            break;
+        }
+        case KDocumentType:
+        {
+            break;
+        }
+        default:
+            break;
+    }
+    return nil;
+}
 
 -(NSArray*)DescriptionForPie:(id)pieChart
 {
     return [pieValues objectForKey:kPieDescriptions];
-}
-
--(UIView *)detailedViewForPieSectionAtIndex:(int)index
-{
-    NSLog(@"Its Working Sofar!");
-    return nil;
 }
 
 #pragma mark - BarGraph Delegate

@@ -27,6 +27,7 @@
 		DA044E3B16B6C6870095D79F /* NewTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA044E3A16B6C6870095D79F /* NewTextController.m */; };
 		DA06ACAC16B94F1900C7BE3F /* Orange_Pin.png in Resources */ = {isa = PBXBuildFile; fileRef = DA06ACAB16B94F1900C7BE3F /* Orange_Pin.png */; };
 		DA06ACAE16B94F3300C7BE3F /* Green_Pin_Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DA06ACAD16B94F3300C7BE3F /* Green_Pin_Small.png */; };
+		DA0E1BE5170ACCCA0051877C /* testbeeld.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DA0E1BE4170ACCCA0051877C /* testbeeld.jpg */; };
 		DA130141169C9BDA002EC5B0 /* SettingsUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DA130140169C9BDA002EC5B0 /* SettingsUtilities.m */; };
 		DA130146169C9DA0002EC5B0 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA130145169C9DA0002EC5B0 /* Settings.bundle */; };
 		DA130151169CA610002EC5B0 /* CustomerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA130150169CA610002EC5B0 /* CustomerCell.m */; };
@@ -166,6 +167,13 @@
 		DA62E327169C778B001638CF /* CustomerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA62E326169C778B001638CF /* CustomerViewController.m */; };
 		DA6307A416E62A17008397CA /* Notification_Icon_Down.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6307A216E62A17008397CA /* Notification_Icon_Down.png */; };
 		DA6307A516E62A17008397CA /* Notification_Icon_Up.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6307A316E62A17008397CA /* Notification_Icon_Up.png */; };
+		DA65CD99170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceDocument.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA65CD97170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceDocument.xml */; };
+		DA65CD9A170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceMetadata.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA65CD98170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceMetadata.xml */; };
+		DA65CD9D170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65CD9C170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m */; };
+		DA6853C6170D54EB0027D5B5 /* Applogo 144x144.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6853C5170D54EB0027D5B5 /* Applogo 144x144.png */; };
+		DA6853C8170D54F30027D5B5 /* Applogo 72x72.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6853C7170D54F30027D5B5 /* Applogo 72x72.png */; };
+		DA6853CA170D60220027D5B5 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6853C9170D60220027D5B5 /* Default-Landscape@2x~ipad.png */; };
+		DA6853CC170D60250027D5B5 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DA6853CB170D60250027D5B5 /* Default-Landscape~ipad.png */; };
 		DA6A744A16F8AF3A00600FFC /* libSDMConnectivity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA6A744716F8AF3900600FFC /* libSDMConnectivity.a */; };
 		DA6A744B16F8AF3A00600FFC /* libSDMParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA6A744816F8AF3A00600FFC /* libSDMParser.a */; };
 		DA6A744C16F8AF3A00600FFC /* libSDMSupportability.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA6A744916F8AF3A00600FFC /* libSDMSupportability.a */; };
@@ -308,6 +316,7 @@
 		DA044E3A16B6C6870095D79F /* NewTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewTextController.m; sourceTree = "<group>"; };
 		DA06ACAB16B94F1900C7BE3F /* Orange_Pin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Orange_Pin.png; sourceTree = "<group>"; };
 		DA06ACAD16B94F3300C7BE3F /* Green_Pin_Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Green_Pin_Small.png; sourceTree = "<group>"; };
+		DA0E1BE4170ACCCA0051877C /* testbeeld.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testbeeld.jpg; sourceTree = "<group>"; };
 		DA13013F169C9BDA002EC5B0 /* SettingsUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsUtilities.h; sourceTree = "<group>"; };
 		DA130140169C9BDA002EC5B0 /* SettingsUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsUtilities.m; sourceTree = "<group>"; };
 		DA130142169C9C19002EC5B0 /* NSStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSStringAdditions.h; sourceTree = "<group>"; };
@@ -540,6 +549,14 @@
 		DA62E326169C778B001638CF /* CustomerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomerViewController.m; sourceTree = "<group>"; };
 		DA6307A216E62A17008397CA /* Notification_Icon_Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification_Icon_Down.png; sourceTree = "<group>"; };
 		DA6307A316E62A17008397CA /* Notification_Icon_Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Notification_Icon_Up.png; sourceTree = "<group>"; };
+		DA65CD97170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceDocument.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = EQ_SALESORDERS_1_SRVServiceDocument.xml; sourceTree = "<group>"; };
+		DA65CD98170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceMetadata.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = EQ_SALESORDERS_1_SRVServiceMetadata.xml; sourceTree = "<group>"; };
+		DA65CD9B170C032200682E50 /* EQ_SALESORDERS_1_SRVService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EQ_SALESORDERS_1_SRVService.h; sourceTree = "<group>"; };
+		DA65CD9C170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EQ_SALESORDERS_1_SRVService.m; sourceTree = "<group>"; };
+		DA6853C5170D54EB0027D5B5 /* Applogo 144x144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Applogo 144x144.png"; sourceTree = "<group>"; };
+		DA6853C7170D54F30027D5B5 /* Applogo 72x72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Applogo 72x72.png"; sourceTree = "<group>"; };
+		DA6853C9170D60220027D5B5 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		DA6853CB170D60250027D5B5 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		DA6A741216F8AF3900600FFC /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		DA6A741316F8AF3900600FFC /* SDMCacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMCacheDelegate.h; sourceTree = "<group>"; };
 		DA6A741416F8AF3900600FFC /* SDMConnectivityException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMConnectivityException.h; sourceTree = "<group>"; };
@@ -792,6 +809,10 @@
 		C3A0137F169C2C560051357F = {
 			isa = PBXGroup;
 			children = (
+				DA6853CB170D60250027D5B5 /* Default-Landscape~ipad.png */,
+				DA6853C9170D60220027D5B5 /* Default-Landscape@2x~ipad.png */,
+				DA6853C7170D54F30027D5B5 /* Applogo 72x72.png */,
+				DA6853C5170D54EB0027D5B5 /* Applogo 144x144.png */,
 				C3A01394169C2C570051357F /* Sales Rep App */,
 				C3A0138D169C2C570051357F /* Frameworks */,
 				C3A0138B169C2C570051357F /* Products */,
@@ -1247,6 +1268,7 @@
 		DA43ACA4169DC419008A7978 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				DA0E1BE4170ACCCA0051877C /* testbeeld.jpg */,
 				DAC962E116E9F52600652CAC /* Demo Pictures */,
 				DAC8E61116A6EFC90096D2EE /* Icons */,
 				DAC8E5F816A6B0F90096D2EE /* Pins */,
@@ -1593,6 +1615,8 @@
 			isa = PBXGroup;
 			children = (
 				DAB2318916DCE26100B68DD5 /* Resources */,
+				DA65CD9B170C032200682E50 /* EQ_SALESORDERS_1_SRVService.h */,
+				DA65CD9C170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m */,
 				DAB2317C16DCE24C00B68DD5 /* ZAPP_AR01Service.h */,
 				DAB2317D16DCE24C00B68DD5 /* ZAPP_AR01Service.m */,
 				DAB2317E16DCE24C00B68DD5 /* ZAPP_ORDER01Service.h */,
@@ -1612,6 +1636,8 @@
 			isa = PBXGroup;
 			children = (
 				DAB2318A16DCE26900B68DD5 /* ZAPP_AR01ServiceDocument.xml */,
+				DA65CD97170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceDocument.xml */,
+				DA65CD98170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceMetadata.xml */,
 				DAB2318B16DCE26900B68DD5 /* ZAPP_AR01ServiceMetadata.xml */,
 				DAB2318C16DCE26900B68DD5 /* ZAPP_ORDER01ServiceDocument.xml */,
 				DAB2318D16DCE26900B68DD5 /* ZAPP_ORDER01ServiceMetadata.xml */,
@@ -1958,6 +1984,13 @@
 				DAB74BBE1702E7AB0064E140 /* Customer_Pin.png in Resources */,
 				DAB74BBF1702E7AB0064E140 /* Prospect_Pin.png in Resources */,
 				DAB74BC01702E7AB0064E140 /* Suspect_Pin.png in Resources */,
+				DA0E1BE5170ACCCA0051877C /* testbeeld.jpg in Resources */,
+				DA65CD99170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceDocument.xml in Resources */,
+				DA65CD9A170C031500682E50 /* EQ_SALESORDERS_1_SRVServiceMetadata.xml in Resources */,
+				DA6853C6170D54EB0027D5B5 /* Applogo 144x144.png in Resources */,
+				DA6853C8170D54F30027D5B5 /* Applogo 72x72.png in Resources */,
+				DA6853CA170D60220027D5B5 /* Default-Landscape@2x~ipad.png in Resources */,
+				DA6853CC170D60250027D5B5 /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2087,6 +2120,7 @@
 				DA4ADE7916F8ABA000DF9DD0 /* SDMConnectivityHelper.m in Sources */,
 				DA4ADE7A16F8ABA000DF9DD0 /* TypeConverter.m in Sources */,
 				DA29855716FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m in Sources */,
+				DA65CD9D170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

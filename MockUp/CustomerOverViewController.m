@@ -188,7 +188,7 @@ int selectedContact;
     selectedContact = index;
     if(index == contacts.count)
     {
-
+        self.EmailButton.hidden = YES;
         for(UILabel *label in self.contactLabels)
         {
             switch (label.tag) {
@@ -212,6 +212,10 @@ int selectedContact;
         ContactPerson *temp = [contacts objectAtIndex:index];
         for(UILabel *label in self.contactLabels)
         {
+            if([temp.Email.URL isEqualToString:@""])
+                self.EmailButton.hidden = YES;
+            else
+                self.EmailButton.hidden = NO;
             switch (label.tag) {
                 case 1:
                     label.text = [NSString stringWithFormat:@"%@ %@",temp.FirstName,temp.LastName];

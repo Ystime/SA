@@ -10,7 +10,7 @@
 #import "GlobalFunctions.h"
 #import "ZBarSDK.h"
 
-@interface NewContactController : UIViewController <ZBarReaderDelegate>
+@interface NewContactController : UIViewController <ZBarReaderDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 - (IBAction)clickedButton:(id)sender;
 @property ContactPerson *editContact;

@@ -145,6 +145,38 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     return success;
 }
 
+-(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug
+{
+    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
+    NSMutableData *body = (NSMutableData*)UIImageJPEGRepresentation(photo, 0.7);
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+    if(csrf)
+    {
+        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
+        NSString *result = [request responseStatusMessage];
+        NSLog(@"Result: %@",result);
+        if([result hasPrefix:@"HTTP/1.1 201"])
+            return YES;
+    }
+    return NO;
+}
+
+-(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa
+{
+    NSString *slug= [NSString stringWithFormat:@"Keyword='%@_Time:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Note'",title,[NSDate date],bupa.BusinessPartnerID];
+    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"text/plain" andSlug:slug];
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+    NSMutableData *body =  (NSMutableData*)[note dataUsingEncoding:NSUTF8StringEncoding];
+    if(csrf)
+    {
+        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
+        NSString *result = [request responseStatusMessage];
+        NSLog(@"Result: %@",result);
+        if([result hasPrefix:@"HTTP/1.1 201"])
+            return YES;
+    }
+    return NO;
+}
 
 #pragma mark - Instance Methods Contacts
 - (void)loadContactsCompleted:(id <SDMRequesting>)request
@@ -417,7 +449,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         [[NSNotificationCenter defaultCenter]postNotificationName:kPicturesLoaded object:self userInfo:temp];
 }
 
--(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa
+-(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref
 {
     NSMutableDictionary *notes= [NSMutableDictionary dictionary];
     if([SettingsUtilities getDemoStatus])
@@ -434,7 +466,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         
         for(MediaForBusinessPartner* temp in tempResults)
         {
-            if([temp.MediaType isEqualToString:@"Note"])
+            if([temp.MediaType isEqualToString:@"Note"] && (!pref || [temp.Keyword hasPrefix:pref]))
             {
                 [tempNotesEntries addObject:temp];
             }
@@ -445,7 +477,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                 return;
             id<SDMRequesting>requestAttachment = [connectivityHelper executeBasicSyncRequestWithQuery:temp.MediaQuery];
             Media *tempMedia = [service getMediasetEntryWithData:[requestAttachment responseData] error:&error];
-            if([tempMedia.ContentType hasPrefix:@"text/"])
+            if([tempMedia.ContentType hasPrefix:@"text"])
             {
                 id<SDMRequesting>requestNote = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
                 NSString *result = [[NSString alloc]initWithData:requestNote.responseData encoding:NSUTF8StringEncoding];
@@ -461,7 +493,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else
         temp = [NSDictionary dictionaryWithObject:noNotes forKey:kResponseError];
     if(viewVisible)
-        [[NSNotificationCenter defaultCenter]postNotificationName:kNotesLoaded object:self userInfo:temp];
+    {
+        if([pref isEqualToString:@"ALERT"])
+            [[NSNotificationCenter defaultCenter]postNotificationName:kAlertsLoaded object:self userInfo:temp];
+        else
+            [[NSNotificationCenter defaultCenter]postNotificationName:kNotesLoaded object:self userInfo:temp];
+    }
 }
 
 
@@ -492,7 +529,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         for(ContactPerson *cp in contacts)
         {
             if(!viewVisible)
-                    return;
+                return;
             NSError *error;
             id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:[service getMediasetEntryQueryWithKeyword:@"Passphoto" andRelatedID:cp.ContactPersonID andSource:@"MediaForContactPerson" andMediaType:@"Attachment"]];
             Media *result = [service getMediasetEntryWithData:request.responseData error:&error];

@@ -44,6 +44,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 #define kNotesLoaded @"BUPA Notes have been recieved"
 #define kPassPhotosLoaded @"Contact Pictures have been recieved"
 #define kMaterialPicuresLoaded @"Material pictures have been recieved"
+#define kAlertsLoaded @"Alerts have been recieved"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
 #define LOGIN_ERROR_CODE 1002
 #define SERVICE_METADATA_PARSE_ERROR_CODE 1005
@@ -89,7 +90,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (void)loadBusinessPartners;
 - (BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
 - (void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
-- (void)loadNotesForBusinessPartner:(BusinessPartner*)bupa;
+-(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref;
 - (void)loadHierarchyWithRootNode:(NSString*)bupaID;
 
 /*RequestHandler Methods for Contact Person Object*/
@@ -107,6 +108,9 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (void)loadSalesDocuments:(ODataQuery*)bupaDocQuery;
 - (BOOL)createSalesDocument:(SalesDocument*)salesdoc;
 - (void)loadSalesDocumentItems:(SalesDocument*)sd;
+
+-(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug;
+-(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa;
 
 /**
  Authenticates the given user name and password against the service.

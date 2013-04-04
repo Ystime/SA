@@ -9,7 +9,7 @@
 #import "AlertTable.h"
 
 @implementation AlertTable
-
+NSMutableDictionary *notes;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -25,8 +25,15 @@
     if (self) {
         self.delegate = self;
         self.dataSource = self;
+
     }
     return self;
+}
+
+-(void)loadAlertsForBusinessPartner:(BusinessPartner*)bupa
+{
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processNotes:) name:kAlertsLoaded object:nil];
+    [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:bupa withPrefix:@"ALERT"];
 }
 
 /*
@@ -42,7 +49,7 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return notes.count;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -52,10 +59,23 @@
     {
         cell = [[AlertCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"AlertCell"];
     }
-    cell.alertText.text = [NSString stringWithFormat:@"Alert:%i",indexPath.row];
-    cell.alertIcon.image = [UIImage imageNamed:@"Suspect_Icon.png"];
-    
+    cell.alertText.text = [notes objectForKey:notes.allKeys[indexPath.row]];
     return cell;
 }
 
+
+-(void)processNotes:(NSNotification*)notification
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    NSError *error;
+    error = [notification.userInfo objectForKey:kResponseError];
+    if (error)
+        return;
+    else
+    {
+        notes = [notification.userInfo objectForKey:kResponseItems];
+        [self reloadData];
+    }
+    
+}
 @end

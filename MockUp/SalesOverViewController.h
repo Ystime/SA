@@ -14,10 +14,12 @@
 #import "LGViewHUD.h"
 #import "CustomerViewController.h"
 #import "UIScrollView+SVPullToRefresh.h"
+@class AlertTable;
 
 @interface SalesOverViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,PullableViewDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *DocumentTable;
 @property (strong, nonatomic) IBOutlet UITableView *ItemTable;
+@property (strong, nonatomic) IBOutlet AlertTable *AlertTable;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *DocumentButtons;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *ItemButtons;

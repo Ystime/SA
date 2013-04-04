@@ -17,6 +17,8 @@
 #import "ZAPP_ORDER01Service.h"
 #import "ZAPP_ORDER02Service.h"
 #import "ZAPP_ORDER03Service.h"
+#import "EQ_SALESORDERS_1_SRVService.h"
+
 
 #define ERROR_DOMAIN @"SAP Netweaver Gateway Application"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
@@ -35,12 +37,14 @@ extern NSString * const kLoadQueryErrorNotification;
     ZAPP_ORDER01Service *ORDER01Service;
     ZAPP_ORDER02Service *ORDER02Service;
     ZAPP_ORDER03Service *ORDER03Service;
+    EQ_SALESORDERS_1_SRVService *EQService;
     
     
     NSString *m_query1URL;
     NSString *m_query2URL;
     NSString *m_query3URL;
     NSString *m_query4URL;
+    NSString *m_eqURL;
     NSString *m_client;
 }
 
@@ -48,11 +52,13 @@ extern NSString * const kLoadQueryErrorNotification;
 @property (strong, nonatomic, readonly) NSString *query2URL;
 @property (strong, nonatomic, readonly) NSString *query3URL;
 @property (strong, nonatomic, readonly) NSString *query4URL;
+@property (strong, nonatomic, readonly) NSString *eqURL;
 @property (strong, nonatomic, readonly) NSString *client;
 
 + (BWRequests *)uniqueInstance;
 - (void)loadQuery1ForBusinessPartner:(BusinessPartner*)bupa;
 - (void)loadQuery2ForBusinessPartner:(BusinessPartner*)bupa andDocumentCategory:(NSString*)doc_cat;
 - (void)loadQuery3ForBusinessPartner:(BusinessPartner*)bupa andDocumentCategory:(NSString*)doc_cat andMaterialGroup:(NSString*)matgr;
--(void)loadQuery4ForBusinessPartner:(BusinessPartner*)bupa andDebit:(NSString*)debit andKeyDate:(NSDate*)keyDate;
+- (void)loadQuery4ForBusinessPartner:(BusinessPartner*)bupa andDebit:(NSString*)debit andKeyDate:(NSDate*)keyDate;
+- (void)loadEQForBusinessPartner:(BusinessPartner*)bupa withFilters:(NSArray*)filters andSelectFields:(NSArray*)select;
 @end

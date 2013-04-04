@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "AlertCell.h"
+#import "SalesOverViewController.h"
 
 @interface AlertTable : UITableView <UITableViewDataSource,UITableViewDelegate>
-
+-(void)loadAlertsForBusinessPartner:(BusinessPartner*)bupa;
 @end
