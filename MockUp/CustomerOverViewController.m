@@ -130,11 +130,14 @@ int selectedContact;
     ContactFlow.numberOfImages = contacts.count+1;
     
     for (int i = 0; i<contacts.count; i++) {
-        [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"group_icon.png"] scaledToSize:CGSizeMake(150, 150)]
+        [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"group_icon.png"] scaledToSize:CGSizeMake(125, 125)]
                      forIndex:i];
     }
-    [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"add_contact.png"] scaledToSize:CGSizeMake(150, 150)] forIndex:contacts.count];
+    [ContactFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"add_contact.png"] scaledToSize:CGSizeMake(125, 125)] forIndex:contacts.count];
     ContactFlow.frame = self.ContactView.bounds;
+    CGRect oldFrame = ContactFlow.frame;
+    oldFrame.origin = CGPointMake(ContactFlow.frame.origin.x, ContactFlow.frame.origin.y-20);
+    ContactFlow.frame = oldFrame;
     ContactFlow.viewDelegate = self;
     [self.ContactView insertSubview:ContactFlow atIndex:0];
     

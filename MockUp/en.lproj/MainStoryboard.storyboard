@@ -653,11 +653,11 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                         <color key="backgroundColor" white="0.20733716114457831" alpha="1" colorSpace="calibratedWhite"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
                                                         <inset key="titleEdgeInsets" minX="26" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="Prospect" backgroundImage="pros_OFF.png">
+                                                        <state key="normal" title="Prospect" backgroundImage="Pros_OFF.png">
                                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
-                                                        <state key="selected" title="Prospect" backgroundImage="pros_ON.png"/>
+                                                        <state key="selected" title="Prospect" backgroundImage="Pros_ON.png"/>
                                                         <state key="highlighted">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
@@ -671,11 +671,11 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                         <color key="backgroundColor" white="0.20733716114457831" alpha="1" colorSpace="calibratedWhite"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
                                                         <inset key="titleEdgeInsets" minX="26" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="Customer" backgroundImage="cust_OFF.png">
+                                                        <state key="normal" title="Customer" backgroundImage="Customer_OFF.png">
                                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
-                                                        <state key="selected" title="Customer" backgroundImage="cust_ON.png"/>
+                                                        <state key="selected" title="Customer" backgroundImage="Customer_ON.png"/>
                                                         <state key="highlighted">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
@@ -725,11 +725,11 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                         <color key="backgroundColor" white="0.20733716114457831" alpha="1" colorSpace="calibratedWhite"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
                                                         <inset key="titleEdgeInsets" minX="26" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        <state key="normal" title="Competitor" backgroundImage="Comp_OFF.png">
+                                                        <state key="normal" title="Competitor" backgroundImage="Competitor_OFF.png">
                                                             <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
-                                                        <state key="selected" backgroundImage="comp_ON.png"/>
+                                                        <state key="selected" backgroundImage="Competitor_ON.png"/>
                                                         <state key="highlighted">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </state>
@@ -828,12 +828,12 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                     <action selector="centerMyPosition:" destination="rdL-0Y-8eg" eventType="touchUpInside" id="zLE-dK-D4G"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Suspect.png" id="m0q-sn-D1n">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="prospect_search.png" id="m0q-sn-D1n">
                                 <rect key="frame" x="637" y="14" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view autoresizesSubviews="NO" contentMode="scaleToFill" id="bZD-GW-OJq" customClass="StyledPullableView">
-                                <rect key="frame" x="278" y="720" width="728" height="299"/>
+                                <rect key="frame" x="276" y="468" width="727" height="299"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="More..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Guf-Xk-PlW">
@@ -844,27 +844,112 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view contentMode="scaleToFill" id="sff-4V-qx4">
-                                        <rect key="frame" x="0.0" y="28" width="725" height="270"/>
+                                    <view contentMode="scaleToFill" id="sff-4V-qx4" customClass="ExtrasView">
+                                        <rect key="frame" x="0.0" y="29" width="727" height="270"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" id="UA6-YP-NaZ">
-                                                <rect key="frame" x="0.0" y="12" width="237" height="200"/>
+                                                <rect key="frame" x="4" y="12" width="237" height="200"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <subviews>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uwa-wy-BEm">
+                                                        <rect key="frame" x="20" y="3" width="197" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
                                             <view alpha="0.99999999999999989" contentMode="scaleToFill" id="9tE-yR-6TI">
                                                 <rect key="frame" x="244" y="12" width="237" height="200"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <tableView clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="bn7-R4-aAb">
+                                                        <rect key="frame" x="0.0" y="0.0" width="237" height="200"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <prototypes>
+                                                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="action" textLabel="Dgn-UG-erC" detailTextLabel="fy4-5y-z9G" style="IBUITableViewCellStyleSubtitle" id="gcm-Tx-JH5">
+                                                                <rect key="frame" x="0.0" y="22" width="237" height="44"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="237" height="43"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <subviews>
+                                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Dgn-UG-erC">
+                                                                            <rect key="frame" x="10" y="2" width="38" height="22"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        </label>
+                                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fy4-5y-z9G">
+                                                                            <rect key="frame" x="10" y="24" width="47" height="18"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                            <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        </label>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </view>
+                                                            </tableViewCell>
+                                                        </prototypes>
+                                                        <connections>
+                                                            <outlet property="dataSource" destination="sff-4V-qx4" id="Qka-Fx-CzQ"/>
+                                                            <outlet property="delegate" destination="sff-4V-qx4" id="zLS-3P-lrG"/>
+                                                        </connections>
+                                                    </tableView>
+                                                </subviews>
                                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             </view>
                                             <view contentMode="scaleToFill" id="IoF-uW-uVK">
-                                                <rect key="frame" x="488" y="12" width="237" height="200"/>
+                                                <rect key="frame" x="484" y="12" width="237" height="200"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <subviews>
+                                                    <tableView clipsSubviews="YES" tag="2" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="QbJ-xI-SuI">
+                                                        <rect key="frame" x="0.0" y="0.0" width="237" height="200"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <prototypes>
+                                                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="note" textLabel="yJE-1H-nH9" detailTextLabel="FbB-52-PdF" style="IBUITableViewCellStyleSubtitle" id="ys5-Up-KxL">
+                                                                <rect key="frame" x="0.0" y="22" width="237" height="44"/>
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="237" height="43"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <subviews>
+                                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yJE-1H-nH9">
+                                                                            <rect key="frame" x="10" y="2" width="38" height="22"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        </label>
+                                                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FbB-52-PdF">
+                                                                            <rect key="frame" x="10" y="24" width="47" height="18"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                            <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        </label>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </view>
+                                                            </tableViewCell>
+                                                        </prototypes>
+                                                        <connections>
+                                                            <outlet property="dataSource" destination="sff-4V-qx4" id="m9V-Cu-hTv"/>
+                                                            <outlet property="delegate" destination="sff-4V-qx4" id="ILG-gv-0aS"/>
+                                                        </connections>
+                                                    </tableView>
+                                                </subviews>
                                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             </view>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="eyU-Ha-N4n">
-                                                <rect key="frame" x="460" y="220" width="120" height="30"/>
+                                                <rect key="frame" x="473" y="235" width="120" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -878,7 +963,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                 </state>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="cB1-Hw-T2j">
-                                                <rect key="frame" x="588" y="220" width="120" height="30"/>
+                                                <rect key="frame" x="601" y="235" width="120" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -891,8 +976,35 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                             </button>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="New Products" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DoM-46-X9f">
+                                                <rect key="frame" x="4" y="211" width="237" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
+                                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Actions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ugs-QZ-0ZH">
+                                                <rect key="frame" x="244" y="211" width="237" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
+                                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Personal Notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KbG-EM-2rX">
+                                                <rect key="frame" x="484" y="211" width="237" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
+                                                <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <outlet property="leftView" destination="UA6-YP-NaZ" id="V0W-HG-VWN"/>
+                                            <outlet property="middleView" destination="9tE-yR-6TI" id="LjQ-KZ-LoR"/>
+                                            <outlet property="productTitle" destination="uwa-wy-BEm" id="BvQ-zy-7P6"/>
+                                            <outlet property="rightView" destination="IoF-uW-uVK" id="dNI-1N-RLG"/>
+                                        </connections>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -906,6 +1018,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                         <outlet property="ActionView" destination="UA6-YP-NaZ" id="rY0-qV-7hZ"/>
                         <outlet property="CustomerSearchField" destination="hyt-K9-7fo" id="ErK-iW-ZBK"/>
                         <outlet property="CustomerTable" destination="kLt-3m-2Bf" id="ql2-P9-wQn"/>
+                        <outlet property="ExtrasSubView" destination="sff-4V-qx4" id="a63-SW-Pwv"/>
                         <outlet property="ExtrasView" destination="bZD-GW-OJq" id="1Yc-bS-REx"/>
                         <outlet property="FilterIconView" destination="Rlw-dq-h9B" id="ueQ-8Y-GtB"/>
                         <outlet property="FilterPullView" destination="Cdh-9Z-ZKU" id="0NE-9W-A82"/>
@@ -963,7 +1076,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qxJ-kh-SL5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-57" y="123"/>
+            <point key="canvasLocation" x="-55" y="123"/>
         </scene>
         <!--Customer View Controller-->
         <scene sceneID="3Z9-Uq-fbn">
@@ -1294,26 +1407,26 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 <rect key="frame" x="0.0" y="444" width="250" height="207"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3Go-pb-CiM">
-                                        <rect key="frame" x="20" y="128" width="182" height="21"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="left" text="Lg" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3Go-pb-CiM">
+                                        <rect key="frame" x="20" y="154" width="182" height="17"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="iXc-8c-tSX">
-                                        <rect key="frame" x="20" y="157" width="182" height="21"/>
+                                        <rect key="frame" x="20" y="172" width="182" height="17"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dIm-k9-Zk0">
-                                        <rect key="frame" x="20" y="186" width="182" height="21"/>
+                                        <rect key="frame" x="20" y="190" width="182" height="17"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Gi8-6s-gbG">
-                                        <rect key="frame" x="210" y="158" width="20" height="20"/>
+                                        <rect key="frame" x="210" y="164" width="20" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal" image="send-email.png">
@@ -3984,6 +4097,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <imageView contentMode="scaleAspectFit" id="Q9W-ji-t2s">
                                 <rect key="frame" x="20" y="20" width="944" height="484"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="w5X-Ie-RB8" appends="YES" id="q9W-h5-U4s"/>
+                                    <outletCollection property="gestureRecognizers" destination="wcF-fI-tWh" appends="YES" id="c1C-jh-QG9"/>
+                                </connections>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Select picture for bigger view" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4fq-d9-8dk">
                                 <rect key="frame" x="319" y="243" width="346" height="37"/>
@@ -4006,6 +4124,16 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nPm-ZQ-mOK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer direction="right" id="w5X-Ie-RB8" userLabel="Swipe Right">
+                    <connections>
+                        <action selector="swipeRight:" destination="SlR-2m-rcL" id="h2N-uW-92P"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="wcF-fI-tWh" userLabel="Swipe Left">
+                    <connections>
+                        <action selector="swipeLeft:" destination="SlR-2m-rcL" id="D9E-cN-aFJ"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3108" y="1810"/>
         </scene>
@@ -4043,9 +4171,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="AllComps.png" width="128" height="128"/>
         <image name="BC_Card.png" width="240" height="60"/>
         <image name="Bullet-green_small.png" width="16" height="16"/>
-        <image name="Comp_OFF.png" width="160" height="60"/>
         <image name="Compa_OFF.png" width="160" height="60"/>
         <image name="Compa_ON.png" width="160" height="60"/>
+        <image name="Competitor_OFF.png" width="160" height="60"/>
+        <image name="Competitor_ON.png" width="160" height="60"/>
+        <image name="Customer_OFF.png" width="160" height="60"/>
+        <image name="Customer_ON.png" width="160" height="60"/>
         <image name="Gr_OFF.png" width="160" height="60"/>
         <image name="Gr_ON.png" width="160" height="60"/>
         <image name="OPEN_OFF.png" width="240" height="60"/>
@@ -4056,6 +4187,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="O_ON.png" width="160" height="60"/>
         <image name="Pictures_OFF.png" width="160" height="60"/>
         <image name="Pictures_ON.png" width="160" height="60"/>
+        <image name="Pros_OFF.png" width="160" height="60"/>
+        <image name="Pros_ON.png" width="160" height="60"/>
         <image name="Quot_OFF.png" width="240" height="60"/>
         <image name="Quot_ON.png" width="240" height="60"/>
         <image name="RO_OFF.png" width="240" height="60"/>
@@ -4066,18 +4199,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="SalesRepApp1.0Splash.png" width="1024" height="768"/>
         <image name="Sales_OFF.png" width="160" height="60"/>
         <image name="Sales_ON.png" width="160" height="60"/>
-        <image name="Suspect.png" width="200" height="200"/>
         <image name="add_icon.png" width="100" height="100"/>
-        <image name="comp_ON.png" width="160" height="60"/>
-        <image name="cust_OFF.png" width="160" height="60"/>
-        <image name="cust_ON.png" width="160" height="60"/>
         <image name="filter_icon.png" width="256" height="256"/>
         <image name="home_OFF.png" width="160" height="60"/>
         <image name="newComp.png" width="240" height="60"/>
         <image name="newProspect.png" width="240" height="60"/>
         <image name="pos.png" width="240" height="60"/>
-        <image name="pros_OFF.png" width="160" height="60"/>
-        <image name="pros_ON.png" width="160" height="60"/>
+        <image name="prospect_search.png" width="60" height="60"/>
         <image name="searchglass_icon.png" width="31" height="35"/>
         <image name="send-email.png" width="512" height="512"/>
         <image name="twitter.png" width="128" height="128"/>
@@ -4179,6 +4307,15 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="outletCollection" name="ViewCollection" candidateClass="UIView"/>
             </relationships>
         </class>
+        <class className="ExtrasView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ExtrasView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="leftView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="middleView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="productTitle" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="rightView" candidateClass="UIView"/>
+            </relationships>
+        </class>
         <class className="HeaderViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/HeaderViewController.h"/>
             <relationships>
@@ -4227,6 +4364,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="outlet" name="ActionView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="CustomerSearchField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="CustomerTable" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="ExtrasSubView" candidateClass="ExtrasView"/>
                 <relationship kind="outlet" name="ExtrasView" candidateClass="StyledPullableView"/>
                 <relationship kind="outlet" name="FilterIconView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="FilterPullView" candidateClass="StyledPullableView"/>
@@ -4416,8 +4554,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="38x-Yb-Bzs"/>
-        <segue reference="2se-5Z-MDJ"/>
         <segue reference="VHG-8a-30V"/>
+        <segue reference="OcA-eD-QPo"/>
+        <segue reference="kOT-Qt-Jzv"/>
     </inferredMetricsTieBreakers>
 </document>

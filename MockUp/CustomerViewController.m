@@ -62,7 +62,10 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadMaterials) withObject:nil];
-    [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:nil];
+    
+    //Only load notes for Competitors and Prospects
+    if(![selectedBusinessPartner.BusinessPartnerType isEqualToString:@"Customer"])
+        [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:nil];
     
 }
 

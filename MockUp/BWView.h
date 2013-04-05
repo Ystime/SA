@@ -14,4 +14,5 @@
 @interface BWView : UIScrollView<MIMPieChartDelegate,BarGraphDelegate>
 -(void)setupChartsForBusinessPartner:(BusinessPartner*)bupa;
 @property (strong, nonatomic) IBOutlet UILabel *TitleLabel;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loadingCharts;
 @end

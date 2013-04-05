@@ -7,7 +7,7 @@
 //
 
 #import "MainViewController.h"
-
+#import "ExtrasView.h"
 @interface MainViewController ()
 
 @end
@@ -80,6 +80,7 @@ NSMutableArray *visibleTypes;
     }];
     [self setupPullView];
     [self setupFilterView];
+    [self.ExtrasSubView setupViews];
     
 }
 

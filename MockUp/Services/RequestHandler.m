@@ -482,7 +482,13 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                 id<SDMRequesting>requestNote = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
                 NSString *result = [[NSString alloc]initWithData:requestNote.responseData encoding:NSUTF8StringEncoding];
                 if(result)
+                {
+                    if(!([tempMedia.Keyword rangeOfString:@"_%_"].location == NSNotFound))
+                    {
+                        NSArray *subs = [tempMedia.Keyword componentsSeparatedByString:@"_%_"];
+                    }
                     [notes setObject:result forKey:tempMedia.Keyword];
+                }
             }
         }
     }

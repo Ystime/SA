@@ -35,8 +35,8 @@ NSString* prevID;
         self.AddressLabel.text = bupa.Address.Street;
         self.ZipLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.PostalCode,bupa.Address.City];
         self.URLView.text = bupa.Website.URL;
-    if ([bupa.BusinessPartnerName hasPrefix:@"Scheer"]) {
-        self.CompanyImage.image = [UIImage imageNamed:@"Scheer.png"];
+        if ([bupa.BusinessPartnerName hasPrefix:@"Albert"]) {
+            self.CompanyImage.image = [UIImage imageNamed:@"logoAH.png"];
     }
 }
 

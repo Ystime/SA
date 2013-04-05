@@ -17,6 +17,9 @@
 @synthesize mainPicture,thumbCollection;
 NSDictionary *picDic;
 NSArray *keys;
+int indexPic = -1;
+
+typedef enum swipeDir {kLeft,kRight}swipeDir;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -38,9 +41,8 @@ NSArray *keys;
         [self showPicturesfromDictionary:picDic];
     //Remove remaining 'self' observers
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicturesProcesssed object:nil];
-    
-
     [UIView changeLayoutToDefaultProjectSettings:self.view];
+
 }
 
 
@@ -98,6 +100,7 @@ NSArray *keys;
        [self.selectLabel setHidden:YES];
     if(indexPath.row < keys.count)
     {
+        indexPic = indexPath.row;
         thumbCell *temp = (thumbCell*)[thumbCollection cellForItemAtIndexPath:indexPath];
         self.mainPicture.image =  [UIImage makeRoundedImage:temp.thumbPic.image radius:16.0];
         thumbCell *cell = (thumbCell*)[collectionView cellForItemAtIndexPath:indexPath];
@@ -154,8 +157,23 @@ NSArray *keys;
     self.mainPicture.image = [UIImage makeRoundedImage:[picDic objectForKey:picKey] radius:16.0];
     if(thumbCollection.indexPathsForSelectedItems.count >0)
         [self collectionView:thumbCollection didDeselectItemAtIndexPath:thumbCollection.indexPathsForSelectedItems[0]];
-    int row = [keys indexOfObject:picKey];
-    NSIndexPath *path =[NSIndexPath indexPathForRow:row inSection:0];
+    indexPic = [keys indexOfObject:picKey];
+    NSIndexPath *path =[NSIndexPath indexPathForRow:indexPic inSection:0];
     [thumbCollection selectItemAtIndexPath:path animated:YES scrollPosition:UICollectionViewScrollPositionCenteredVertically];    
 }
+- (IBAction)swipeRight:(id)sender {
+    NSLog(@"LEFT SWIPE!");
+    if(indexPic-1 >-1)
+    {
+        [self showPVCWithPictureForKey:keys[indexPic-1]];
+    }
+}
+- (IBAction)swipeLeft:(id)sender {
+        NSLog(@"RIGHT SWIPE!");
+    if(indexPic+1 < keys.count)
+    {
+        [self showPVCWithPictureForKey:keys[indexPic+1]];
+    }
+}
+
 @end

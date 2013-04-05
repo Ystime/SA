@@ -19,6 +19,7 @@
 #import "UIScrollView+SVPullToRefresh.h"
 #import "CustomerViewController.h"
 #import "DemoBUPA.h"
+@class ExtrasView;
 
 @interface MainViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,UITextFieldDelegate,AFOpenFlowViewDelegate>
 @property (strong, nonatomic) IBOutlet MKMapView *mapView;
@@ -32,6 +33,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *MyPositionButton;
 @property (strong, nonatomic) IBOutlet UIButton *ShowMoreButton;
 @property (strong, nonatomic) IBOutlet StyledPullableView *ExtrasView;
+@property (strong, nonatomic) IBOutlet ExtrasView *ExtrasSubView;
 @property (strong, nonatomic) IBOutlet UIImageView *filterImage;
 @property (strong, nonatomic) IBOutlet UIView *FilterIconView;
 @property (strong, nonatomic) IBOutlet UILabel *FlowLabel;

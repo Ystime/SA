@@ -53,29 +53,35 @@ EQSelect EQSel;
 
 -(void)setupChartsForBusinessPartner:(BusinessPartner*)bupa
 {
+    [self.loadingCharts startAnimating];
     pieValues = [[NSMutableDictionary alloc]init];
     chartValues = [[NSMutableDictionary alloc]init];
     selects = [[NSMutableArray alloc]initWithObjects:@"DocumentCategory",@"NetValue",@"DocumentCategoryId",@"NetValueStringFormat",nil];
     filters = [[NSMutableArray alloc]initWithObjects:[NSString stringWithFormat:@"CustomerId eq '%@'",bupa.BusinessPartnerID], nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processErrorNotification:) name:kLoadQueryErrorNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processResultsQuery:) name:kLoadQueryCompletedNotification object:nil];
-//    [[BWRequests uniqueInstance]loadQuery1ForBusinessPartner:bupa];
+    [self performSelectorInBackground:@selector(initiateFirstDiagrams) withObject:nil];
+}
+
+-(void)initiateFirstDiagrams
+{
     [[BWRequests uniqueInstance]loadQuery4ForBusinessPartner:bupa andDebit:bupa.BusinessPartnerID andKeyDate:[NSDate date]];
     EQSel = kCustomer;
     [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
-
 }
 
 
 
 -(void)processErrorNotification:(NSNotification*)notification
 {
+    [self.loadingCharts stopAnimating];
     NSString *text = self.TitleLabel.text;
     if(![text hasSuffix:@"!)"])
         self.TitleLabel.text = [text stringByAppendingString:@" (One or more could not be loaded!)"];
 }
 -(void)processResultsQuery:(NSNotification*)notification
 {
+    [self.loadingCharts stopAnimating];
     NSDictionary *dict = notification.userInfo;
     NSError *error = [dict objectForKey:kResponseError];
     if(!error)
@@ -283,11 +289,11 @@ EQSelect EQSel;
     
     barGraph.titleLabel.text = @"Values of open sales documents categorized by age (in days)";
     barGraph.delegate = self;
-    barGraph.isGradient = YES;
+//    barGraph.isGradient = YES;
     barGraph.barLabelStyle = BAR_LABEL_STYLE1;
     barGraph.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"0,255,0,1"], nil];
     barGraph.mbackgroundcolor=[MIMColorClass colorWithComponent:@"0,0,0,0"];
-    barGraph.xTitleStyle = X_TITLES_STYLE2;
+    barGraph.xTitleStyle = XTitleStyle2;
     barGraph.gradientStyle = VERTICAL_GRADIENT_STYLE;
     barGraph.glossStyle = GLOSS_STYLE_2;
     barGraph.layer.masksToBounds = NO;
