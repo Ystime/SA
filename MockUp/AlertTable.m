@@ -10,6 +10,7 @@
 
 @implementation AlertTable
 NSMutableDictionary *notes;
+NSArray *noteKeys;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -25,7 +26,8 @@ NSMutableDictionary *notes;
     if (self) {
         self.delegate = self;
         self.dataSource = self;
-
+        notes = nil;
+        noteKeys = nil;
     }
     return self;
 }
@@ -59,10 +61,17 @@ NSMutableDictionary *notes;
     {
         cell = [[AlertCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"AlertCell"];
     }
-    cell.alertText.text = [notes objectForKey:notes.allKeys[indexPath.row]];
+    cell.alertText.text = noteKeys[indexPath.row];
     return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    AlertCell *cell = (AlertCell*)[self cellForRowAtIndexPath:indexPath];
+    NSString *key = cell.alertText.text;
+    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:key message:[notes objectForKey:key] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alertView show];
+}
 
 -(void)processNotes:(NSNotification*)notification
 {
@@ -74,6 +83,7 @@ NSMutableDictionary *notes;
     else
     {
         notes = [notification.userInfo objectForKey:kResponseItems];
+        noteKeys = notes.allKeys;
         [self reloadData];
     }
     

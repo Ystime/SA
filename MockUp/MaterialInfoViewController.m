@@ -31,6 +31,15 @@ int value;
     float value = floorf(self.QuantitySlider.value);
     self.QuantityLabel.text = [NSString stringWithFormat:@"%.0f",value];
     [UIView changeLayoutToDefaultProjectSettings:self.AddButton];
+    for(UIButton *button in self.SliderButtons)
+    {
+        button.layer.cornerRadius = 15.0;
+        button.layer.masksToBounds = YES;
+    }
+    for(UIView *view in self.ViewCollection)
+    {
+        [UIView changeLayoutToDefaultProjectSettings:view];
+    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -102,15 +111,7 @@ int value;
     
     [self.QuantitySlider setValue:value animated:NO];
     self.QuantityLabel.text = [NSString stringWithFormat:@"%i",value];
-    for(UIButton *button in self.SliderButtons)
-    {
-        button.layer.cornerRadius = 15.0;
-        button.layer.masksToBounds = YES;
-    }
-    for(UIView *view in self.ViewCollection)
-    {
-        [UIView changeLayoutToDefaultProjectSettings:view];
-    }
+
 }
 
 - (void)didReceiveMemoryWarning

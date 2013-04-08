@@ -188,18 +188,20 @@ EQSelect EQSel;
 {
     NSMutableArray *XTitles = [NSMutableArray arrayWithObjects:@"0 Days",@"1-30",@"31-60",@"61-180",@"181-365",@">365",nil];
     AZAPP_AR01Result *result = results[0];
-    NSMutableArray *XValues = [NSMutableArray arrayWithObjects:result.A006EI3ULWC7I23F67E6D3SD18_F,result.A006EI3ULWC7I23F67E6D3SVZW_F,result.A006EI3ULWC7I23F67E6D3TEYK_F,result.A006EI3ULWC7I23F67E6D3TXX8_F,result.A006EI3ULWC7I23F67E6D3UGVW_F,result.A006EI3ULWC7I23F67E6D3UZUK_F,nil];
+    NSMutableArray *tempXValues = [NSMutableArray arrayWithObjects:result.A006EI3ULWC7I23F67E6D3SD18_F,result.A006EI3ULWC7I23F67E6D3SVZW_F,result.A006EI3ULWC7I23F67E6D3TEYK_F,result.A006EI3ULWC7I23F67E6D3TXX8_F,result.A006EI3ULWC7I23F67E6D3UGVW_F,result.A006EI3ULWC7I23F67E6D3UZUK_F,nil];
     int i = 0;
-    while(i<XValues.count)
+    NSMutableArray *XValues = [NSMutableArray array];
+    while(i<tempXValues.count)
     {
         
-        NSString *tempString  = XValues[i];
+        NSString *tempString  = tempXValues[i];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"NOT_EXIST" withString:@"0"];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"." withString:@""];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"," withString:@"."];
+        [XValues insertObject:tempString atIndex:i];
         i++;
     }
-    [chartValues setObject:XValues forKey:kChartValuesX];
+    [chartValues setObject:XTitles forKey:kChartValuesX];
     [chartValues setObject:XValues forKey:kChartValuesY];
     [chartValues setObject:XTitles forKey:kChartTitlesX];
     [self setupBarGraph];
@@ -293,7 +295,7 @@ EQSelect EQSel;
     barGraph.barLabelStyle = BAR_LABEL_STYLE1;
     barGraph.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"0,255,0,1"], nil];
     barGraph.mbackgroundcolor=[MIMColorClass colorWithComponent:@"0,0,0,0"];
-    barGraph.xTitleStyle = XTitleStyle2;
+    barGraph.xTitleStyle = XTitleStyle1;
     barGraph.gradientStyle = VERTICAL_GRADIENT_STYLE;
     barGraph.glossStyle = GLOSS_STYLE_2;
     barGraph.layer.masksToBounds = NO;
@@ -385,10 +387,7 @@ EQSelect EQSel;
 
 -(NSArray *)valuesForXAxis:(id)graph
 {
-    //    NSArray *xValues = [[NSArray alloc]initWithObjects:@"Pepsi",@"Cola",@"Fanta",@"Dr. Pepper",@"Mezzo-Mix", nil];
-    //    return xValues;
     return [chartValues objectForKey:kChartValuesX];
-    
 }
 
 -(NSArray *)titlesForXAxis:(id)graph
@@ -397,6 +396,11 @@ EQSelect EQSel;
     //    return xTitles;
     return [chartValues objectForKey:kChartTitlesX];
     
+}
+
+-(NSArray *)titlesForYAxis:(id)graph
+{
+    return [chartValues objectForKey:kChartValuesY];
 }
 
 -(NSDictionary *)animationOnBars:(id)graph

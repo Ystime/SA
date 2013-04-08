@@ -7,26 +7,26 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "MockUp/NewContactController.m"
-         timestampString = "386601218.007149"
+         filePath = "MockUp/DocumentViewController.m"
+         timestampString = "387124600.398994"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "253"
-         endingLineNumber = "253"
-         landmarkName = "-saveContactPerson"
+         startingLineNumber = "263"
+         endingLineNumber = "263"
+         landmarkName = "-changeItem:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "MockUp/AlertTable.m"
-         timestampString = "386756862.532784"
+         filePath = "MockUp/DetailViewController.m"
+         timestampString = "387125741.465351"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "15"
-         endingLineNumber = "15"
-         landmarkName = "-initWithFrame:"
+         startingLineNumber = "169"
+         endingLineNumber = "169"
+         landmarkName = "-saveAs:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

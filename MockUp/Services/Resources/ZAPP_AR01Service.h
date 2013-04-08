@@ -157,11 +157,10 @@
 
 #pragma mark - AZAPP_AR01Parameters
 @interface AZAPP_AR01Parameters : BaseEntityType {
+	NSString *m_Z0S_DEBIT;
+	NSString *m_Z0S_DEBITText;
 	NSString *m_A0P_COCD;
 	NSString *m_A0P_COCDText;
-	NSString *m_A0S_DEBITFrom;
-	NSString *m_A0S_DEBITTo;
-	NSString *m_A0S_DEBITText;
 	NSNumber *m_A0P_KEYDT;
 	NSString *m_A0P_KEYDTText;
     ODataQuery *m_ResultsQuery;
@@ -169,11 +168,10 @@
 
 }
 
+@property (strong, nonatomic) NSString *Z0S_DEBIT; ///< Customer (One Selection, Optional) - Edm.String
+@property (strong, nonatomic) NSString *Z0S_DEBITText; ///< Customer (One Selection, Optional) (Text) - Edm.String
 @property (strong, nonatomic) NSString *A0P_COCD; ///< Company Code (Single Value Entry, Required) - Edm.String
 @property (strong, nonatomic) NSString *A0P_COCDText; ///< Company Code (Single Value Entry, Required) (Text) - Edm.String
-@property (strong, nonatomic) NSString *A0S_DEBITFrom; ///< Customer (Selection Options, Optional) - Edm.String
-@property (strong, nonatomic) NSString *A0S_DEBITTo; ///< Customer (Selection Options, Optional) - Edm.String
-@property (strong, nonatomic) NSString *A0S_DEBITText; ///< Customer (Selection Options, Optional) (Text) - Edm.String
 @property (strong, nonatomic) NSNumber *A0P_KEYDT; ///< Key due date - Edm.Double
 @property (strong, nonatomic) NSString *A0P_KEYDTText; ///< Key due date (Text) - Edm.String
 #pragma mark Entity Navigation Properties
@@ -290,27 +288,25 @@ The OData query for the AZAPP_AR01Result collection.
 
 /**
  Returns the OData query for a specific AZAPP_AR01Parameters entity.
+ @param Z0S_DEBIT Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
  @param A0P_COCD Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
- @param A0S_DEBITFrom Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
- @param A0S_DEBITTo Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
  @param A0P_KEYDT Part of the AZAPP_AR01Parameters unique identifier (of type Edm.Double).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getAZAPP_AR01EntryQueryWithA0P_COCD:(NSString *)A0P_COCD andA0S_DEBITFrom:(NSString *)A0S_DEBITFrom andA0S_DEBITTo:(NSString *)A0S_DEBITTo andA0P_KEYDT:(NSString *)A0P_KEYDT;
+- (ODataQuery *)getAZAPP_AR01EntryQueryWithZ0S_DEBIT:(NSString *)Z0S_DEBIT andA0P_COCD:(NSString *)A0P_COCD andA0P_KEYDT:(NSString *)A0P_KEYDT;
 
 /**
  Returns the OData query for a specific AZAPP_AR01Parameters entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
+ @param Z0S_DEBIT Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
  @param A0P_COCD Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
- @param A0S_DEBITFrom Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
- @param A0S_DEBITTo Part of the AZAPP_AR01Parameters unique identifier (of type Edm.String).
  @param A0P_KEYDT Part of the AZAPP_AR01Parameters unique identifier (of type Edm.Double).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getAZAPP_AR01EntryQueryTypedWithA0P_COCD:(NSString *)A0P_COCD andA0S_DEBITFrom:(NSString *)A0S_DEBITFrom andA0S_DEBITTo:(NSString *)A0S_DEBITTo andA0P_KEYDT:(NSNumber *)A0P_KEYDT;
+- (ODataQuery *)getAZAPP_AR01EntryQueryTypedWithZ0S_DEBIT:(NSString *)Z0S_DEBIT andA0P_COCD:(NSString *)A0P_COCD andA0P_KEYDT:(NSNumber *)A0P_KEYDT;
 
 /**
  Returns a specific AZAPP_AR01Parameters entity from the provided data.

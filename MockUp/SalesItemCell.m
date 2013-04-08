@@ -57,6 +57,8 @@
     {
         self.ActionImage.image = [UIImage imageNamed:@"RO.png"];
     }
+    else
+        self.ActionImage.image = nil;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

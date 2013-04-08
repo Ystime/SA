@@ -26,7 +26,7 @@
 @property (strong, nonatomic) NSMutableArray *materials;
 @property (strong, nonatomic) NSMutableDictionary *bupaPictures;
 @property (strong, nonatomic) NSMutableDictionary *notes;
-
+@property BOOL creatingDoc;
 @property (strong, nonatomic) NSDictionary *materialPictures;
 
 @property  BOOL documentsLoaded;
@@ -38,6 +38,8 @@ extern NSString * const kCVCLoadedDocs;
 @property (strong, nonatomic) IBOutlet StyledPullableView *PullUpView;
 @property (strong, nonatomic) IBOutlet UIView *InsidePullView;
 @property (strong, nonatomic) IBOutlet UILabel *PullHandle;
+
+
 
 /*Outlet collections*/
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *TopButtons;

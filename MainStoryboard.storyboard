@@ -1892,7 +1892,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                     <rect key="frame" x="0.0" y="0.0" width="250" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="HmY-Pk-gNG">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="warning.png" id="HmY-Pk-gNG">
                                                             <rect key="frame" x="20" y="11" width="22" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         </imageView>
@@ -1967,31 +1967,25 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="5" contentMode="left" text="A" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="xVH-gn-VQQ">
-                                                            <rect key="frame" x="525" y="11" width="44" height="21"/>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="npS-f5-7VA">
+                                                            <rect key="frame" x="525" y="7" width="30" height="30"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="6" contentMode="left" text="A" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="YVe-6B-RVy">
-                                                            <rect key="frame" x="577" y="11" width="44" height="21"/>
+                                                        </imageView>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="FV1-xQ-k27">
+                                                            <rect key="frame" x="583" y="7" width="30" height="30"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        </label>
+                                                        </imageView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                                 <connections>
+                                                    <outlet property="Dlv_Icon" destination="npS-f5-7VA" id="Olf-76-HaI"/>
+                                                    <outlet property="Inv_Icon" destination="FV1-xQ-k27" id="pVd-D3-evJ"/>
                                                     <outletCollection property="LabelCollection" destination="cwo-1c-NFB" id="mWl-ax-Uan"/>
                                                     <outletCollection property="LabelCollection" destination="Xek-iI-8yQ" id="55i-eS-LBd"/>
                                                     <outletCollection property="LabelCollection" destination="6LK-In-Y3D" id="f3G-aX-GxX"/>
                                                     <outletCollection property="LabelCollection" destination="cSs-DM-DlG" id="Xfm-tc-eAi"/>
                                                     <outletCollection property="LabelCollection" destination="Mmw-Xq-mvh" id="kCp-Ax-V5A"/>
-                                                    <outletCollection property="LabelCollection" destination="xVH-gn-VQQ" id="J3v-Cb-MrW"/>
-                                                    <outletCollection property="LabelCollection" destination="YVe-6B-RVy" id="zK5-kC-TUu"/>
                                                 </connections>
                                             </tableViewCell>
                                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="addDocCell" id="YHV-ha-vck" customClass="SalesHeaderCell">
@@ -4036,6 +4030,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outletCollection property="SliderButtons" destination="Zvu-41-Aom" id="VEC-yV-hQ7"/>
                         <outletCollection property="SliderButtons" destination="CRO-Oe-lH5" id="hrW-jE-ZPg"/>
                         <outletCollection property="ViewCollection" destination="Fad-l4-lMh" id="Cog-hm-ZIl"/>
+                        <outletCollection property="ViewCollection" destination="VcH-0d-whz" id="S5x-d5-VDu"/>
+                        <outletCollection property="ViewCollection" destination="llr-oy-Xiy" id="yjK-li-sdW"/>
+                        <outletCollection property="ViewCollection" destination="410-tm-MUz" id="Ubz-1e-xSA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ic-0g-GWX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -4210,6 +4207,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="send-email.png" width="512" height="512"/>
         <image name="twitter.png" width="128" height="128"/>
         <image name="unknown.png" width="256" height="256"/>
+        <image name="warning.png" width="128" height="128"/>
     </resources>
     <classes>
         <class className="AddPopover" superclassName="UITableViewController">
@@ -4477,6 +4475,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <class className="SalesHeaderCell" superclassName="UITableViewCell">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SalesHeaderCell.h"/>
             <relationships>
+                <relationship kind="outlet" name="Dlv_Icon" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="Inv_Icon" candidateClass="UIImageView"/>
                 <relationship kind="outletCollection" name="LabelCollection" candidateClass="UILabel"/>
             </relationships>
         </class>
@@ -4555,7 +4555,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="VHG-8a-30V"/>
-        <segue reference="OcA-eD-QPo"/>
         <segue reference="kOT-Qt-Jzv"/>
+        <segue reference="38x-Yb-Bzs"/>
     </inferredMetricsTieBreakers>
 </document>

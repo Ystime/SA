@@ -136,13 +136,26 @@ NSMutableArray *visibleTypes;
 {
     if(indexPath.row <VisibleBusinessPartners.count)
     {
+        [self annotateVisibleCustomers];
         selectedRow = indexPath.row;
         BusinessPartner *bp = [VisibleBusinessPartners objectAtIndex:indexPath.row];
         [self setMapRegion:CLLocationCoordinate2DMake(bp.Address.GeoCode.Latitude.doubleValue, bp.Address.GeoCode.Longitude.doubleValue)forKilometers:10];
+        for(id<MKAnnotation> anno in self.mapView.annotations)
+        {
+            if([anno isKindOfClass:[CustomerAnnotation class]])
+            {
+                CustomerAnnotation *temp = (CustomerAnnotation*)anno;
+                if([temp.bupa.BusinessPartnerID isEqualToString:bp.BusinessPartnerID])
+                {
+                    [self.mapView selectAnnotation:anno animated:YES];
+                    break;
+                }
+            }
+        }
     }
     else
         [self performSegueWithIdentifier:@"Details" sender:nil];
-
+    
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -227,7 +240,7 @@ NSMutableArray *visibleTypes;
                                              }];
         [logoFlow centerOnSelectedCover:YES];
         [logoFlow setSelectedCover:0];
-//        [logoFlow centerOnSelectedCover:YES];
+        //        [logoFlow centerOnSelectedCover:YES];
         self.FlowLabel.text = @"All companies";
         self.CustomerSearchField.text = self.ProspectSearchField.text = @"";
         bupasForLogo = BusinessPartners;
@@ -335,9 +348,6 @@ NSMutableArray *visibleTypes;
             av.image = [UIImage imageWithImage:[UIImage imageNamed:@"Customer_Pin.png"] scaledToSize:CGSizeMake(50, 50)];
         }
         av.canShowCallout = YES;
-        //        UIImageView *details = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"search_glass.png"]];
-        //        details.contentMode = UIViewContentModeScaleAspectFit;
-        //        details.frame = CGRectMake(0, 0, 30, 30);
         UIButton* details = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         av.rightCalloutAccessoryView = details;
         return av;
@@ -401,7 +411,7 @@ NSMutableArray *visibleTypes;
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
     self.CustomerSearchField.text = @"";
-
+    
     NSString *title = hierLabels[index];
     if([title isEqualToString:@"All"])
         VisibleBusinessPartners = BusinessPartners;

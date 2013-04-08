@@ -13,8 +13,7 @@
 @end
 
 @implementation CustomerViewController
-@synthesize selectedBusinessPartner,SalesDocuments,SDItems,documentsLoaded,PullUpView,PullHandle,bupaPictures,materialPictures,materials,notes;
-BOOL creatingDoc;
+@synthesize selectedBusinessPartner,SalesDocuments,SDItems,documentsLoaded,PullUpView,PullHandle,bupaPictures,materialPictures,materials,notes,creatingDoc;
 NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -225,6 +224,7 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     if(sd)
     {
         dvc.changeMode = YES;
+
     }
     else
     {

@@ -9,7 +9,7 @@
 #import "SalesHeaderCell.h"
 
 @implementation SalesHeaderCell
-
+@synthesize Dlv_Icon,Inv_Icon;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesDocument:(SalesDocument *)sd
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -57,6 +57,24 @@
                 break;
         }
     }
+    if([sd.Status.Invoice_Status isEqualToString:@"COMPLETELY_INVOICED"])
+        Inv_Icon.image = [UIImage imageNamed:@"inv_full.png"];
+    else if([sd.Status.Invoice_Status isEqualToString:@"PARTIALLY_INVOICED"])
+        Inv_Icon.image = [UIImage imageNamed:@"inv_part.png"];
+    else if([sd.Status.Invoice_Status isEqualToString:@"NOT_YET_INVOICED"])
+        Inv_Icon.image = [UIImage imageNamed:@"inv_not.png"];
+    else
+        Inv_Icon.image = nil;
+    
+    
+    if([sd.Status.Delivery_Status isEqualToString:@"COMPLETELY_DELIVERED"])
+        Dlv_Icon.image = [UIImage imageNamed:@"dlv_full.png"];
+    else if([sd.Status.Delivery_Status isEqualToString:@"PARTIALLY_DELIVERED"])
+        Dlv_Icon.image = [UIImage imageNamed:@"dlv_part.png"];
+    else if([sd.Status.Delivery_Status isEqualToString:@"NOT_YET_DELIVERED"])
+        Dlv_Icon.image = [UIImage imageNamed:@"dlv_not.png"];
+    else
+        Dlv_Icon.image = nil;
 }
 
 -(NSString*)stringFromDate:(NSDate*)date

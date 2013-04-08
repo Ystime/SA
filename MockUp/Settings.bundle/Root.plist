@@ -35,12 +35,12 @@
 			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
+			<key>DefaultValue</key>
+			<string>http://knowledge.nl4b.com/sap/opu/odata/FEXS/ECCSALESDATA_SRV</string>
 			<key>AutocapitalizationType</key>
 			<string>None</string>
 			<key>AutocorrectionType</key>
 			<string>No</string>
-			<key>DefaultValue</key>
-			<string>http://knowledge.nl4b.com/sap/opu/odata/FEXS/ECCSALESDATA_SRV</string>
 			<key>Key</key>
 			<string>SAP_EndPointURL</string>
 			<key>KeyboardType</key>

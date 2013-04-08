@@ -12,9 +12,11 @@
 #import "AddPopover.h"
 #import "ItemViewController.h"
 #import "HeaderViewController.h"
+#import "ZBarSDK.h"
 @class CustomerViewController;
+#import "MaterialInfoViewController.h"
 
-@interface DocumentViewController : UIViewController <UITableViewDelegate,UITableViewDataSource>
+@interface DocumentViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,ZBarReaderDelegate>
 @property (strong, readonly ) CustomerViewController *cvc;
 @property (strong, nonatomic) SalesDocument *tempSalesDocument;
 @property (strong, nonatomic) UIPopoverController *pop;

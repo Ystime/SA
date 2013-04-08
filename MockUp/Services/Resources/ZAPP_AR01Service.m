@@ -198,11 +198,10 @@ static SDMODataEntitySchema *aZAPP_AR01ResultEntitySchema = nil;
 #pragma mark - AZAPP_AR01Parameters
 @implementation AZAPP_AR01Parameters 
 
+@synthesize Z0S_DEBIT = m_Z0S_DEBIT;
+@synthesize Z0S_DEBITText = m_Z0S_DEBITText;
 @synthesize A0P_COCD = m_A0P_COCD;
 @synthesize A0P_COCDText = m_A0P_COCDText;
-@synthesize A0S_DEBITFrom = m_A0S_DEBITFrom;
-@synthesize A0S_DEBITTo = m_A0S_DEBITTo;
-@synthesize A0S_DEBITText = m_A0S_DEBITText;
 @synthesize A0P_KEYDT = m_A0P_KEYDT;
 @synthesize A0P_KEYDTText = m_A0P_KEYDTText;
 @synthesize ResultsQuery = m_ResultsQuery;
@@ -239,11 +238,10 @@ static SDMODataEntitySchema *aZAPP_AR01ParametersEntitySchema = nil;
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Z0S_DEBIT forSDMPropertyWithName:@"Z0S_DEBIT" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Z0S_DEBITText forSDMPropertyWithName:@"Z0S_DEBITText" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0P_COCD forSDMPropertyWithName:@"A0P_COCD" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0P_COCDText forSDMPropertyWithName:@"A0P_COCDText" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0S_DEBITFrom forSDMPropertyWithName:@"A0S_DEBITFrom" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0S_DEBITTo forSDMPropertyWithName:@"A0S_DEBITTo" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0S_DEBITText forSDMPropertyWithName:@"A0S_DEBITText" error:&innerError];
     	[BaseODataObject setDoubleValueForSDMEntry:m_SDMEntry withValue:self.A0P_KEYDT forSDMPropertyWithName:@"A0P_KEYDT" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.A0P_KEYDTText forSDMPropertyWithName:@"A0P_KEYDTText" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
@@ -286,11 +284,10 @@ static SDMODataEntitySchema *aZAPP_AR01ParametersEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
+	m_Z0S_DEBIT = [self getStringValueForSDMPropertyWithName:@"Z0S_DEBIT"];
+	m_Z0S_DEBITText = [self getStringValueForSDMPropertyWithName:@"Z0S_DEBITText"];
 	m_A0P_COCD = [self getStringValueForSDMPropertyWithName:@"A0P_COCD"];
 	m_A0P_COCDText = [self getStringValueForSDMPropertyWithName:@"A0P_COCDText"];
-	m_A0S_DEBITFrom = [self getStringValueForSDMPropertyWithName:@"A0S_DEBITFrom"];
-	m_A0S_DEBITTo = [self getStringValueForSDMPropertyWithName:@"A0S_DEBITTo"];
-	m_A0S_DEBITText = [self getStringValueForSDMPropertyWithName:@"A0S_DEBITText"];
 	m_A0P_KEYDT = [self getDoubleValueForSDMPropertyWithName:@"A0P_KEYDT"];
 	m_A0P_KEYDTText = [self getStringValueForSDMPropertyWithName:@"A0P_KEYDTText"];
 }
@@ -418,25 +415,23 @@ static SDMODataEntitySchema *aZAPP_AR01ParametersEntitySchema = nil;
 	return [AZAPP_AR01Parameters parseExpandedAZAPP_AR01ParametersEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getAZAPP_AR01EntryQueryWithA0P_COCD:(NSString *)A0P_COCD andA0S_DEBITFrom:(NSString *)A0S_DEBITFrom andA0S_DEBITTo:(NSString *)A0S_DEBITTo andA0P_KEYDT:(NSString *)A0P_KEYDT
+- (ODataQuery *)getAZAPP_AR01EntryQueryWithZ0S_DEBIT:(NSString *)Z0S_DEBIT andA0P_COCD:(NSString *)A0P_COCD andA0P_KEYDT:(NSString *)A0P_KEYDT
 {
+	Z0S_DEBIT = [ODataQuery encodeURLParameter:Z0S_DEBIT];
 	A0P_COCD = [ODataQuery encodeURLParameter:A0P_COCD];
-	A0S_DEBITFrom = [ODataQuery encodeURLParameter:A0S_DEBITFrom];
-	A0S_DEBITTo = [ODataQuery encodeURLParameter:A0S_DEBITTo];
 	A0P_KEYDT = [ODataQuery encodeURLParameter:A0P_KEYDT];
-	NSString *relativePath = [NSString stringWithFormat:@"AZAPP_AR01(A0P_COCD='%@',A0S_DEBITFrom='%@',A0S_DEBITTo='%@',A0P_KEYDT=%@)/Results", A0P_COCD, A0S_DEBITFrom, A0S_DEBITTo, A0P_KEYDT];
+	NSString *relativePath = [NSString stringWithFormat:@"AZAPP_AR01(Z0S_DEBIT='%@',A0P_COCD='%@',A0P_KEYDT=%@)/Results", Z0S_DEBIT, A0P_COCD, A0P_KEYDT];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getAZAPP_AR01EntryQueryTypedWithA0P_COCD:(NSString *)A0P_COCD andA0S_DEBITFrom:(NSString *)A0S_DEBITFrom andA0S_DEBITTo:(NSString *)A0S_DEBITTo andA0P_KEYDT:(NSNumber *)A0P_KEYDT
+- (ODataQuery *)getAZAPP_AR01EntryQueryTypedWithZ0S_DEBIT:(NSString *)Z0S_DEBIT andA0P_COCD:(NSString *)A0P_COCD andA0P_KEYDT:(NSNumber *)A0P_KEYDT
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *Z0S_DEBITUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Z0S_DEBIT]];
 	NSString *A0P_COCDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:A0P_COCD]];
-	NSString *A0S_DEBITFromUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:A0S_DEBITFrom]];
-	NSString *A0S_DEBITToUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:A0S_DEBITTo]];
 	NSString *A0P_KEYDTUri = [ODataQuery encodeURLParameter:[converter convertToEdmDoubleURI:A0P_KEYDT]];
-	NSString *relativePath = [NSString stringWithFormat:@"AZAPP_AR01(A0P_COCD=%@,A0S_DEBITFrom=%@,A0S_DEBITTo=%@,A0P_KEYDT=%@)", A0P_COCDUri, A0S_DEBITFromUri, A0S_DEBITToUri, A0P_KEYDTUri];
+	NSString *relativePath = [NSString stringWithFormat:@"AZAPP_AR01(Z0S_DEBIT=%@,A0P_COCD=%@,A0P_KEYDT=%@)", Z0S_DEBITUri, A0P_COCDUri, A0P_KEYDTUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }

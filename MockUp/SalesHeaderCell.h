@@ -13,6 +13,8 @@
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *LabelCollection;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier andSalesDocument:(SalesDocument *)sd;
 -(void)changeSalesDocument:(SalesDocument*)sd;
+@property (strong, nonatomic) IBOutlet UIImageView *Dlv_Icon;
+@property (strong, nonatomic) IBOutlet UIImageView *Inv_Icon;
 
 
 @end

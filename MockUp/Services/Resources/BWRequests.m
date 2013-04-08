@@ -177,14 +177,15 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
 
 -(void)loadQuery4ForBusinessPartner:(BusinessPartner*)bupa andDebit:(NSString*)debit andKeyDate:(NSDate*)keyDate
 {
-    NSString *datum = [GlobalFunctions getStringFormat:@"ddMMyyyy" FromDate:keyDate];
+    NSString *datum = [GlobalFunctions getStringFormat:@"yyyyMMdd" FromDate:keyDate];
     if([SettingsUtilities getDemoStatus])
     {
         [[DemoData getInstance]postNotificationfor:@"BWQuery4"];
     }
     else
     {
-        ODataQuery *query = [AR01Service getAZAPP_AR01EntryQueryWithA0P_COCD:@"1000" andA0S_DEBITFrom:debit andA0S_DEBITTo:debit andA0P_KEYDT:datum];
+//        ODataQuery *query = [AR01Service getAZAPP_AR01EntryQueryWithA0P_COCD:@"1000" andA0S_DEBITFrom:debit andA0S_DEBITTo:debit andA0P_KEYDT:datum];
+        ODataQuery *query = [AR01Service getAZAPP_AR01EntryQueryWithZ0S_DEBIT:debit andA0P_COCD:@"1000" andA0P_KEYDT:datum];
         [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadQuery4ResultsCompleted:) andUserInfo:nil];
     }
 }

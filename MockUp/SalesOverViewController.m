@@ -78,7 +78,6 @@ int selectedRow;
 {
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     salesDocuments = selectedSDItems =nil;
-    selectedBUPA = nil;
 }
 
 - (void)didReceiveMemoryWarning

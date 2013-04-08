@@ -83,7 +83,7 @@ LGViewHUD *creatingDocs;
 
 -(void)viewDidAppear:(BOOL)animated
 {
-
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -151,6 +151,12 @@ LGViewHUD *creatingDocs;
                 [self performSegueWithIdentifier:@"recentDocs" sender:self];
                 break;
             case 2:
+            {
+                ZBarReaderViewController *reader = [ZBarReaderViewController new];
+                reader.readerDelegate = self;
+                [self presentViewController:reader animated:YES completion:^{}];
+                
+            }
                 break;
             default:
                 break;
@@ -180,11 +186,25 @@ LGViewHUD *creatingDocs;
     }
     else if([segue.identifier isEqualToString:@"editItem"])
     {
-        
+        if(!(sender ==nil))
+        {
+            MaterialInfoViewController *mivc = segue.destinationViewController;
+            mivc.material = sender;
+        }
     }
 }
 
 - (IBAction)saveDocs:(id)sender {
+    //Check if all items have actions assigned
+    for(SalesDocItem *item in tempSalesDocument.Items)
+    {
+        if(item.ItemNumber==nil)
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Incomplete Data" message:@"Some items are missing an action!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+    }
     [creatingDocs performSelectorOnMainThread:@selector(showInView:) withObject:self.view waitUntilDone:YES];
     [self performSelectorInBackground:@selector(tryingToSaveDocuments) withObject:nil];
 }
@@ -231,6 +251,7 @@ LGViewHUD *creatingDocs;
         [[RequestHandler uniqueInstance]loadSalesDocuments:cvc.selectedBusinessPartner.SalesDocumentsQuery];
         UIButton *temp = [[UIButton alloc]init];
         temp.tag = 2;
+        cvc.creatingDoc = NO;
         [cvc performSelectorOnMainThread:@selector(clickedTab:) withObject:temp waitUntilDone:NO];
     }
     
@@ -289,7 +310,66 @@ LGViewHUD *creatingDocs;
 {
     NSMutableArray *temp = [notification.userInfo objectForKey:kResponseItems];
     tempSalesDocument.Items = temp;
+    if(self.changeMode)
+    {
+        for(SalesDocItem *tempItem in tempSalesDocument.Items)
+        {
+            tempItem.ItemNumber = tempSalesDocument.OrderType;
+        }
+    }
     [self.ItemsTable reloadData];
-    
+}
+
+
+#pragma mark - ZBar Delegate
+
+- (void) imagePickerController: (UIImagePickerController*) reader
+ didFinishPickingMediaWithInfo: (NSDictionary*) info
+{
+    id<NSFastEnumeration> results =
+    [info objectForKey: ZBarReaderControllerResults];
+    ZBarSymbol *symbol = nil;
+    for(symbol in results)
+        break;
+    Material *temp = [self getBarcode:symbol.data];
+    if(temp == nil)
+    {
+        LGViewHUD *hud = [[LGViewHUD alloc] initWithFrame:CGRectMake(0, 0, 160, 160)];
+        hud.topText =[NSString stringWithFormat:@"Barcode:%@",symbol.data];
+        hud.bottomText = @"Unknown!";
+        hud.image = [UIImage imageNamed:@"unknown.png"];
+        [hud showInView:reader.view];
+    }
+    else
+    {
+        SalesDocItem *tempItem = [[SalesDocItem alloc]init];
+        tempItem.Material = temp.MaterialNumber;
+        tempItem.Quantity = [NSNumber numberWithFloat:1.0];
+        tempItem.UoM = temp.UoM;
+        tempItem.Description = temp.Description;
+        tempItem.ItemNumber = tempItem.OrderID = tempItem.Plant = tempItem.Status.Delivery_Status = tempItem.Status.Overall_Status = tempItem.Status.Invoice_Status = @" ";
+        tempItem.NetPrice = tempItem.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];
+        [tempSalesDocument.Items addObject:tempItem];
+        [self.ItemsTable reloadData];
+        [self dismissViewControllerAnimated:YES completion:^
+         {
+             [self.ItemsTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:tempSalesDocument.Items.count-1 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionNone];
+             [self performSegueWithIdentifier:@"editItem" sender:nil];
+         }];
+    }
+}
+
+#pragma mark - Query for specific Material
+
+-(Material*)getBarcode:(NSString*)barcode
+{
+    NSLog(@"Scanned Barcode:%@",barcode);
+    Material *result = nil;
+    for(Material* temp in cvc.materials)
+    {
+        if([temp.EANCode isEqualToString:barcode])
+            result = temp;
+    }
+    return result;
 }
 @end

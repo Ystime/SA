@@ -264,7 +264,10 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         userInfoDict = [NSDictionary dictionaryWithObject:materials forKey:kResponseItems];
     }
     if(viewVisible)
+    {
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
+        
+    }
     
 }
 
@@ -486,6 +489,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                     if(!([tempMedia.Keyword rangeOfString:@"_%_"].location == NSNotFound))
                     {
                         NSArray *subs = [tempMedia.Keyword componentsSeparatedByString:@"_%_"];
+                        tempMedia.Keyword = subs[subs.count-2];
                     }
                     [notes setObject:result forKey:tempMedia.Keyword];
                 }
@@ -516,6 +520,16 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         for(NSString *string in materials)
         {
             [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.jpg",string]] forKey:string];
+        }
+        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
+    }
+    else
+    {
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        for(NSString *string in materials)
+        {
+            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png",string]] forKey:string];
         }
         NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
         [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
