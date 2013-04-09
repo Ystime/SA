@@ -13,14 +13,16 @@
 @end
 
 @implementation MaterialInfoViewController
-@synthesize material,editItem,parent;
+@synthesize material,materials,matPics,editItem,parent;
 int value;
+AFOpenFlowView *matFlow;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+
     }
     return self;
 }
@@ -51,6 +53,9 @@ int value;
 {
     if(editItem)
     {
+        self.MaterialImage.hidden = NO;
+        [matFlow removeFromSuperview];
+        matFlow = nil;
         for (UILabel *label in self.MaterialLabels)
         {
             switch (label.tag) {
@@ -67,7 +72,7 @@ int value;
                     //label.text = material.Price;
                     break;
                 case 5:
-//                    label.text = [NSString stringWithFormat:@"%.0f",editItem.Quantity.floatValue];
+                    label.text = [NSString stringWithFormat:@"%.0f",editItem.Quantity.floatValue];
                     break;
                 case 6:
 //                    label.text = editItem.EANCode;
@@ -78,9 +83,32 @@ int value;
         }
         value =editItem.Quantity.floatValue;
     }
-    else{
+    else if(materials)
+    {
+        matFlow = [[AFOpenFlowView alloc]initWithFrame:self.TopCell.frame];
+        matFlow.numberOfImages = materials.count;
+        self.MaterialImage.hidden = YES;
+        for(int i = 0;i<materials.count;i++)
+        {
+            Material *temp = materials[i];
+            [matFlow setImage:[matPics objectForKey:temp.MaterialNumber] forIndex:i];
+        }
+        matFlow.viewDelegate = self;
+        [self.TopCell addSubview:matFlow];
+        if(material)
+        {
+            int tempIndex = [materials indexOfObject:material];
+            [matFlow setSelectedCover:tempIndex];
+            [matFlow centerOnSelectedCover:YES];
+            [self openFlowView:matFlow selectionDidChange:tempIndex];
+        }
+    }
+    else
+    {
         
-        
+        self.MaterialImage.hidden = NO;
+        [matFlow removeFromSuperview];
+        matFlow = nil;
         for (UILabel *label in self.MaterialLabels)
         {
             switch (label.tag) {
@@ -180,6 +208,39 @@ int value;
     value = value + diff;
     [self.QuantitySlider setValue:value animated:YES];
     self.QuantityLabel.text = [NSString stringWithFormat:@"%i",value];
+}
+
+#pragma mark - AFOpenFlowViewDelegate
+- (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
+{
+    value = 0;
+    [self changeItemValue:1];
+    material = materials[index];
+    for (UILabel *label in self.MaterialLabels)
+    {
+        switch (label.tag) {
+            case 1:
+                label.text = material.Description;
+                break;
+            case 2:
+                label.text = material.MaterialNumber;
+                break;
+            case 3:
+                label.text = material.UoM;
+                break;
+            case 4:
+                //label.text = material.Price;
+                break;
+            case 5:
+                label.text = [NSString stringWithFormat:@"%.0f",material.Quantity.floatValue];
+                break;
+            case 6:
+                label.text = material.EANCode;
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 @end

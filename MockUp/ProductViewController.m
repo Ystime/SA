@@ -169,6 +169,8 @@ BOOL imageAvailable;
     {
         MaterialInfoViewController *mivc = segue.destinationViewController;
         mivc.material = (Material*)sender;
+        mivc.materials = cvc.materials;
+        mivc.matPics = cvc.materialPictures;
     }
 }
 

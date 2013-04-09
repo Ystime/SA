@@ -11,7 +11,7 @@
 #import "SalesItemCell.h"
 #import "AddPopover.h"
 #import "ItemViewController.h"
-#import "HeaderViewController.h"
+@class HeaderViewController;
 #import "ZBarSDK.h"
 @class CustomerViewController;
 #import "MaterialInfoViewController.h"
@@ -29,6 +29,7 @@
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *ItemActionButtons;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *HeaderLabel;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
+@property (strong, nonatomic) IBOutlet UILabel *ShipToLabel;
 
 - (IBAction)saveDocs:(id)sender;
 - (IBAction)changeItem:(id)sender;

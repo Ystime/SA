@@ -8,13 +8,13 @@
 
 #import "HeaderViewController.h"
 #import "CustomerViewController.h"
+#import "DocumentViewController.h"
 @interface HeaderViewController ()
 
 @end
 
 @implementation HeaderViewController
-@synthesize sd;
-DocumentViewController *ndvc;
+@synthesize sd,ndvc;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -27,6 +27,11 @@ DocumentViewController *ndvc;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    //    [UIView changeLayoutToDefaultProjectSettings:self.POField];
+    //    self.POField.layer.borderWidth = 1.0;
+    //    self.POField.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    [UIView changeLayoutToDefaultProjectSettings:self.view];
+    
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -39,6 +44,7 @@ DocumentViewController *ndvc;
 -(void)viewWillAppear:(BOOL)animated
 {
     self.POField.text = sd.CustomerPurchaseOrderNumber;
+    self.ShipToLabel.text = ndvc.ShipToLabel.text;
     if(!(sd.RequestedDeliveryDate == nil))
         [self.DlvDatePicker setDate:sd.RequestedDeliveryDate];
     for(UILabel *label in self.Labels)
@@ -59,6 +65,8 @@ DocumentViewController *ndvc;
             case 5:
                 label.text = sd.DistributionChannel;
                 break;
+            case 6:
+                break;
             default:
                 break;
         }
@@ -74,12 +82,24 @@ DocumentViewController *ndvc;
 - (IBAction)topButtonClicked:(id)sender {
     if([sender tag] == 1)
     {
-        sd.CustomerPurchaseOrderNumber = self.POField.text;
-        sd.RequestedDeliveryDate = self.DlvDatePicker.date;
-        [ndvc setHeaderLabelView];
+        if([self.ShipToLabel.text isEqualToString:@""])
+        {
+            UIAlertView *alert =[[UIAlertView alloc]initWithTitle:@"No Ship-To" message:@"Select a Ship-To party!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+            
+        }
+        else
+        {
+            sd.CustomerPurchaseOrderNumber = self.POField.text;
+            sd.RequestedDeliveryDate = self.DlvDatePicker.date;
+            ndvc.ShipToLabel.text = self.ShipToLabel.text;
+            [ndvc setHeaderLabelView];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
         
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+    else
+        [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)setNDVC:(UIViewController*)nv
@@ -92,9 +112,10 @@ DocumentViewController *ndvc;
 {
     if([segue.identifier isEqualToString:@"shipToChoice"])
     {
-        UITableViewController *tvc = (UITableViewController*)segue.destinationViewController;
-        tvc.tableView.delegate = self;
-        tvc.tableView.dataSource = self;
+        SoldToController *stc = (SoldToController*)segue.destinationViewController;
+        stc.hvc = self;
+        UIStoryboardPopoverSegue *pop = (UIStoryboardPopoverSegue*)segue;
+        _upc = pop.popoverController;
     }
 }
 @end

@@ -8,6 +8,7 @@
 
 #import "DocumentViewController.h"
 #import "CustomerViewController.h"
+#import "HeaderViewController.h"
 @interface DocumentViewController ()
 @end
 
@@ -61,6 +62,7 @@ LGViewHUD *creatingDocs;
         tempSalesDocument.DocumentDate = [NSDate date];
         tempSalesDocument.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];
     }
+    self.ShipToLabel.text = cvc.selectedBusinessPartner.BusinessPartnerName;
     [self setHeaderLabelView];
     [self.ItemsTable reloadData];
     if(tempSalesDocument.RequestedDeliveryDate==nil)

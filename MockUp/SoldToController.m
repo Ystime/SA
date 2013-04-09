@@ -7,7 +7,8 @@
 //
 
 #import "SoldToController.h"
-
+#import "HeaderViewController.h"
+#import "CustomerViewController.h"
 @interface SoldToController ()
 
 @end
@@ -57,7 +58,12 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-        cell.textLabel.text = @"Sold-To Party";
+    if(indexPath.row == 0)
+    {
+        cell.textLabel.text = self.hvc.ndvc.cvc.selectedBusinessPartner.BusinessPartnerName;
+    }
+    else
+        cell.textLabel.text = [NSString stringWithFormat:@"Store %i",(arc4random()%1000)+1];
     return cell;
 }
 
@@ -104,13 +110,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    self.hvc.ShipToLabel.text = cell.textLabel.text;
+    [_hvc.upc dismissPopoverAnimated:YES];
 }
 
 @end

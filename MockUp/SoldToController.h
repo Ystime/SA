@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+@class HeaderViewController;
 
 @interface SoldToController : UITableViewController
-
+@property HeaderViewController *hvc;
 @end

@@ -225,10 +225,10 @@ EQSelect EQSel;
             case kCustomer:
             {
                 [values addObject:result.NetValue];
-                [titles addObject:result.DocumentCategory];
+                [titles addObject:[NSString stringWithFormat:@"%@",result.DocumentCategory]];
                 [titlesID addObject:result.DocumentCategoryId];
                 NSString *description = [NSString stringWithFormat:@"The value of %@s requested by this customer is: %@ ",result.DocumentCategory,result.NetValueStringFormat];
-                [colors addObject:[MIMColorClass colorWithRed:arc4random()%256 Green:arc4random()%256 Blue:arc4random()%256 Alpha:1] ];
+                [colors addObject:[self colorForDocCategory:result.DocumentCategoryId]];
                 [descriptions addObject:description];
                 [icons addObject:@"searchglass_icon.png"];
                 break;
@@ -376,6 +376,30 @@ EQSelect EQSel;
 -(NSArray*)DescriptionForPie:(id)pieChart
 {
     return [pieValues objectForKey:kPieDescriptions];
+}
+-(MIMColorClass*)colorForDocCategory:(NSString*)documentCategory
+{
+    MIMColorClass *result;
+    if([documentCategory isEqualToString:@"A"])
+    {
+        result = [MIMColorClass colorWithRed:0 Green:0 Blue:255 Alpha:1];
+    }
+    else     if([documentCategory isEqualToString:@"B"])
+    {
+        result = [MIMColorClass colorWithRed:255 Green:100 Blue:0 Alpha:1];
+    }
+    else     if([documentCategory isEqualToString:@"C"])
+    {
+        result = [MIMColorClass colorWithRed:20 Green:128 Blue:20 Alpha:1];
+    }
+    else     if([documentCategory isEqualToString:@"H"])
+    {
+        result = [MIMColorClass colorWithRed:255 Green:0 Blue:0 Alpha:1];
+    }
+    
+    else
+        result = [MIMColorClass colorWithRed:arc4random()%256 Green:arc4random()%256 Blue:arc4random()%256 Alpha:1];
+    return result;
 }
 
 #pragma mark - BarGraph Delegate
