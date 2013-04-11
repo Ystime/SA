@@ -7,13 +7,65 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "MockUp/DetailViewController.m"
-         timestampString = "387125741.465351"
+         filePath = "MockUp/Services/ECCSALESDATA_SRVService.m"
+         timestampString = "387358011.450289"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "169"
-         endingLineNumber = "169"
-         landmarkName = "-saveAs:"
+         startingLineNumber = "3283"
+         endingLineNumber = "3283"
+         landmarkName = "-getMediaCollectionForContactPersonEntryQueryWithContactPersonID:andKeyword:andMediaType:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "MockUp/Framework/BaseServiceObject.m"
+         timestampString = "387360322.855087"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "256"
+         endingLineNumber = "256"
+         landmarkName = "-getXMLFromEntity:andOperation:error:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "MockUp/Framework/BaseServiceObject.m"
+         timestampString = "387360415.707245"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "265"
+         endingLineNumber = "265"
+         landmarkName = "-getXMLFromEntity:andOperation:error:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Categories/NSString+URLEncoding.m"
+         timestampString = "387383560.996272"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "32"
+         endingLineNumber = "32"
+         landmarkName = "-encodedURLString"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Categories/NSString+URLEncoding.m"
+         timestampString = "387383580.512903"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "50"
+         endingLineNumber = "50"
+         landmarkName = "-decodedURLString"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

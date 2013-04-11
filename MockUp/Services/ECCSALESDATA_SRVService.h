@@ -141,7 +141,7 @@
 	NSString *m_Comment;
 }
 
-@property (strong, nonatomic) NSString *URIType; ///< URI type - Edm.String
+@property (strong, nonatomic) NSString *URIType; ///< URIType - Edm.String
 
 @property (strong, nonatomic) NSString *URL; ///< URI - Edm.String
 
@@ -239,6 +239,7 @@
 	Phone *m_FaxNumber;
 	Phone *m_PhoneNumber;
 	Address *m_Address;
+	URI *m_Twitter;
 	NSString *m_Gender;
 	NSString *m_RelatedPartnerID;
 	NSString *m_LastName;
@@ -255,6 +256,7 @@
 @property (strong, nonatomic) Phone *FaxNumber; ///< FaxNumber 
 @property (strong, nonatomic) Phone *PhoneNumber; ///< PhoneNumber 
 @property (strong, nonatomic) Address *Address; ///< Address 
+@property (strong, nonatomic) URI *Twitter; ///< Twitter 
 @property (strong, nonatomic) NSString *Gender; ///< Gender - Edm.String
 @property (strong, nonatomic) NSString *RelatedPartnerID; ///< RelatedPartnerID - Edm.String
 @property (strong, nonatomic) NSString *LastName; ///< LastName - Edm.String
@@ -348,9 +350,11 @@
 	Phone *m_FaxNumber;
 	Phone *m_PhoneNumber;
 	Address *m_Address;
+	URI *m_Twitter;
 	NSString *m_BusinessPartnerName;
 	NSString *m_BusinessPartnerType;
 	NSString *m_BusinessPartnerID;
+	NSString *m_ParentID;
     ODataQuery *m_ContactPersonsQuery;
 	NSMutableArray *m_ContactPersons;
     ODataQuery *m_MediaCollectionQuery;
@@ -365,9 +369,11 @@
 @property (strong, nonatomic) Phone *FaxNumber; ///< FaxNumber 
 @property (strong, nonatomic) Phone *PhoneNumber; ///< PhoneNumber 
 @property (strong, nonatomic) Address *Address; ///< Address 
+@property (strong, nonatomic) URI *Twitter; ///< Twitter 
 @property (strong, nonatomic) NSString *BusinessPartnerName; ///< BusinessPartnerName - Edm.String
 @property (strong, nonatomic) NSString *BusinessPartnerType; ///< BusinessPartnerType - Edm.String
 @property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
+@property (strong, nonatomic) NSString *ParentID; ///< ParentID - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *ContactPersonsQuery;
 @property (strong, nonatomic) NSMutableArray *ContactPersons;
@@ -579,17 +585,17 @@
 @interface SalesDocument : BaseEntityType {
 	DocumentStatus *m_Status;
 	NSString *m_OrderID;
-	NSString *m_CustomerPurchaseOrderNumber;
-	NSDate *m_RequestedDeliveryDate;
 	NSString *m_OrderType;
-	NSString *m_Currency;
-	NSDecimalNumber *m_NetValue;
-	NSString *m_Division;
 	NSString *m_Description;
-	NSString *m_DistributionChannel;
-	NSString *m_SalesOrganization;
-	NSString *m_CustomerID;
 	NSDate *m_DocumentDate;
+	NSString *m_CustomerID;
+	NSString *m_SalesOrganization;
+	NSString *m_DistributionChannel;
+	NSString *m_Division;
+	NSDecimalNumber *m_NetValue;
+	NSString *m_Currency;
+	NSDate *m_RequestedDeliveryDate;
+	NSString *m_CustomerPurchaseOrderNumber;
     ODataQuery *m_ItemsQuery;
 	NSMutableArray *m_Items;
 
@@ -597,17 +603,17 @@
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
 @property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
-@property (strong, nonatomic) NSString *CustomerPurchaseOrderNumber; ///< CustomerPurchaseOrderNumber - Edm.String
-@property (strong, nonatomic) NSDate *RequestedDeliveryDate; ///< RequestedDeliveryDate - Edm.DateTime
 @property (strong, nonatomic) NSString *OrderType; ///< OrderType - Edm.String
-@property (strong, nonatomic) NSString *Currency; ///< Currency - Edm.String
-@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
-@property (strong, nonatomic) NSString *Division; ///< Division - Edm.String
 @property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSString *DistributionChannel; ///< DistributionChannel - Edm.String
-@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
-@property (strong, nonatomic) NSString *CustomerID; ///< CustomerID - Edm.String
 @property (strong, nonatomic) NSDate *DocumentDate; ///< DocumentDate - Edm.DateTime
+@property (strong, nonatomic) NSString *CustomerID; ///< CustomerID - Edm.String
+@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
+@property (strong, nonatomic) NSString *DistributionChannel; ///< DistributionChannel - Edm.String
+@property (strong, nonatomic) NSString *Division; ///< Division - Edm.String
+@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
+@property (strong, nonatomic) NSString *Currency; ///< Currency - Edm.String
+@property (strong, nonatomic) NSDate *RequestedDeliveryDate; ///< RequestedDeliveryDate - Edm.DateTime
+@property (strong, nonatomic) NSString *CustomerPurchaseOrderNumber; ///< CustomerPurchaseOrderNumber - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *ItemsQuery;
 @property (strong, nonatomic) NSMutableArray *Items;
@@ -691,8 +697,6 @@
 #pragma mark - SalesDocItem
 @interface SalesDocItem : BaseEntityType {
 	DocumentStatus *m_Status;
-	NSString *m_OrderID;
-	NSString *m_ItemNumber;
 	NSString *m_Material;
 	NSString *m_Description;
 	NSString *m_Plant;
@@ -700,14 +704,14 @@
 	NSString *m_UoM;
 	NSDecimalNumber *m_NetPrice;
 	NSDecimalNumber *m_NetValue;
+	NSString *m_ItemNumber;
+	NSString *m_OrderID;
     ODataQuery *m_SalesDocumentQuery;
 	NSMutableArray *m_SalesDocument;
 
 }
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
-@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
-@property (strong, nonatomic) NSString *ItemNumber; ///< ItemNumber - Edm.String
 @property (strong, nonatomic) NSString *Material; ///< Material - Edm.String
 @property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
 @property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
@@ -715,6 +719,8 @@
 @property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
 @property (strong, nonatomic) NSDecimalNumber *NetPrice; ///< NetPrice - Edm.Decimal
 @property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
+@property (strong, nonatomic) NSString *ItemNumber; ///< ItemNumber - Edm.String
+@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *SalesDocumentQuery;
 @property (strong, nonatomic) NSMutableArray *SalesDocument;
@@ -797,17 +803,17 @@
 
 #pragma mark - MediaForBusinessPartner
 @interface MediaForBusinessPartner : BaseEntityType {
-	NSString *m_MediaType;
-	NSString *m_BusinessPartnerID;
 	NSString *m_Keyword;
+	NSString *m_BusinessPartnerID;
+	NSString *m_MediaType;
     ODataQuery *m_MediaQuery;
 	NSMutableArray *m_Media;
 
 }
 
-@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
-@property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
 @property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *MediaQuery;
 @property (strong, nonatomic) NSMutableArray *Media;
@@ -1262,7 +1268,7 @@
 @property (strong, nonatomic) NSString *ContentType; ///< ContentType - Edm.String
 @property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
 @property (strong, nonatomic) NSString *FileName; ///< FileName - Edm.String
-@property (strong, nonatomic) NSNumber *FileSize; ///< Int2 - Edm.Int16
+@property (strong, nonatomic) NSNumber *FileSize; ///< FileSize - Edm.Int64
 #pragma mark Entity Media Link Properties
 @property (strong, readonly) MediaLink *mediaLinkRead; ///< Media Link Read - Holds the ODataQuery and Content-Type of the media link for read
 @property (strong, readonly) MediaLink *mediaLinkEdit; ///< Media Link Edit - Holds the ODataQuery and Content-Type of the media link for update
@@ -1427,6 +1433,293 @@
 
 @end
 
+#pragma mark - BusinessPartnerParent
+@interface BusinessPartnerParent : BaseEntityType {
+	URI *m_Website;
+	URI *m_Email;
+	Phone *m_FaxNumber;
+	Phone *m_PhoneNumber;
+	Address *m_Address;
+	URI *m_Twitter;
+	NSString *m_BusinessPartnerParentID;
+	NSString *m_BusinessPartnerName;
+    ODataQuery *m_BusinessPartnersQuery;
+	NSMutableArray *m_BusinessPartners;
+    ODataQuery *m_MediaCollectionQuery;
+	NSMutableArray *m_MediaCollection;
+
+}
+
+@property (strong, nonatomic) URI *Website; ///< Website 
+@property (strong, nonatomic) URI *Email; ///< Email 
+@property (strong, nonatomic) Phone *FaxNumber; ///< FaxNumber 
+@property (strong, nonatomic) Phone *PhoneNumber; ///< PhoneNumber 
+@property (strong, nonatomic) Address *Address; ///< Address 
+@property (strong, nonatomic) URI *Twitter; ///< Twitter 
+@property (strong, nonatomic) NSString *BusinessPartnerParentID; ///< BusinessPartnerParentID - Edm.String
+@property (strong, nonatomic) NSString *BusinessPartnerName; ///< BusinessPartnerName - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *BusinessPartnersQuery;
+@property (strong, nonatomic) NSMutableArray *BusinessPartners;
+@property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
+@property (strong, nonatomic) NSMutableArray *MediaCollection;
+
+#pragma mark Static Methods
+/**
+ Static method that returns an array of BusinessPartnerParent entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to BusinessPartnerParent entities.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of BusinessPartnerParent entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseBusinessPartnerParentEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of BusinessPartnerParent entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to BusinessPartnerParent entities.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of BusinessPartnerParent entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseExpandedBusinessPartnerParentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single BusinessPartnerParent entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a BusinessPartnerParent entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a BusinessPartnerParent entity. Returns nil if the data in invalid.
+*/
++ (BusinessPartnerParent *)parseBusinessPartnerParentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single BusinessPartnerParent entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a BusinessPartnerParent entity.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a BusinessPartnerParent entity. Returns nil if the data in invalid.
+*/
++ (BusinessPartnerParent *)parseExpandedBusinessPartnerParentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of BusinessPartnerParent objects from a given array of SDMODataEntry objects.
+ @param sdmEntries Array of SDMODataEntry objects.
+ @return Array of BusinessPartnerParent objects.
+*/
++ (NSMutableArray *)createBusinessPartnerParentEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
+
+/**
+ Static method that loads the entity schema of this type.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that loads all of the entity type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadLabels:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads BusinessPartners details for this entity from the provided data.
+ @param aData The NSData containing the BusinessPartners information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadBusinessPartnersWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Navigation property. Loads MediaCollection details for this entity from the provided data.
+ @param aData The NSData containing the MediaCollection information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaCollectionWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+
+@end
+
+#pragma mark - MediaForParents
+@interface MediaForParents : BaseEntityType {
+	NSString *m_ParentID;
+	NSString *m_Keyword;
+	NSString *m_MediaType;
+
+}
+
+@property (strong, nonatomic) NSString *ParentID; ///< ParentID - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+
+#pragma mark Static Methods
+/**
+ Static method that returns an array of MediaForParents entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForParents entities.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForParents entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseMediaForParentsEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForParents entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForParents entities.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForParents entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseExpandedMediaForParentsEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForParents entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a MediaForParents entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForParents entity. Returns nil if the data in invalid.
+*/
++ (MediaForParents *)parseMediaForParentsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForParents entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a MediaForParents entity.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForParents entity. Returns nil if the data in invalid.
+*/
++ (MediaForParents *)parseExpandedMediaForParentsEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForParents objects from a given array of SDMODataEntry objects.
+ @param sdmEntries Array of SDMODataEntry objects.
+ @return Array of MediaForParents objects.
+*/
++ (NSMutableArray *)createMediaForParentsEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
+
+/**
+ Static method that loads the entity schema of this type.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that loads all of the entity type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadLabels:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+
+
+@end
+
+#pragma mark - MediaForBPParent
+@interface MediaForBPParent : BaseEntityType {
+	NSString *m_ParentID;
+	NSString *m_Keyword;
+	NSString *m_MediaType;
+    ODataQuery *m_MediaQuery;
+	NSMutableArray *m_Media;
+
+}
+
+@property (strong, nonatomic) NSString *ParentID; ///< ParentID - Edm.String
+@property (strong, nonatomic) NSString *Keyword; ///< Keyword - Edm.String
+@property (strong, nonatomic) NSString *MediaType; ///< MediaType - Edm.String
+#pragma mark Entity Navigation Properties
+@property (strong, nonatomic) ODataQuery *MediaQuery;
+@property (strong, nonatomic) NSMutableArray *Media;
+
+#pragma mark Static Methods
+/**
+ Static method that returns an array of MediaForBPParent entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForBPParent entities.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForBPParent entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseMediaForBPParentEntriesWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForBPParent entities and their related entities from the provided data.
+ @param aData The NSData containing an Atom Feed including the entries to be parsed to MediaForBPParent entities.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForBPParent entities. Returns nil if the data in invalid.
+*/
++ (NSMutableArray *)parseExpandedMediaForBPParentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForBPParent entity from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry to be parsed to a MediaForBPParent entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForBPParent entity. Returns nil if the data in invalid.
+*/
++ (MediaForBPParent *)parseMediaForBPParentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns a single MediaForBPParent entity and related entities from the provided data.
+ @param aData The NSData containing an Atom Entry including the entry and its related entries to be parsed to a MediaForBPParent entity.
+ @param aServiceDocument The SDMODataServiceDocument that represents the service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForBPParent entity. Returns nil if the data in invalid.
+*/
++ (MediaForBPParent *)parseExpandedMediaForBPParentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError * __autoreleasing *)error;
+
+/**
+ Static method that returns an array of MediaForBPParent objects from a given array of SDMODataEntry objects.
+ @param sdmEntries Array of SDMODataEntry objects.
+ @return Array of MediaForBPParent objects.
+*/
++ (NSMutableArray *)createMediaForBPParentEntriesForSDMEntries:(NSMutableArray *)sdmEntries;
+
+/**
+ Static method that loads the entity schema of this type.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that loads all of the entity type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param aService Service document object containing all of the entity type properties.
+*/
++ (void)loadLabels:(SDMODataServiceDocument *)aService;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+
+#pragma mark Entity Navigation Property loading methods
+/**
+ Navigation property. Loads Media details for this entity from the provided data.
+ @param aData The NSData containing the Media information to be parsed.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns YES if the method completed successfully.
+*/
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+
+@end
+
 
 
 #pragma mark - ECCSALESDATA_SRV Service Proxy
@@ -1443,6 +1736,9 @@
     ODataQuery *m_MediaCollectionForMaterialQuery;
     ODataQuery *m_MediasetQuery;
     ODataQuery *m_MediaCollectionForSalesDocumentQuery;
+    ODataQuery *m_BusinessPartnerParentsQuery;
+    ODataQuery *m_MediaForParentsCollectionQuery;
+    ODataQuery *m_MediaCollectionForBPParentQuery;
 
 }
 
@@ -1518,6 +1814,24 @@ The OData query for the MediaForSalesDocument collection.
 (Addressable false, Requires-filter false, Creatable true, Updatable true, Deletable true)
 */
 @property (strong, nonatomic) ODataQuery *MediaCollectionForSalesDocumentQuery;
+
+/**
+The OData query for the BusinessPartnerParent collection.
+(Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
+*/
+@property (strong, nonatomic) ODataQuery *BusinessPartnerParentsQuery;
+
+/**
+The OData query for the MediaForParents collection.
+(Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
+*/
+@property (strong, nonatomic) ODataQuery *MediaForParentsCollectionQuery;
+
+/**
+The OData query for the MediaForBPParent collection.
+(Addressable true, Requires-filter false, Creatable true, Updatable true, Deletable true)
+*/
+@property (strong, nonatomic) ODataQuery *MediaCollectionForBPParentQuery;
 
 
 #pragma mark Service Entity Set methods
@@ -1665,23 +1979,23 @@ The OData query for the MediaForSalesDocument collection.
 
 /**
  Returns the OData query for a specific SalesDocItem entity.
- @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
  @param ItemNumber Part of the SalesDocItem unique identifier (of type Edm.String).
+ @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getSalesDocItemsEntryQueryWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber;
+- (ODataQuery *)getSalesDocItemsEntryQueryWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID;
 
 /**
  Returns the OData query for a specific SalesDocItem entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
  @param ItemNumber Part of the SalesDocItem unique identifier (of type Edm.String).
+ @param OrderID Part of the SalesDocItem unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber;
+- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID;
 
 /**
  Returns a specific SalesDocItem entity from the provided data.
@@ -1700,25 +2014,25 @@ The OData query for the MediaForSalesDocument collection.
 
 /**
  Returns the OData query for a specific MediaForBusinessPartner entity.
- @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
- @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @param Keyword Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  Note: pass the parameter values exactly as they should appear in the query URL, 
  in the correct format according to their types 
  (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword;
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithKeyword:(NSString *)Keyword andBusinessPartnerID:(NSString *)BusinessPartnerID andMediaType:(NSString *)MediaType;
 
 /**
  Returns the OData query for a specific MediaForBusinessPartner entity with typed parameters.
  Note: This method is relevant only for OData compliant services.
- @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
- @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @param Keyword Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param BusinessPartnerID Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForBusinessPartner unique identifier (of type Edm.String).
  @return Returns an OData query object.
 */
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword;
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithKeyword:(NSString *)Keyword andBusinessPartnerID:(NSString *)BusinessPartnerID andMediaType:(NSString *)MediaType;
 
 /**
  Returns a specific MediaForBusinessPartner entity from the provided data.
@@ -1943,6 +2257,113 @@ The OData query for the MediaForSalesDocument collection.
  @return Returns a MediaForSalesDocument entity. Returns nil if the data in invalid.
 */
 - (MediaForSalesDocument *)getMediaCollectionForSalesDocumentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+/**
+ Returns a collection of BusinessPartnerParent entities from the data returned by the OData service.
+ @param aData The NSData returned from the OData service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of BusinessPartnerParent entities.
+*/
+- (NSMutableArray *)getBusinessPartnerParentsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns the OData query for a specific BusinessPartnerParent entity.
+ @param BusinessPartnerParentID Part of the BusinessPartnerParent unique identifier (of type Edm.String).
+ Note: pass the parameter values exactly as they should appear in the query URL, 
+ in the correct format according to their types 
+ (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getBusinessPartnerParentsEntryQueryWithBusinessPartnerParentID:(NSString *)BusinessPartnerParentID;
+
+/**
+ Returns the OData query for a specific BusinessPartnerParent entity with typed parameters.
+ Note: This method is relevant only for OData compliant services.
+ @param BusinessPartnerParentID Part of the BusinessPartnerParent unique identifier (of type Edm.String).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getBusinessPartnerParentsEntryQueryTypedWithBusinessPartnerParentID:(NSString *)BusinessPartnerParentID;
+
+/**
+ Returns a specific BusinessPartnerParent entity from the provided data.
+ @param aData The NSData containing the BusinessPartnerParent information to be parsed to a BusinessPartnerParent entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a BusinessPartnerParent entity. Returns nil if the data in invalid.
+*/
+- (BusinessPartnerParent *)getBusinessPartnerParentsEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+/**
+ Returns a collection of MediaForParents entities from the data returned by the OData service.
+ @param aData The NSData returned from the OData service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForParents entities.
+*/
+- (NSMutableArray *)getMediaForParentsCollectionWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns the OData query for a specific MediaForParents entity.
+ @param ParentID Part of the MediaForParents unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForParents unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForParents unique identifier (of type Edm.String).
+ Note: pass the parameter values exactly as they should appear in the query URL, 
+ in the correct format according to their types 
+ (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaForParentsCollectionEntryQueryWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns the OData query for a specific MediaForParents entity with typed parameters.
+ Note: This method is relevant only for OData compliant services.
+ @param ParentID Part of the MediaForParents unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForParents unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForParents unique identifier (of type Edm.String).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaForParentsCollectionEntryQueryTypedWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns a specific MediaForParents entity from the provided data.
+ @param aData The NSData containing the MediaForParents information to be parsed to a MediaForParents entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForParents entity. Returns nil if the data in invalid.
+*/
+- (MediaForParents *)getMediaForParentsCollectionEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+/**
+ Returns a collection of MediaForBPParent entities from the data returned by the OData service.
+ @param aData The NSData returned from the OData service.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns an array of MediaForBPParent entities.
+*/
+- (NSMutableArray *)getMediaCollectionForBPParentWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+
+/**
+ Returns the OData query for a specific MediaForBPParent entity.
+ @param ParentID Part of the MediaForBPParent unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForBPParent unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForBPParent unique identifier (of type Edm.String).
+ Note: pass the parameter values exactly as they should appear in the query URL, 
+ in the correct format according to their types 
+ (for more information, see: http://www.odata.org/documentation/overview#AbstractTypeSystem).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaCollectionForBPParentEntryQueryWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns the OData query for a specific MediaForBPParent entity with typed parameters.
+ Note: This method is relevant only for OData compliant services.
+ @param ParentID Part of the MediaForBPParent unique identifier (of type Edm.String).
+ @param Keyword Part of the MediaForBPParent unique identifier (of type Edm.String).
+ @param MediaType Part of the MediaForBPParent unique identifier (of type Edm.String).
+ @return Returns an OData query object.
+*/
+- (ODataQuery *)getMediaCollectionForBPParentEntryQueryTypedWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType;
+
+/**
+ Returns a specific MediaForBPParent entity from the provided data.
+ @param aData The NSData containing the MediaForBPParent information to be parsed to a MediaForBPParent entity.
+ @param error A pointer to an NSError object that will hold the error info if one occurs.
+ @return Returns a MediaForBPParent entity. Returns nil if the data in invalid.
+*/
+- (MediaForBPParent *)getMediaCollectionForBPParentEntryWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 #pragma mark Service Function Import methods

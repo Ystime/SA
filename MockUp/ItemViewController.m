@@ -35,6 +35,11 @@ UIImage *matImage;
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.MaterialImage.image=nil;
+}
+
 -(void)viewDidAppear:(BOOL)animated
 {
     if(matImage)

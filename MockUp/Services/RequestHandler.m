@@ -145,37 +145,44 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     return success;
 }
 
--(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug
+#pragma mark - Instance Methods Parents
+
+
+-(void)loadParents
 {
-    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
-    NSMutableData *body = (NSMutableData*)UIImageJPEGRepresentation(photo, 0.7);
-    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
-    if(csrf)
-    {
-        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
-        NSString *result = [request responseStatusMessage];
-        NSLog(@"Result: %@",result);
-        if([result hasPrefix:@"HTTP/1.1 201"])
-            return YES;
-    }
-    return NO;
+    ODataQuery *query = service.BusinessPartnerParentsQuery;
+    [query expand:@"BusinessPartners"];
+    [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadParentsCompleted:) andUserInfo:nil];
 }
 
--(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa
+
+
+-(void)loadParentsCompleted:(id<SDMRequesting>)request
 {
-    NSString *slug= [NSString stringWithFormat:@"Keyword='%@_Time:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Note'",title,[NSDate date],bupa.BusinessPartnerID];
-    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"text/plain" andSlug:slug];
-    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
-    NSMutableData *body =  (NSMutableData*)[note dataUsingEncoding:NSUTF8StringEncoding];
-    if(csrf)
+    NSMutableDictionary *parents = [NSMutableDictionary dictionary];
+    NSError *error;
+    NSDictionary *userinfo;
+    
+    NSArray *tempParents = [service getBusinessPartnerParentsWithData:[request responseData] error:&error];
+    if(error)
+        userinfo = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
+    else
     {
-        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
-        NSString *result = [request responseStatusMessage];
-        NSLog(@"Result: %@",result);
-        if([result hasPrefix:@"HTTP/1.1 201"])
-            return YES;
+        for(BusinessPartnerParent *parent in tempParents)
+        {
+            if(parent.BusinessPartners.count >0)
+                [parents setObject:parent forKey:parent.BusinessPartnerParentID];
+        }
+        userinfo = [NSDictionary dictionaryWithObject:parents forKey:kResponseItems];
     }
-    return NO;
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:userinfo];
+}
+
+
+-(void)loadHierarchyWithRootNode:(NSString*)bupaID
+{
+    
 }
 
 #pragma mark - Instance Methods Contacts
@@ -452,6 +459,130 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         [[NSNotificationCenter defaultCenter]postNotificationName:kPicturesLoaded object:self userInfo:temp];
 }
 
+
+
+
+-(void)loadImagesforMaterials:(NSArray*)materials;
+{
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    if([SettingsUtilities getDemoStatus])
+    {
+        for(NSString *string in materials)
+        {
+            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.jpg",string]] forKey:string];
+        }
+    }
+    else
+    {
+        NSError *error;
+        for(NSString *materialID in materials)
+        {
+            ODataQuery *query = [service getMediaCollectionForMaterialEntryQueryWithMaterialNumber:materialID andKeyword:@"thumbnail" andMediaType:@"Attachment"];
+            id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
+            Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
+            if(!error)
+            {
+                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
+                UIImage *thumbnail = [UIImage imageWithData:[requestImage responseData]];
+                if(thumbnail)
+                    [dic setObject:thumbnail forKey:materialID];
+            }
+        }
+    }
+    NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
+}
+
+
+-(void)loadImagesForParents:(NSArray*)parentIDs
+{
+    NSMutableDictionary *parentsPic = [NSMutableDictionary dictionary];
+    NSError *error;
+    [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
+    for(NSString *parent in parentIDs)
+    {
+        ODataQuery *query = [service getMediaCollectionForBPParentEntryQueryWithParentID:parent andKeyword:@"LOGO" andMediaType:@"Attachment"];
+        id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
+        Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
+        if(!error)
+        {
+            id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
+            UIImage *logo = [UIImage imageWithData:requestImage.responseData];
+            if(logo)
+                [parentsPic setObject:logo forKey:parent];
+            else
+                [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
+        }
+        else
+            [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];					
+
+    }
+    NSDictionary *userinfo;
+    if(parentsPic.count > 0)
+        userinfo = [NSDictionary dictionaryWithObject:parentsPic forKey:kResponseItems];
+    else
+        userinfo = [NSDictionary dictionaryWithObject:@"No pics found!" forKey:kResponseError];
+    [[NSNotificationCenter defaultCenter]postNotificationName:kParentsPicLoaded object:self userInfo:userinfo];
+    
+}
+-(void)loadImagesforContacts:(NSArray*)contacts;
+{
+    NSMutableDictionary *photos = [NSMutableDictionary dictionary];
+    NSString *noImages;
+    if([SettingsUtilities getDemoStatus])
+    {
+    }
+    else
+    {
+        
+        for(ContactPerson *cp in contacts)
+        {
+            if(!viewVisible)
+                return;
+            NSError *error;
+            id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:[service getMediasetEntryQueryWithKeyword:@"Passphoto" andRelatedID:cp.ContactPersonID andSource:@"MediaForContactPerson" andMediaType:@"Attachment"]];
+            Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
+            if(!error)
+            {
+                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
+                UIImage *passPhoto = [UIImage imageWithData:requestImage.responseData];
+                if(passPhoto)
+                    [photos setObject:passPhoto forKey:cp.ContactPersonID];
+            }
+            else
+            {
+                if(!noImages)
+                    noImages = @"No Images found!";
+            }
+        }
+    }
+    NSMutableDictionary *temp = [NSMutableDictionary dictionary];
+    
+    if(photos.count > 0)
+        [temp setObject:photos forKey:kResponseItems];
+    if(noImages)
+        [temp setObject:noImages forKey:kResponseError];
+    if(viewVisible)
+        [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
+}
+
+-(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug
+{
+    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
+    NSMutableData *body = (NSMutableData*)UIImageJPEGRepresentation(photo, 0.7);
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+    if(csrf)
+    {
+        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
+        NSString *result = [request responseStatusMessage];
+        NSLog(@"Result: %@",result);
+        if([result hasPrefix:@"HTTP/1.1 201"])
+            return YES;
+    }
+    return NO;
+}
+
+#pragma mark - Methods for Notes
 -(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref
 {
     NSMutableDictionary *notes= [NSMutableDictionary dictionary];
@@ -511,102 +642,26 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     }
 }
 
-
--(void)loadImagesforMaterials:(NSArray*)materials;
+-(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa
 {
-    if([SettingsUtilities getDemoStatus])
+    NSString *slug= [NSString stringWithFormat:@"Keyword='%@_Time:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Note'",title,[NSDate date],bupa.BusinessPartnerID];
+    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"text/plain" andSlug:slug];
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+    NSMutableData *body =  (NSMutableData*)[note dataUsingEncoding:NSUTF8StringEncoding];
+    if(csrf)
     {
-        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-        for(NSString *string in materials)
-        {
-            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.jpg",string]] forKey:string];
-        }
-        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
+        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
+        NSString *result = [request responseStatusMessage];
+        NSLog(@"Result: %@",result);
+        if([result hasPrefix:@"HTTP/1.1 201"])
+            return YES;
     }
-    else
-    {
-        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-        for(NSString *string in materials)
-        {
-            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png",string]] forKey:string];
-        }
-        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresLoaded object:self userInfo:temp];
-    }
+    return NO;
 }
 
--(void)loadImagesforContacts:(NSArray*)contacts;
-{
-    NSMutableDictionary *photos = [NSMutableDictionary dictionary];
-    NSString *noImages;
-    if([SettingsUtilities getDemoStatus])
-    {
-    }
-    else
-    {
-        
-        for(ContactPerson *cp in contacts)
-        {
-            if(!viewVisible)
-                return;
-            NSError *error;
-            id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:[service getMediasetEntryQueryWithKeyword:@"Passphoto" andRelatedID:cp.ContactPersonID andSource:@"MediaForContactPerson" andMediaType:@"Attachment"]];
-            Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
-            if(!error)
-            {
-                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
-                UIImage *passPhoto = [UIImage imageWithData:requestImage.responseData];
-                if(passPhoto)
-                    [photos setObject:passPhoto forKey:cp.ContactPersonID];
-            }
-            else
-            {
-                if(!noImages)
-                    noImages = @"No Images found!";
-            }
-        }
-    }
-    NSMutableDictionary *temp = [NSMutableDictionary dictionary];
-    
-    if(photos.count > 0)
-        [temp setObject:photos forKey:kResponseItems];
-    if(noImages)
-        [temp setObject:noImages forKey:kResponseError];
-    if(viewVisible)
-        [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
-}
+
 #pragma mark - Instance Methods Hierarchy
 
--(void)loadHierarchyWithRootNode:(NSString*)bupaID
-{
-    if([SettingsUtilities getDemoStatus])
-    {
-        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-        if([bupaID isEqualToString:@""])
-        {
-            [dic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
-            
-        }
-        [dic setObject:[UIImage imageNamed:@"Scheer.png"] forKey:@"Scheer"];
-        [dic setObject:[UIImage imageNamed:@"NL4B.png"] forKey:@"NL4B"];
-        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:temp];
-    }
-    else
-    {
-        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-        if([bupaID isEqualToString:@""])
-        {
-            [dic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
-            
-        }
-        [dic setObject:[UIImage imageNamed:@"logoAH.png"] forKey:@"Albert Heijn"];
-        [dic setObject:[UIImage imageNamed:@"ETOS.png"] forKey:@"Etos"];
-        NSDictionary *temp = [NSDictionary dictionaryWithObject:dic forKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:temp];
-    }
-}
 #pragma mark - Instance Methods Log In
 
 - (BOOL)loginWithUsername:(NSString *)aUsername andPassword:(NSString *)aPassword error:(NSError * __autoreleasing *)error

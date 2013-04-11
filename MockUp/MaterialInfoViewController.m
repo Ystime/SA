@@ -91,7 +91,7 @@ AFOpenFlowView *matFlow;
         for(int i = 0;i<materials.count;i++)
         {
             Material *temp = materials[i];
-            [matFlow setImage:[matPics objectForKey:temp.MaterialNumber] forIndex:i];
+            [matFlow setImage:[UIImage imageWithImage:[matPics objectForKey:temp.MaterialNumber] scaledToSize:CGSizeMake(150, 150)] forIndex:i];
         }
         matFlow.viewDelegate = self;
         [self.TopCell addSubview:matFlow];

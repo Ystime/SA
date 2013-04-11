@@ -21,8 +21,9 @@ AFOpenFlowView *logoFlow;
 LGViewHUD *hudBUPAS;
 int selectedRow = -1;
 NSMutableDictionary *hierLogos;
-NSArray *hierLabels;
+NSMutableArray *parentKeys;
 NSMutableArray *visibleTypes;
+NSMutableDictionary *parents;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -54,8 +55,8 @@ NSMutableArray *visibleTypes;
     
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processingResultGetBusinessPartners:) name:kLoadBusinessPartnersCompletedNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kLoadHierarchyCompletedNotification object:nil];
-    [[RequestHandler uniqueInstance]loadHierarchyWithRootNode:@""];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(parentsLoaded:) name:kLoadHierarchyCompletedNotification object:nil];
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadParents) withObject:nil];
     
     
     //Start requesting BUPAs
@@ -313,6 +314,20 @@ NSMutableArray *visibleTypes;
     return result;
 }
 
+#pragma mark - Loading Hierarchy
+-(void)parentsLoaded:(NSNotification*)notification
+{
+    if([notification.userInfo objectForKey:kResponseError])
+        self.FlowLabel.text = @"Unable to load";
+    else
+    {
+        parents = [notification.userInfo objectForKey:kResponseItems];
+        parentKeys = [NSMutableArray arrayWithArray:parents.allKeys];
+        [parentKeys insertObject:@"All" atIndex:0];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kParentsPicLoaded object:nil];
+        [[RequestHandler uniqueInstance]loadImagesForParents:parents.allKeys];
+    }
+}
 
 #pragma mark - MapView Delegate Functions
 
@@ -374,7 +389,7 @@ NSMutableArray *visibleTypes;
 -(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
     if([view.annotation isKindOfClass:[SuspectAnnotation class]])
-    {
+    { 
         [self performSegueWithIdentifier:@"Details" sender:view.annotation];
     }
     else if([view.annotation isKindOfClass:[CustomerAnnotation class]])
@@ -397,28 +412,34 @@ NSMutableArray *visibleTypes;
 {
     /*Mocking up the logo flow*/
     hierLogos = [notification.userInfo objectForKey:kResponseItems];
-    hierLabels = [hierLogos allKeys];
     logoFlow = nil;
     logoFlow = [[AFOpenFlowView alloc]initWithFrame:self.FlowView.bounds];
-    logoFlow.numberOfImages = hierLabels.count;
+    logoFlow.numberOfImages = parentKeys.count;
     logoFlow.viewDelegate = self;
-    for(int i = 0;i<hierLabels.count;i++)
+    for(int i = 0;i<parentKeys.count;i++)
     {
-        UIImage *temp = [UIImage imageWithImage:[hierLogos objectForKey:hierLabels[i]] scaledToSize:CGSizeMake(150, 150)];
+        UIImage *temp = [UIImage imageWithImage:[hierLogos objectForKey:parentKeys[i]] scaledToSize:CGSizeMake(150, 150)];
         [logoFlow setImage:temp forIndex:i];
     }
+    [self.FlowView addSubview:logoFlow];
 }
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
     self.CustomerSearchField.text = @"";
     
-    NSString *title = hierLabels[index];
-    if([title isEqualToString:@"All"])
+    NSString *bupaID = parentKeys[index];
+    if([bupaID isEqualToString:@"All"])
+    {
+        self.FlowLabel.text = bupaID;
         VisibleBusinessPartners = BusinessPartners;
+    }
     else
-        VisibleBusinessPartners = [self filterBupaArray:BusinessPartners onText:title];
+    {
+        BusinessPartnerParent *tempParent = [parents objectForKey:bupaID];
+        VisibleBusinessPartners = tempParent.BusinessPartners;
+        self.FlowLabel.text = tempParent.BusinessPartnerName;
+    }
     
-    self.FlowLabel.text = title;
     
     bupasForLogo = VisibleBusinessPartners;
     VisibleBusinessPartners = [self filterBupaArray:bupasForLogo];

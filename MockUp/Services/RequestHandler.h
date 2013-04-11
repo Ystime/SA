@@ -42,7 +42,9 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 #define ERROR_DOMAIN @"SAP Netweaver Gateway Application"
 #define kPicturesLoaded @"BUPA Pictures have been recieved"
 #define kNotesLoaded @"BUPA Notes have been recieved"
+#define kParentsLoaded @"Parents have been recieved"
 #define kPassPhotosLoaded @"Contact Pictures have been recieved"
+#define kParentsPicLoaded @"Parents Logos have been recieved"
 #define kMaterialPicuresLoaded @"Material pictures have been recieved"
 #define kAlertsLoaded @"Alerts have been recieved"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
@@ -90,7 +92,9 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (void)loadBusinessPartners;
 - (BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
 - (void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
--(void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref;
+- (void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref;
+- (void)loadParents;
+-(void)loadImagesForParents:(NSArray*)parentIDs;
 - (void)loadHierarchyWithRootNode:(NSString*)bupaID;
 
 /*RequestHandler Methods for Contact Person Object*/

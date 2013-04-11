@@ -117,9 +117,6 @@
 		DA1350E416DCABBA001252EB /* RO.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1350E116DCABBA001252EB /* RO.png */; };
 		DA1C8A0A16E5F31300D1A1EA /* PullableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1C8A0716E5F31300D1A1EA /* PullableView.m */; };
 		DA1C8A0B16E5F31300D1A1EA /* StyledPullableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1C8A0916E5F31300D1A1EA /* StyledPullableView.m */; };
-		DA29855716FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m in Sources */ = {isa = PBXBuildFile; fileRef = DA29855616FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m */; };
-		DA29855A16FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceDocument.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA29855816FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceDocument.xml */; };
-		DA29855B16FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA29855916FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceMetadata.xml */; };
 		DA2DB2D916E88CB300145FD9 /* SoldToController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2DB2D816E88CB300145FD9 /* SoldToController.m */; };
 		DA30867217142C21000130F9 /* Prospect_BTN.png in Resources */ = {isa = PBXBuildFile; fileRef = DA30867017142C21000130F9 /* Prospect_BTN.png */; };
 		DA30867317142C21000130F9 /* Competitor_BTN.png in Resources */ = {isa = PBXBuildFile; fileRef = DA30867117142C21000130F9 /* Competitor_BTN.png */; };
@@ -290,6 +287,9 @@
 		DAC962E616E9F53800652CAC /* Front 1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DAC962E316E9F53800652CAC /* Front 1.jpeg */; };
 		DAC962E716E9F53800652CAC /* Shelf.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAC962E416E9F53800652CAC /* Shelf.jpg */; };
 		DAC962EA16EA196F00652CAC /* DemoBW.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC962E916EA196F00652CAC /* DemoBW.m */; };
+		DACB85F817169BAC0099A9D0 /* ECCSALESDATA_SRVService.m in Sources */ = {isa = PBXBuildFile; fileRef = DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */; };
+		DACB85FB17169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */ = {isa = PBXBuildFile; fileRef = DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */; };
+		DACB85FC17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */ = {isa = PBXBuildFile; fileRef = DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */; };
 		DACC379416C2635E0016CF5F /* GlobalFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = DACC379316C2635E0016CF5F /* GlobalFunctions.m */; };
 		DAD4FE2316BBF2FD00753536 /* Compa_ON.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4FE1F16BBF2FD00753536 /* Compa_ON.png */; };
 		DAD4FE2416BBF2FD00753536 /* Compa_OFF.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4FE2016BBF2FD00753536 /* Compa_OFF.png */; };
@@ -507,10 +507,6 @@
 		DA1C8A0716E5F31300D1A1EA /* PullableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullableView.m; sourceTree = "<group>"; };
 		DA1C8A0816E5F31300D1A1EA /* StyledPullableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPullableView.h; sourceTree = "<group>"; };
 		DA1C8A0916E5F31300D1A1EA /* StyledPullableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPullableView.m; sourceTree = "<group>"; };
-		DA29855516FB4EC400CCAB1C /* ECCSALESDATA_SRVService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECCSALESDATA_SRVService.h; sourceTree = "<group>"; };
-		DA29855616FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECCSALESDATA_SRVService.m; sourceTree = "<group>"; };
-		DA29855816FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceDocument.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceDocument.xml; sourceTree = "<group>"; };
-		DA29855916FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceMetadata.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceMetadata.xml; sourceTree = "<group>"; };
 		DA2DB2D716E88CB300145FD9 /* SoldToController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoldToController.h; sourceTree = "<group>"; };
 		DA2DB2D816E88CB300145FD9 /* SoldToController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoldToController.m; sourceTree = "<group>"; };
 		DA30867017142C21000130F9 /* Prospect_BTN.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Prospect_BTN.png; sourceTree = "<group>"; };
@@ -808,6 +804,10 @@
 		DAC962E416E9F53800652CAC /* Shelf.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Shelf.jpg; sourceTree = "<group>"; };
 		DAC962E816EA196F00652CAC /* DemoBW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoBW.h; sourceTree = "<group>"; };
 		DAC962E916EA196F00652CAC /* DemoBW.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoBW.m; sourceTree = "<group>"; };
+		DACB85F617169BAC0099A9D0 /* ECCSALESDATA_SRVService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECCSALESDATA_SRVService.h; sourceTree = "<group>"; };
+		DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECCSALESDATA_SRVService.m; sourceTree = "<group>"; };
+		DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceDocument.xml; sourceTree = "<group>"; };
+		DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceMetadata.xml; sourceTree = "<group>"; };
 		DACC379216C2635E0016CF5F /* GlobalFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalFunctions.h; sourceTree = "<group>"; };
 		DACC379316C2635E0016CF5F /* GlobalFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalFunctions.m; sourceTree = "<group>"; };
 		DAD4FE1F16BBF2FD00753536 /* Compa_ON.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Compa_ON.png; sourceTree = "<group>"; };
@@ -1351,8 +1351,8 @@
 		DA4208E1169C6A4400788BE5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DA29855516FB4EC400CCAB1C /* ECCSALESDATA_SRVService.h */,
-				DA29855616FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m */,
+				DACB85F617169BAC0099A9D0 /* ECCSALESDATA_SRVService.h */,
+				DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */,
 				DAB2318816DCE25400B68DD5 /* BW Services */,
 				DADD9E2416CE3ECD00A6A0A5 /* RequestHandler.h */,
 				DADD9E5016CE4A7900A6A0A5 /* RequestHandler.m */,
@@ -1366,8 +1366,8 @@
 		DA4208F9169C6A4400788BE5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DA29855816FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceDocument.xml */,
-				DA29855916FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceMetadata.xml */,
+				DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */,
+				DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -2110,8 +2110,6 @@
 				DA6A748116F8B25800600FFC /* zbar-help.html in Resources */,
 				DA6A748216F8B25800600FFC /* zbar-helpicons.png in Resources */,
 				DA6A748316F8B25800600FFC /* zbar-samples.png in Resources */,
-				DA29855A16FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceDocument.xml in Resources */,
-				DA29855B16FB4ECC00CCAB1C /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */,
 				DA9408EA17004B6B00D85043 /* add_photo.png in Resources */,
 				DA55172D1701A1180031DEC2 /* add_note.png in Resources */,
 				DA5517351701B0EF0031DEC2 /* Orange_Pin2.png in Resources */,
@@ -2184,6 +2182,8 @@
 				DAB163651713063200036099 /* MainStoryboard.storyboard in Resources */,
 				DA30867217142C21000130F9 /* Prospect_BTN.png in Resources */,
 				DA30867317142C21000130F9 /* Competitor_BTN.png in Resources */,
+				DACB85FB17169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */,
+				DACB85FC17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2267,7 +2267,6 @@
 				DA4ADE7816F8ABA000DF9DD0 /* ODataQuery.m in Sources */,
 				DA4ADE7916F8ABA000DF9DD0 /* SDMConnectivityHelper.m in Sources */,
 				DA4ADE7A16F8ABA000DF9DD0 /* TypeConverter.m in Sources */,
-				DA29855716FB4EC400CCAB1C /* ECCSALESDATA_SRVService.m in Sources */,
 				DA65CD9D170C032200682E50 /* EQ_SALESORDERS_1_SRVService.m in Sources */,
 				DA0FF864170ED11C00F4EC22 /* ExtrasView.m in Sources */,
 				DA0FF868170ED5C700F4EC22 /* PersNoteCell.m in Sources */,
@@ -2320,6 +2319,7 @@
 				DA0FF934170EFA1900F4EC22 /* MIMWallGraph.m in Sources */,
 				DA0FF935170EFA1900F4EC22 /* MultiWallLongGraph.m in Sources */,
 				DA6A1B2E1712E9FF00D974DE /* ZAPP_AR01Service.m in Sources */,
+				DACB85F817169BAC0099A9D0 /* ECCSALESDATA_SRVService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

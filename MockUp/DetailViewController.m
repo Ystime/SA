@@ -139,6 +139,7 @@ LGViewHUD *createHUD;
         bupa.Address = [[Address alloc]init];
         bupa.Email = [[URI alloc]init];
         bupa.Website = [[URI alloc]init];
+        bupa.Twitter =  [[URI alloc]init];
         bupa.PhoneNumber = [[Phone alloc]init];
         bupa.FaxNumber = [[Phone alloc]init];
         bupa.Address.GeoCode = [[GeoCode alloc]init];

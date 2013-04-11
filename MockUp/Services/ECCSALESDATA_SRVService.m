@@ -350,6 +350,7 @@ static NSMutableDictionary *documentStatusLabels = nil;
 @synthesize FaxNumber = m_FaxNumber;
 @synthesize PhoneNumber = m_PhoneNumber;
 @synthesize Address = m_Address;
+@synthesize Twitter = m_Twitter;
 @synthesize Gender = m_Gender;
 @synthesize RelatedPartnerID = m_RelatedPartnerID;
 @synthesize LastName = m_LastName;
@@ -395,6 +396,7 @@ static SDMODataEntitySchema *contactPersonEntitySchema = nil;
 		[self.FaxNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"FaxNumber" error:&innerError];
 		[self.PhoneNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"PhoneNumber" error:&innerError];
 		[self.Address setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Address" error:&innerError];
+		[self.Twitter setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Twitter" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Gender forSDMPropertyWithName:@"Gender" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.RelatedPartnerID forSDMPropertyWithName:@"RelatedPartnerID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.LastName forSDMPropertyWithName:@"LastName" error:&innerError];
@@ -439,6 +441,9 @@ static SDMODataEntitySchema *contactPersonEntitySchema = nil;
 				if ([property.name isEqualToString:@"Address"]) {
 	                [Address loadLabels:property.children];
 	            }
+				if ([property.name isEqualToString:@"Twitter"]) {
+	                [URI loadLabels:property.children];
+	            }
 	        	[contactPersonLabels setValue:property.label forKey:property.name];
 	    	}
 	    }
@@ -461,6 +466,7 @@ static SDMODataEntitySchema *contactPersonEntitySchema = nil;
 	m_FaxNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"FaxNumber"]];
 	m_PhoneNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"PhoneNumber"]];
 	m_Address = [[Address alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Address"]];
+	m_Twitter = [[URI alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Twitter"]];
 	m_Gender = [self getStringValueForSDMPropertyWithName:@"Gender"];
 	m_RelatedPartnerID = [self getStringValueForSDMPropertyWithName:@"RelatedPartnerID"];
 	m_LastName = [self getStringValueForSDMPropertyWithName:@"LastName"];
@@ -553,9 +559,11 @@ static SDMODataEntitySchema *contactPersonEntitySchema = nil;
 @synthesize FaxNumber = m_FaxNumber;
 @synthesize PhoneNumber = m_PhoneNumber;
 @synthesize Address = m_Address;
+@synthesize Twitter = m_Twitter;
 @synthesize BusinessPartnerName = m_BusinessPartnerName;
 @synthesize BusinessPartnerType = m_BusinessPartnerType;
 @synthesize BusinessPartnerID = m_BusinessPartnerID;
+@synthesize ParentID = m_ParentID;
 @synthesize ContactPersonsQuery = m_ContactPersonsQuery;
 @synthesize ContactPersons = m_ContactPersons;
 @synthesize MediaCollectionQuery = m_MediaCollectionQuery;
@@ -605,9 +613,11 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
 		[self.FaxNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"FaxNumber" error:&innerError];
 		[self.PhoneNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"PhoneNumber" error:&innerError];
 		[self.Address setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Address" error:&innerError];
+		[self.Twitter setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Twitter" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerName forSDMPropertyWithName:@"BusinessPartnerName" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerType forSDMPropertyWithName:@"BusinessPartnerType" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerID forSDMPropertyWithName:@"BusinessPartnerID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ParentID forSDMPropertyWithName:@"ParentID" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -646,6 +656,9 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
 				if ([property.name isEqualToString:@"Address"]) {
 	                [Address loadLabels:property.children];
 	            }
+				if ([property.name isEqualToString:@"Twitter"]) {
+	                [URI loadLabels:property.children];
+	            }
 	        	[businessPartnerLabels setValue:property.label forKey:property.name];
 	    	}
 	    }
@@ -668,9 +681,11 @@ static SDMODataEntitySchema *businessPartnerEntitySchema = nil;
 	m_FaxNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"FaxNumber"]];
 	m_PhoneNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"PhoneNumber"]];
 	m_Address = [[Address alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Address"]];
+	m_Twitter = [[URI alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Twitter"]];
 	m_BusinessPartnerName = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerName"];
 	m_BusinessPartnerType = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerType"];
 	m_BusinessPartnerID = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerID"];
+	m_ParentID = [self getStringValueForSDMPropertyWithName:@"ParentID"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -965,17 +980,17 @@ static SDMODataEntitySchema *materialEntitySchema = nil;
 
 @synthesize Status = m_Status;
 @synthesize OrderID = m_OrderID;
-@synthesize CustomerPurchaseOrderNumber = m_CustomerPurchaseOrderNumber;
-@synthesize RequestedDeliveryDate = m_RequestedDeliveryDate;
 @synthesize OrderType = m_OrderType;
-@synthesize Currency = m_Currency;
-@synthesize NetValue = m_NetValue;
-@synthesize Division = m_Division;
 @synthesize Description = m_Description;
-@synthesize DistributionChannel = m_DistributionChannel;
-@synthesize SalesOrganization = m_SalesOrganization;
-@synthesize CustomerID = m_CustomerID;
 @synthesize DocumentDate = m_DocumentDate;
+@synthesize CustomerID = m_CustomerID;
+@synthesize SalesOrganization = m_SalesOrganization;
+@synthesize DistributionChannel = m_DistributionChannel;
+@synthesize Division = m_Division;
+@synthesize NetValue = m_NetValue;
+@synthesize Currency = m_Currency;
+@synthesize RequestedDeliveryDate = m_RequestedDeliveryDate;
+@synthesize CustomerPurchaseOrderNumber = m_CustomerPurchaseOrderNumber;
 @synthesize ItemsQuery = m_ItemsQuery;
 @synthesize Items = m_Items;
 
@@ -1012,17 +1027,17 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
         NSError *innerError = nil;
 		[self.Status setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Status" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerPurchaseOrderNumber forSDMPropertyWithName:@"CustomerPurchaseOrderNumber" error:&innerError];
-    	[BaseODataObject setDateTimeValueForSDMEntry:m_SDMEntry withValue:self.RequestedDeliveryDate forSDMPropertyWithName:@"RequestedDeliveryDate" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderType forSDMPropertyWithName:@"OrderType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Currency forSDMPropertyWithName:@"Currency" error:&innerError];
-    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Division forSDMPropertyWithName:@"Division" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.DistributionChannel forSDMPropertyWithName:@"DistributionChannel" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.SalesOrganization forSDMPropertyWithName:@"SalesOrganization" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerID forSDMPropertyWithName:@"CustomerID" error:&innerError];
     	[BaseODataObject setDateTimeValueForSDMEntry:m_SDMEntry withValue:self.DocumentDate forSDMPropertyWithName:@"DocumentDate" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerID forSDMPropertyWithName:@"CustomerID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.SalesOrganization forSDMPropertyWithName:@"SalesOrganization" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.DistributionChannel forSDMPropertyWithName:@"DistributionChannel" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Division forSDMPropertyWithName:@"Division" error:&innerError];
+    	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Currency forSDMPropertyWithName:@"Currency" error:&innerError];
+    	[BaseODataObject setDateTimeValueForSDMEntry:m_SDMEntry withValue:self.RequestedDeliveryDate forSDMPropertyWithName:@"RequestedDeliveryDate" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.CustomerPurchaseOrderNumber forSDMPropertyWithName:@"CustomerPurchaseOrderNumber" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1068,17 +1083,17 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
     [super loadProperties];
 	m_Status = [[DocumentStatus alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Status"]];
 	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
-	m_CustomerPurchaseOrderNumber = [self getStringValueForSDMPropertyWithName:@"CustomerPurchaseOrderNumber"];
-	m_RequestedDeliveryDate = [self getDateTimeValueForSDMPropertyWithName:@"RequestedDeliveryDate"];
 	m_OrderType = [self getStringValueForSDMPropertyWithName:@"OrderType"];
-	m_Currency = [self getStringValueForSDMPropertyWithName:@"Currency"];
-	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
-	m_Division = [self getStringValueForSDMPropertyWithName:@"Division"];
 	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
-	m_DistributionChannel = [self getStringValueForSDMPropertyWithName:@"DistributionChannel"];
-	m_SalesOrganization = [self getStringValueForSDMPropertyWithName:@"SalesOrganization"];
-	m_CustomerID = [self getStringValueForSDMPropertyWithName:@"CustomerID"];
 	m_DocumentDate = [self getDateTimeValueForSDMPropertyWithName:@"DocumentDate"];
+	m_CustomerID = [self getStringValueForSDMPropertyWithName:@"CustomerID"];
+	m_SalesOrganization = [self getStringValueForSDMPropertyWithName:@"SalesOrganization"];
+	m_DistributionChannel = [self getStringValueForSDMPropertyWithName:@"DistributionChannel"];
+	m_Division = [self getStringValueForSDMPropertyWithName:@"Division"];
+	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
+	m_Currency = [self getStringValueForSDMPropertyWithName:@"Currency"];
+	m_RequestedDeliveryDate = [self getDateTimeValueForSDMPropertyWithName:@"RequestedDeliveryDate"];
+	m_CustomerPurchaseOrderNumber = [self getStringValueForSDMPropertyWithName:@"CustomerPurchaseOrderNumber"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -1161,8 +1176,6 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
 @implementation SalesDocItem 
 
 @synthesize Status = m_Status;
-@synthesize OrderID = m_OrderID;
-@synthesize ItemNumber = m_ItemNumber;
 @synthesize Material = m_Material;
 @synthesize Description = m_Description;
 @synthesize Plant = m_Plant;
@@ -1170,6 +1183,8 @@ static SDMODataEntitySchema *salesDocumentEntitySchema = nil;
 @synthesize UoM = m_UoM;
 @synthesize NetPrice = m_NetPrice;
 @synthesize NetValue = m_NetValue;
+@synthesize ItemNumber = m_ItemNumber;
+@synthesize OrderID = m_OrderID;
 @synthesize SalesDocumentQuery = m_SalesDocumentQuery;
 @synthesize SalesDocument = m_SalesDocument;
 
@@ -1205,8 +1220,6 @@ static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
     if (m_SDMEntry) {
         NSError *innerError = nil;
 		[self.Status setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Status" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ItemNumber forSDMPropertyWithName:@"ItemNumber" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Material forSDMPropertyWithName:@"Material" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Description forSDMPropertyWithName:@"Description" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Plant forSDMPropertyWithName:@"Plant" error:&innerError];
@@ -1214,6 +1227,8 @@ static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.UoM forSDMPropertyWithName:@"UoM" error:&innerError];
     	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetPrice forSDMPropertyWithName:@"NetPrice" error:&innerError];
     	[BaseODataObject setDecimalValueForSDMEntry:m_SDMEntry withValue:self.NetValue forSDMPropertyWithName:@"NetValue" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ItemNumber forSDMPropertyWithName:@"ItemNumber" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.OrderID forSDMPropertyWithName:@"OrderID" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1258,8 +1273,6 @@ static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
 {
     [super loadProperties];
 	m_Status = [[DocumentStatus alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Status"]];
-	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
-	m_ItemNumber = [self getStringValueForSDMPropertyWithName:@"ItemNumber"];
 	m_Material = [self getStringValueForSDMPropertyWithName:@"Material"];
 	m_Description = [self getStringValueForSDMPropertyWithName:@"Description"];
 	m_Plant = [self getStringValueForSDMPropertyWithName:@"Plant"];
@@ -1267,6 +1280,8 @@ static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
 	m_UoM = [self getStringValueForSDMPropertyWithName:@"UoM"];
 	m_NetPrice = [self getDecimalValueForSDMPropertyWithName:@"NetPrice"];
 	m_NetValue = [self getDecimalValueForSDMPropertyWithName:@"NetValue"];
+	m_ItemNumber = [self getStringValueForSDMPropertyWithName:@"ItemNumber"];
+	m_OrderID = [self getStringValueForSDMPropertyWithName:@"OrderID"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -1348,9 +1363,9 @@ static SDMODataEntitySchema *salesDocItemEntitySchema = nil;
 #pragma mark - MediaForBusinessPartner
 @implementation MediaForBusinessPartner 
 
-@synthesize MediaType = m_MediaType;
-@synthesize BusinessPartnerID = m_BusinessPartnerID;
 @synthesize Keyword = m_Keyword;
+@synthesize BusinessPartnerID = m_BusinessPartnerID;
+@synthesize MediaType = m_MediaType;
 @synthesize MediaQuery = m_MediaQuery;
 @synthesize Media = m_Media;
 
@@ -1385,9 +1400,9 @@ static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
 {
     if (m_SDMEntry) {
         NSError *innerError = nil;
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
-    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerID forSDMPropertyWithName:@"BusinessPartnerID" error:&innerError];
     	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerID forSDMPropertyWithName:@"BusinessPartnerID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
         [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
         if (innerError) {
             if (error) {
@@ -1428,9 +1443,9 @@ static SDMODataEntitySchema *mediaForBusinessPartnerEntitySchema = nil;
 - (void)loadProperties
 {
     [super loadProperties];
-	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
-	m_BusinessPartnerID = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerID"];
 	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_BusinessPartnerID = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerID"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
 }
 
 - (void)loadNavigationPropertyQueries
@@ -2432,6 +2447,511 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 
 @end
 
+#pragma mark - BusinessPartnerParent
+@implementation BusinessPartnerParent 
+
+@synthesize Website = m_Website;
+@synthesize Email = m_Email;
+@synthesize FaxNumber = m_FaxNumber;
+@synthesize PhoneNumber = m_PhoneNumber;
+@synthesize Address = m_Address;
+@synthesize Twitter = m_Twitter;
+@synthesize BusinessPartnerParentID = m_BusinessPartnerParentID;
+@synthesize BusinessPartnerName = m_BusinessPartnerName;
+@synthesize BusinessPartnersQuery = m_BusinessPartnersQuery;
+@synthesize BusinessPartners = m_BusinessPartners;
+@synthesize MediaCollectionQuery = m_MediaCollectionQuery;
+@synthesize MediaCollection = m_MediaCollection;
+
+static NSMutableDictionary *businessPartnerParentLabels = nil;
+static SDMODataEntitySchema *businessPartnerParentEntitySchema = nil;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:businessPartnerParentEntitySchema error:nil];
+        if (!m_SDMEntry) {
+            return nil;
+        }        
+        m_properties = nil;
+        m_baseUrl = nil;
+    }
+    return self;
+}
+
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.BusinessPartners count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.BusinessPartners] forKey:@"BusinessPartners"];
+    }
+    if ([self.MediaCollection count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.MediaCollection] forKey:@"MediaCollection"];
+    }
+    return dictionary;
+}
+
+
+- (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
+{
+    if (m_SDMEntry) {
+        NSError *innerError = nil;
+		[self.Website setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Website" error:&innerError];
+		[self.Email setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Email" error:&innerError];
+		[self.FaxNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"FaxNumber" error:&innerError];
+		[self.PhoneNumber setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"PhoneNumber" error:&innerError];
+		[self.Address setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Address" error:&innerError];
+		[self.Twitter setComplexTypePropertiesToSDMEntry:m_SDMEntry complexTypePropertyName:@"Twitter" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerParentID forSDMPropertyWithName:@"BusinessPartnerParentID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.BusinessPartnerName forSDMPropertyWithName:@"BusinessPartnerName" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
+        if (innerError) {
+            if (error) {
+                *error = innerError;
+            }
+            return nil;
+        }
+	}
+    return m_SDMEntry;
+}
+
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService
+{
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"BusinessPartnerParents" workspaceOfCollection:nil];
+    businessPartnerParentEntitySchema = collectionSchema.entitySchema;
+}
+
++ (void)loadLabels:(SDMODataServiceDocument *)aService
+{
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"BusinessPartnerParents" andService:aService];
+    	if (properties) {    
+	    	businessPartnerParentLabels = [NSMutableDictionary dictionary];
+	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
+				if ([property.name isEqualToString:@"Website"]) {
+	                [URI loadLabels:property.children];
+	            }
+				if ([property.name isEqualToString:@"Email"]) {
+	                [URI loadLabels:property.children];
+	            }
+				if ([property.name isEqualToString:@"FaxNumber"]) {
+	                [Phone loadLabels:property.children];
+	            }
+				if ([property.name isEqualToString:@"PhoneNumber"]) {
+	                [Phone loadLabels:property.children];
+	            }
+				if ([property.name isEqualToString:@"Address"]) {
+	                [Address loadLabels:property.children];
+	            }
+				if ([property.name isEqualToString:@"Twitter"]) {
+	                [URI loadLabels:property.children];
+	            }
+	        	[businessPartnerParentLabels setValue:property.label forKey:property.name];
+	    	}
+	    }
+	    else {
+        	LOGERROR(@"Failed to load SAP labels from service metadata");
+    	}
+}
+
+
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName
+{
+    return [BaseODataObject getLabelFromDictionary:businessPartnerParentLabels forProperty:aPropertyName];
+}
+
+- (void)loadProperties
+{
+    [super loadProperties];
+	m_Website = [[URI alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Website"]];
+	m_Email = [[URI alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Email"]];
+	m_FaxNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"FaxNumber"]];
+	m_PhoneNumber = [[Phone alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"PhoneNumber"]];
+	m_Address = [[Address alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Address"]];
+	m_Twitter = [[URI alloc] initWithSDMDictionary:[self getDictionaryForComplexTypeProperty:@"Twitter"]];
+	m_BusinessPartnerParentID = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerParentID"];
+	m_BusinessPartnerName = [self getStringValueForSDMPropertyWithName:@"BusinessPartnerName"];
+}
+
+- (void)loadNavigationPropertyQueries
+{
+    [super loadNavigationPropertyQueries];
+    m_BusinessPartnersQuery = [self getRelatedLinkForNavigationName:@"BusinessPartners"];
+    m_MediaCollectionQuery = [self getRelatedLinkForNavigationName:@"MediaCollection"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"BusinessPartners"];
+    m_BusinessPartners = [BusinessPartner createBusinessPartnerEntriesForSDMEntries:entries];
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"MediaCollection"];
+    m_MediaCollection = [MediaForBPParent createMediaForBPParentEntriesForSDMEntries:entries];
+
+}
+
++ (NSMutableArray *)createBusinessPartnerParentEntriesForSDMEntries:(NSMutableArray *)sdmEntries
+{
+    NSMutableArray *entries = [NSMutableArray array];
+    for (SDMODataEntry *entry in sdmEntries) {
+        BusinessPartnerParent *businessPartnerParentObject = [[BusinessPartnerParent alloc] initWithSDMEntry:entry];
+        [entries addObject:businessPartnerParentObject];
+    }
+    return entries;
+}
+
+
++ (NSMutableArray *)parseBusinessPartnerParentEntriesWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:businessPartnerParentEntitySchema andData:aData error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [BusinessPartnerParent createBusinessPartnerParentEntriesForSDMEntries:sdmEntries];
+}
+
++ (NSMutableArray *)parseExpandedBusinessPartnerParentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:businessPartnerParentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [BusinessPartnerParent createBusinessPartnerParentEntriesForSDMEntries:sdmEntries];
+}
+
++ (BusinessPartnerParent *)parseBusinessPartnerParentEntryWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *businessPartnerParentEntries = [BusinessPartnerParent parseBusinessPartnerParentEntriesWithData:aData error:error];
+    if (!businessPartnerParentEntries) {
+    	return nil;
+    }
+    return (BusinessPartnerParent *)[BusinessPartnerParent getFirstObjectFromArray:businessPartnerParentEntries];
+}
+
++ (BusinessPartnerParent *)parseExpandedBusinessPartnerParentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:businessPartnerParentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *businessPartnerParentEntries = [BusinessPartnerParent createBusinessPartnerParentEntriesForSDMEntries:sdmEntries];
+	return (BusinessPartnerParent *)[BusinessPartnerParent getFirstObjectFromArray:businessPartnerParentEntries];
+}
+
+
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadBusinessPartnersWithData:(NSData *)aData error:(NSError **)error
+{
+    self.BusinessPartners = [BusinessPartner parseBusinessPartnerEntriesWithData:aData error:error];
+    if (!self.BusinessPartners) {
+    	return NO;
+    }
+    return YES;
+}
+
+- (BOOL)loadMediaCollectionWithData:(NSData *)aData error:(NSError **)error
+{
+    self.MediaCollection = [MediaForBPParent parseMediaForBPParentEntriesWithData:aData error:error];
+    if (!self.MediaCollection) {
+    	return NO;
+    }
+    return YES;
+}
+
+
+@end
+
+#pragma mark - MediaForParents
+@implementation MediaForParents 
+
+@synthesize ParentID = m_ParentID;
+@synthesize Keyword = m_Keyword;
+@synthesize MediaType = m_MediaType;
+
+static NSMutableDictionary *mediaForParentsLabels = nil;
+static SDMODataEntitySchema *mediaForParentsEntitySchema = nil;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaForParentsEntitySchema error:nil];
+        if (!m_SDMEntry) {
+            return nil;
+        }        
+        m_properties = nil;
+        m_baseUrl = nil;
+    }
+    return self;
+}
+
+
+
+- (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
+{
+    if (m_SDMEntry) {
+        NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ParentID forSDMPropertyWithName:@"ParentID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        if (innerError) {
+            if (error) {
+                *error = innerError;
+            }
+            return nil;
+        }
+	}
+    return m_SDMEntry;
+}
+
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService
+{
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaForParentsCollection" workspaceOfCollection:nil];
+    mediaForParentsEntitySchema = collectionSchema.entitySchema;
+}
+
++ (void)loadLabels:(SDMODataServiceDocument *)aService
+{
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaForParentsCollection" andService:aService];
+    	if (properties) {    
+	    	mediaForParentsLabels = [NSMutableDictionary dictionary];
+	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
+	        	[mediaForParentsLabels setValue:property.label forKey:property.name];
+	    	}
+	    }
+	    else {
+        	LOGERROR(@"Failed to load SAP labels from service metadata");
+    	}
+}
+
+
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName
+{
+    return [BaseODataObject getLabelFromDictionary:mediaForParentsLabels forProperty:aPropertyName];
+}
+
+- (void)loadProperties
+{
+    [super loadProperties];
+	m_ParentID = [self getStringValueForSDMPropertyWithName:@"ParentID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
++ (NSMutableArray *)createMediaForParentsEntriesForSDMEntries:(NSMutableArray *)sdmEntries
+{
+    NSMutableArray *entries = [NSMutableArray array];
+    for (SDMODataEntry *entry in sdmEntries) {
+        MediaForParents *mediaForParentsObject = [[MediaForParents alloc] initWithSDMEntry:entry];
+        [entries addObject:mediaForParentsObject];
+    }
+    return entries;
+}
+
+
++ (NSMutableArray *)parseMediaForParentsEntriesWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaForParentsEntitySchema andData:aData error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForParents createMediaForParentsEntriesForSDMEntries:sdmEntries];
+}
+
++ (NSMutableArray *)parseExpandedMediaForParentsEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForParentsEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForParents createMediaForParentsEntriesForSDMEntries:sdmEntries];
+}
+
++ (MediaForParents *)parseMediaForParentsEntryWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *mediaForParentsEntries = [MediaForParents parseMediaForParentsEntriesWithData:aData error:error];
+    if (!mediaForParentsEntries) {
+    	return nil;
+    }
+    return (MediaForParents *)[MediaForParents getFirstObjectFromArray:mediaForParentsEntries];
+}
+
++ (MediaForParents *)parseExpandedMediaForParentsEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForParentsEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *mediaForParentsEntries = [MediaForParents createMediaForParentsEntriesForSDMEntries:sdmEntries];
+	return (MediaForParents *)[MediaForParents getFirstObjectFromArray:mediaForParentsEntries];
+}
+
+
+
+@end
+
+#pragma mark - MediaForBPParent
+@implementation MediaForBPParent 
+
+@synthesize ParentID = m_ParentID;
+@synthesize Keyword = m_Keyword;
+@synthesize MediaType = m_MediaType;
+@synthesize MediaQuery = m_MediaQuery;
+@synthesize Media = m_Media;
+
+static NSMutableDictionary *mediaForBPParentLabels = nil;
+static SDMODataEntitySchema *mediaForBPParentEntitySchema = nil;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        m_SDMEntry = [BaseEntityType createEmptySDMODataEntryWithSchema:mediaForBPParentEntitySchema error:nil];
+        if (!m_SDMEntry) {
+            return nil;
+        }        
+        m_properties = nil;
+        m_baseUrl = nil;
+    }
+    return self;
+}
+
+- (NSMutableDictionary *)getSDMEntriesForNavigationProperties
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    if ([self.Media count] > 0) {
+        [dictionary setObject:[self createSDMEntriesForNavigationPropertyEntries:self.Media] forKey:@"Media"];
+    }
+    return dictionary;
+}
+
+
+- (SDMODataEntry *)buildSDMEntryFromPropertiesAndReturnError:(NSError **)error
+{
+    if (m_SDMEntry) {
+        NSError *innerError = nil;
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.ParentID forSDMPropertyWithName:@"ParentID" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.Keyword forSDMPropertyWithName:@"Keyword" error:&innerError];
+    	[BaseODataObject setStringValueForSDMEntry:m_SDMEntry withValue:self.MediaType forSDMPropertyWithName:@"MediaType" error:&innerError];
+        [self addRelativeLinksToSDMEntryFromDictionary:[self getSDMEntriesForNavigationProperties]];
+        if (innerError) {
+            if (error) {
+                *error = innerError;
+            }
+            return nil;
+        }
+	}
+    return m_SDMEntry;
+}
+
++ (void)loadEntitySchema:(SDMODataServiceDocument *)aService
+{
+    SDMODataCollection *collectionSchema = [aService.schema getCollectionByName:@"MediaCollectionForBPParent" workspaceOfCollection:nil];
+    mediaForBPParentEntitySchema = collectionSchema.entitySchema;
+}
+
++ (void)loadLabels:(SDMODataServiceDocument *)aService
+{
+		NSMutableDictionary *properties = [BaseODataObject getSchemaPropertiesFromCollection:@"MediaCollectionForBPParent" andService:aService];
+    	if (properties) {    
+	    	mediaForBPParentLabels = [NSMutableDictionary dictionary];
+	    	for (SDMODataPropertyInfo *property in [properties allValues]) {
+	        	[mediaForBPParentLabels setValue:property.label forKey:property.name];
+	    	}
+	    }
+	    else {
+        	LOGERROR(@"Failed to load SAP labels from service metadata");
+    	}
+}
+
+
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName
+{
+    return [BaseODataObject getLabelFromDictionary:mediaForBPParentLabels forProperty:aPropertyName];
+}
+
+- (void)loadProperties
+{
+    [super loadProperties];
+	m_ParentID = [self getStringValueForSDMPropertyWithName:@"ParentID"];
+	m_Keyword = [self getStringValueForSDMPropertyWithName:@"Keyword"];
+	m_MediaType = [self getStringValueForSDMPropertyWithName:@"MediaType"];
+}
+
+- (void)loadNavigationPropertyQueries
+{
+    [super loadNavigationPropertyQueries];
+    m_MediaQuery = [self getRelatedLinkForNavigationName:@"Media"];
+}
+
+- (void)loadNavigationPropertyData
+{
+    [super loadNavigationPropertyData];
+    
+    NSMutableArray *entries = nil;
+
+    entries = [self getInlinedRelatedEntriesForNavigationName:@"Media"];
+    m_Media = [Media createMediaEntriesForSDMEntries:entries];
+
+}
+
++ (NSMutableArray *)createMediaForBPParentEntriesForSDMEntries:(NSMutableArray *)sdmEntries
+{
+    NSMutableArray *entries = [NSMutableArray array];
+    for (SDMODataEntry *entry in sdmEntries) {
+        MediaForBPParent *mediaForBPParentObject = [[MediaForBPParent alloc] initWithSDMEntry:entry];
+        [entries addObject:mediaForBPParentObject];
+    }
+    return entries;
+}
+
+
++ (NSMutableArray *)parseMediaForBPParentEntriesWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getSDMEntriesForEntitySchema:mediaForBPParentEntitySchema andData:aData error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForBPParent createMediaForBPParentEntriesForSDMEntries:sdmEntries];
+}
+
++ (NSMutableArray *)parseExpandedMediaForBPParentEntriesWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+    NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForBPParentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    if (!sdmEntries) {
+    	return nil;
+    }
+	return [MediaForBPParent createMediaForBPParentEntriesForSDMEntries:sdmEntries];
+}
+
++ (MediaForBPParent *)parseMediaForBPParentEntryWithData:(NSData *)aData error:(NSError **)error
+{
+    NSMutableArray *mediaForBPParentEntries = [MediaForBPParent parseMediaForBPParentEntriesWithData:aData error:error];
+    if (!mediaForBPParentEntries) {
+    	return nil;
+    }
+    return (MediaForBPParent *)[MediaForBPParent getFirstObjectFromArray:mediaForBPParentEntries];
+}
+
++ (MediaForBPParent *)parseExpandedMediaForBPParentEntryWithData:(NSData *)aData andServiceDocument:(SDMODataServiceDocument *)aServiceDocument error:(NSError **)error
+{
+	NSMutableArray *sdmEntries = [BaseEntityType getExpandedSDMEntriesForEntitySchema:mediaForBPParentEntitySchema andData:aData andServiceDocument:aServiceDocument error:error];
+    NSMutableArray *mediaForBPParentEntries = [MediaForBPParent createMediaForBPParentEntriesForSDMEntries:sdmEntries];
+	return (MediaForBPParent *)[MediaForBPParent getFirstObjectFromArray:mediaForBPParentEntries];
+}
+
+
+#pragma mark Entity Navigation Property loading methods
+- (BOOL)loadMediaWithData:(NSData *)aData error:(NSError **)error
+{
+    self.Media = [Media parseMediaEntriesWithData:aData error:error];
+    if (!self.Media) {
+    	return NO;
+    }
+    return YES;
+}
+
+
+@end
+
 
 #pragma mark - ECCSALESDATA_SRV Service Proxy
 
@@ -2450,6 +2970,9 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 @synthesize MediaCollectionForMaterialQuery = m_MediaCollectionForMaterialQuery;
 @synthesize MediasetQuery = m_MediasetQuery;
 @synthesize MediaCollectionForSalesDocumentQuery = m_MediaCollectionForSalesDocumentQuery;
+@synthesize BusinessPartnerParentsQuery = m_BusinessPartnerParentsQuery;
+@synthesize MediaForParentsCollectionQuery = m_MediaForParentsCollectionQuery;
+@synthesize MediaCollectionForBPParentQuery = m_MediaCollectionForBPParentQuery;
 
 - (NSString *)getServiceDocumentFilename
 {
@@ -2476,6 +2999,9 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
     m_MediaCollectionForMaterialQuery = [self getQueryForRelativePath:@"MediaCollectionForMaterial"];
     m_MediasetQuery = [self getQueryForRelativePath:@"Mediaset"];
     m_MediaCollectionForSalesDocumentQuery = [self getQueryForRelativePath:@"MediaCollectionForSalesDocument"];
+    m_BusinessPartnerParentsQuery = [self getQueryForRelativePath:@"BusinessPartnerParents"];
+    m_MediaForParentsCollectionQuery = [self getQueryForRelativePath:@"MediaForParentsCollection"];
+    m_MediaCollectionForBPParentQuery = [self getQueryForRelativePath:@"MediaCollectionForBPParent"];
 }
 
 - (void)loadEntitySchemaForAllEntityTypes
@@ -2493,6 +3019,9 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
     [MediaForMaterial loadEntitySchema:m_serviceDocument];
     [Media loadEntitySchema:m_serviceDocument];
     [MediaForSalesDocument loadEntitySchema:m_serviceDocument];
+    [BusinessPartnerParent loadEntitySchema:m_serviceDocument];
+    [MediaForParents loadEntitySchema:m_serviceDocument];
+    [MediaForBPParent loadEntitySchema:m_serviceDocument];
 }
 
 - (void)loadLabels
@@ -2510,6 +3039,9 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
     [MediaForMaterial loadLabels:m_serviceDocument];
     [Media loadLabels:m_serviceDocument];
     [MediaForSalesDocument loadLabels:m_serviceDocument];
+    [BusinessPartnerParent loadLabels:m_serviceDocument];
+    [MediaForParents loadLabels:m_serviceDocument];
+    [MediaForBPParent loadLabels:m_serviceDocument];
 }
 
  
@@ -2629,21 +3161,21 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	return [SalesDocItem parseExpandedSalesDocItemEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getSalesDocItemsEntryQueryWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber
+- (ODataQuery *)getSalesDocItemsEntryQueryWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID
 {
-	OrderID = [ODataQuery encodeURLParameter:OrderID];
 	ItemNumber = [ODataQuery encodeURLParameter:ItemNumber];
-	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(OrderID=%@,ItemNumber=%@)", OrderID, ItemNumber];
+	OrderID = [ODataQuery encodeURLParameter:OrderID];
+	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(ItemNumber=%@,OrderID=%@)", ItemNumber, OrderID];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithOrderID:(NSString *)OrderID andItemNumber:(NSString *)ItemNumber
+- (ODataQuery *)getSalesDocItemsEntryQueryTypedWithItemNumber:(NSString *)ItemNumber andOrderID:(NSString *)OrderID
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *OrderIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:OrderID]];
 	NSString *ItemNumberUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ItemNumber]];
-	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(OrderID=%@,ItemNumber=%@)", OrderIDUri, ItemNumberUri];
+	NSString *OrderIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:OrderID]];
+	NSString *relativePath = [NSString stringWithFormat:@"SalesDocItems(ItemNumber=%@,OrderID=%@)", ItemNumberUri, OrderIDUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
@@ -2658,23 +3190,23 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	return [MediaForBusinessPartner parseExpandedMediaForBusinessPartnerEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryWithKeyword:(NSString *)Keyword andBusinessPartnerID:(NSString *)BusinessPartnerID andMediaType:(NSString *)MediaType
 {
-	MediaType = [ODataQuery encodeURLParameter:MediaType];
-	BusinessPartnerID = [ODataQuery encodeURLParameter:BusinessPartnerID];
 	Keyword = [ODataQuery encodeURLParameter:Keyword];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(MediaType=%@,BusinessPartnerID=%@,Keyword=%@)", MediaType, BusinessPartnerID, Keyword];
+	BusinessPartnerID = [ODataQuery encodeURLParameter:BusinessPartnerID];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(Keyword=%@,BusinessPartnerID=%@,MediaType=%@)", Keyword, BusinessPartnerID, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
 
-- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithMediaType:(NSString *)MediaType andBusinessPartnerID:(NSString *)BusinessPartnerID andKeyword:(NSString *)Keyword
+- (ODataQuery *)getMediaCollectionForBusinessPartnerEntryQueryTypedWithKeyword:(NSString *)Keyword andBusinessPartnerID:(NSString *)BusinessPartnerID andMediaType:(NSString *)MediaType
 {
 	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
-	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
-	NSString *BusinessPartnerIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:BusinessPartnerID]];
 	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(MediaType=%@,BusinessPartnerID=%@,Keyword=%@)", MediaTypeUri, BusinessPartnerIDUri, KeywordUri];
+	NSString *BusinessPartnerIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:BusinessPartnerID]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBusinessPartner(Keyword=%@,BusinessPartnerID=%@,MediaType=%@)", KeywordUri, BusinessPartnerIDUri, MediaTypeUri];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
@@ -2748,7 +3280,7 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	ContactPersonID = [ODataQuery encodeURLParameter:ContactPersonID];
 	Keyword = [ODataQuery encodeURLParameter:Keyword];
 	MediaType = [ODataQuery encodeURLParameter:MediaType];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(ContactPersonID=%@,Keyword=%@,MediaType=%@)", ContactPersonID, Keyword, MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForContactPerson(ContactPersonID='%@',Keyword='%@',MediaType='%@')/Media", ContactPersonID, Keyword, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
@@ -2779,7 +3311,7 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 	MaterialNumber = [ODataQuery encodeURLParameter:MaterialNumber];
 	Keyword = [ODataQuery encodeURLParameter:Keyword];
 	MediaType = [ODataQuery encodeURLParameter:MediaType];
-	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForMaterial(MaterialNumber=%@,Keyword=%@,MediaType=%@)", MaterialNumber, Keyword, MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForMaterial(MaterialNumber='%@',Keyword='%@',MediaType='%@')/Media", MaterialNumber, Keyword, MediaType];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }
@@ -2862,6 +3394,95 @@ static SDMODataEntitySchema *mediaForSalesDocumentEntitySchema = nil;
 - (MediaForSalesDocument *)getMediaCollectionForSalesDocumentEntryWithData:(NSData *)aData error:(NSError **)error
 {
 	return [MediaForSalesDocument parseExpandedMediaForSalesDocumentEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (NSMutableArray *)getBusinessPartnerParentsWithData:(NSData *)aData error:(NSError **)error
+{
+	return [BusinessPartnerParent parseExpandedBusinessPartnerParentEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (ODataQuery *)getBusinessPartnerParentsEntryQueryWithBusinessPartnerParentID:(NSString *)BusinessPartnerParentID
+{
+	BusinessPartnerParentID = [ODataQuery encodeURLParameter:BusinessPartnerParentID];
+	NSString *relativePath = [NSString stringWithFormat:@"BusinessPartnerParents(BusinessPartnerParentID=%@)", BusinessPartnerParentID];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (ODataQuery *)getBusinessPartnerParentsEntryQueryTypedWithBusinessPartnerParentID:(NSString *)BusinessPartnerParentID
+{
+	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *BusinessPartnerParentIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:BusinessPartnerParentID]];
+	NSString *relativePath = [NSString stringWithFormat:@"BusinessPartnerParents(BusinessPartnerParentID=%@)", BusinessPartnerParentIDUri];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (BusinessPartnerParent *)getBusinessPartnerParentsEntryWithData:(NSData *)aData error:(NSError **)error
+{
+	return [BusinessPartnerParent parseExpandedBusinessPartnerParentEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (NSMutableArray *)getMediaForParentsCollectionWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForParents parseExpandedMediaForParentsEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (ODataQuery *)getMediaForParentsCollectionEntryQueryWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	ParentID = [ODataQuery encodeURLParameter:ParentID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaForParentsCollection(ParentID=%@,Keyword=%@,MediaType=%@)", ParentID, Keyword, MediaType];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (ODataQuery *)getMediaForParentsCollectionEntryQueryTypedWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *ParentIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ParentID]];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaForParentsCollection(ParentID=%@,Keyword=%@,MediaType=%@)", ParentIDUri, KeywordUri, MediaTypeUri];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (MediaForParents *)getMediaForParentsCollectionEntryWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForParents parseExpandedMediaForParentsEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (NSMutableArray *)getMediaCollectionForBPParentWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForBPParent parseExpandedMediaForBPParentEntriesWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
+}
+
+- (ODataQuery *)getMediaCollectionForBPParentEntryQueryWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	ParentID = [ODataQuery encodeURLParameter:ParentID];
+	Keyword = [ODataQuery encodeURLParameter:Keyword];
+	MediaType = [ODataQuery encodeURLParameter:MediaType];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBPParent(ParentID='%@',Keyword='%@',MediaType='%@')/Media", ParentID, Keyword, MediaType];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (ODataQuery *)getMediaCollectionForBPParentEntryQueryTypedWithParentID:(NSString *)ParentID andKeyword:(NSString *)Keyword andMediaType:(NSString *)MediaType
+{
+	id <URITypeConverting> converter = [ODataURITypeConverter uniqueInstance];
+	NSString *ParentIDUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:ParentID]];
+	NSString *KeywordUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:Keyword]];
+	NSString *MediaTypeUri = [ODataQuery encodeURLParameter:[converter convertToEdmStringURI:MediaType]];
+	NSString *relativePath = [NSString stringWithFormat:@"MediaCollectionForBPParent(ParentID=%@,Keyword=%@,MediaType=%@)", ParentIDUri, KeywordUri, MediaTypeUri];
+	ODataQuery *query = [self getQueryForRelativePath:relativePath];
+	return query;
+}
+
+- (MediaForBPParent *)getMediaCollectionForBPParentEntryWithData:(NSData *)aData error:(NSError **)error
+{
+	return [MediaForBPParent parseExpandedMediaForBPParentEntryWithData:aData andServiceDocument:self.sdmServiceDocument error:error];
 }
 
 
