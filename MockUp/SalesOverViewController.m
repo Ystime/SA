@@ -62,6 +62,7 @@ int selectedRow;
     }];
     [self setUpPullUp];
 }
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [self.DocumentTable reloadData];

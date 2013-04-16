@@ -32,5 +32,6 @@
 +(NSString*)getStringFormat:(NSString*)format FromDate:(NSDate *)date;
 +(void)shiftView:(UIView*)temp horizontal:(float)pixels;
 +(void)shiftView:(UIView*)temp vertical:(float)pixels;
++(NSString*)getTitleFromKeyword:(NSString*)key;
 
 @end

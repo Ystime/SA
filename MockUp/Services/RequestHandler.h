@@ -114,8 +114,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (void)loadSalesDocumentItems:(SalesDocument*)sd;
 
 -(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug;
--(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa;
-
+-(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title withCategory:(NSString*)category forBusinessPartner:(BusinessPartner*)bupa;
 /**
  Authenticates the given user name and password against the service.
  @param aUsername a user name.

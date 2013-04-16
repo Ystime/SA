@@ -55,7 +55,7 @@
             }
             else
             {
-                if([[RequestHandler uniqueInstance]uploadNote:self.NoteText.text withTitle:self.NoteTitle.text forBusinessPartner:cvc.selectedBusinessPartner])
+                if([[RequestHandler uniqueInstance]uploadNote:self.NoteText.text withTitle:self.NoteTitle.text withCategory:nil forBusinessPartner:cvc.selectedBusinessPartner])
                 {
                     [self dismissViewControllerAnimated:YES completion:^
                     {

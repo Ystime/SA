@@ -9,6 +9,7 @@
 #import "DocumentViewController.h"
 #import "CustomerViewController.h"
 #import "HeaderViewController.h"
+#import "RecentDocumentsViewController.h"
 @interface DocumentViewController ()
 @end
 
@@ -121,7 +122,20 @@ LGViewHUD *creatingDocs;
     else
         return nil;
 }
-
+#pragma mark - Add Item 
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction
+{
+    SalesDocItem *item = [[SalesDocItem alloc]init];
+    item.Quantity = [NSNumber numberWithInt:quant];
+    item.Material = material.MaterialNumber;
+    item.Description = material.Description;
+    item.UoM = material.UoM;
+    item.ItemNumber = docAction;
+    item.OrderID = item.Plant = item.Status.Delivery_Status = item.Status.Overall_Status = item.Status.Invoice_Status = @" ";
+    item.NetPrice = item.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];    
+    [tempSalesDocument.Items addObject:item];
+    
+}
 #pragma mark - TableView Delegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -150,7 +164,7 @@ LGViewHUD *creatingDocs;
                 [self performSegueWithIdentifier:@"productCatalog" sender:self];
                 break;
             case 1:
-                [self performSegueWithIdentifier:@"recentDocs" sender:self];
+                [self performSegueWithIdentifier:@"recentDocuments" sender:self];
                 break;
             case 2:
             {
@@ -193,6 +207,13 @@ LGViewHUD *creatingDocs;
             MaterialInfoViewController *mivc = segue.destinationViewController;
             mivc.material = sender;
         }
+    }
+    
+    else if([segue.identifier isEqualToString:@"recentDocuments"])
+    {
+        RecentDocumentsViewController *rdvc = segue.destinationViewController;
+        rdvc.dvc = self;
+        rdvc.documents = cvc.SalesDocuments;
     }
 }
 

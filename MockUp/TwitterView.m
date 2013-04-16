@@ -11,7 +11,7 @@
 @implementation TwitterView
 NSArray *tweets;
 NSMutableDictionary *twitPics;
-
+@synthesize searcher;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -21,78 +21,134 @@ NSMutableDictionary *twitPics;
     return self;
 }
 
--(void)getTweets
+-(void)getTweets:(BusinessPartner*)bupa
 {
+    //    self.searchTerm = searchTerm;
     tweets = nil;
-    tweets = [[NSMutableArray alloc]init];
-    
-    ACAccountStore *account = [[ACAccountStore alloc] init];
-    ACAccountType *accountType = [account
-                                  accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    [self storeAccountWithAccessToken:@"1150698265-fnX1ZkdQhuCyAkG07dpAH0pqgg718qMLmIiwRfs" secret:@"BVSK0AWdmXc8ywrFx79hWPaLXhRgDSP3bpYFZ8g"];
-    [account requestAccessToAccountsWithType:accountType
-                                     options:nil completion:^(BOOL granted, NSError *error)
-     {
-         if (granted == YES)
-         {
-             NSArray *arrayOfAccounts = [account
-                                         accountsWithAccountType:accountType];
-             
-             if ([arrayOfAccounts count] > 0)
-             {
-                 ACAccount *twitterAccount;
-                 for(ACAccount *ac in arrayOfAccounts)
-                 {
-                     if([ac.username isEqualToString:@"ijvRijn"])
-                     {
-                         twitterAccount = ac;
-                     }
-                 }
-                 NSString *url =[NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
-//                 NSString *url = @"https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames&since_id=24012619984051000&max_id=250126199840518145&result_type=mixed&count=4 ";
-                 NSURL *requestURL = [NSURL URLWithString:url];
-                 
-                 NSMutableDictionary *parameters =
-                 [[NSMutableDictionary alloc] init];
-                 [parameters setObject:@"50" forKey:@"count"];
-                 [parameters setObject:@"1" forKey:@"include_entities"];
-                 
-                 SLRequest *postRequest = [SLRequest
-                                           requestForServiceType:SLServiceTypeTwitter
-                                           requestMethod:SLRequestMethodGET
-                                           URL:requestURL parameters:parameters];
-                 postRequest.account = twitterAccount;
-                 
-                 [postRequest performRequestWithHandler:
-                  ^(NSData *responseData, NSHTTPURLResponse
-                    *urlResponse, NSError *error)
-                  {
-                      NSLog(@"%i",urlResponse.statusCode);
-                      if(!error && urlResponse.statusCode!=400)
-                      {
-                          tweets  = [NSJSONSerialization
-                                     JSONObjectWithData:responseData
-                                     options:NSJSONReadingMutableLeaves
-                                     error:&error];
-                          if (tweets.count > 0) {
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  [self.tweetTable reloadData];
-                                  [self performSelectorInBackground:@selector(loadPictures) withObject:nil];
-                              });
-                          }
-                      }
-                      else if (urlResponse.statusCode == 400)
-                      {
-                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Check Credentials" message:@"Please check twitter credentials for user ijvrijn! (Password is 'scheerdemo')" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-                          [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
-                      }
-                      
-                  }];
-             }
-         } else {
-         }
-     }];
+    [self.tweetTable reloadData];
+    if(bupa)
+    {
+        searcher = [[TwitterSearcher alloc]init];
+        tweets = [[NSMutableArray alloc]init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvTwitterResults:) name:@"twitterSearchDone" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(twitterError:) name:@"twitterFail" object:nil];
+        [searcher grabData:bupa];
+    }
 }
+
+- (void)recvTwitterResults:(NSNotification *)notification {
+    
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+	if([notification userInfo]==nil){
+        UIAlertView *twitterViewAlertView = [[UIAlertView alloc] initWithTitle:@"Twitter Search"
+                                                                       message:@"No Results Found"
+                                                                      delegate:self
+                                                             cancelButtonTitle:@"Try Again"
+                                                             otherButtonTitles:@"Cancel",nil];
+        [twitterViewAlertView show];
+	}
+	else {
+		// Unpack the passed dictionary from nsnotifications
+		NSDictionary *unpackDict = [notification userInfo];
+        
+		// Take out the array with links
+		//NSMutableArray *tweets = [unpackDict objectForKey:@"array"];
+		tweets = [unpackDict objectForKey:@"array"];
+        if(tweets.count == 0)
+        {
+            [self performSelectorOnMainThread:@selector(setTextErrorLabel:) withObject:@"No Tweets found" waitUntilDone:YES];
+        }
+        else{
+            [self performSelectorOnMainThread:@selector(setTextErrorLabel:) withObject:nil waitUntilDone:YES];
+            [[self tweetTable]performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+            [self performSelectorInBackground:@selector(loadPictures) withObject:nil];
+        }
+	}
+}
+
+- (void)twitterError:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+	UIAlertView *twitterViewAlertView = [[UIAlertView alloc] initWithTitle:@"Twitter Search"
+                                                                   message:@"Twitter search failed"
+                                                                  delegate:self
+                                                         cancelButtonTitle:@"Try Again"
+                                                         otherButtonTitles:@"Cancel",nil];
+    [twitterViewAlertView performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+}
+
+//-(void)getTweets
+//{
+//    searcher = [[SearchTwitter alloc]init];
+//    tweets = nil;
+//    tweets = [[NSMutableArray alloc]init];
+//
+//    ACAccountStore *account = [[ACAccountStore alloc] init];
+//    ACAccountType *accountType = [account
+//                                  accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+//    [self storeAccountWithAccessToken:@"1150698265-fnX1ZkdQhuCyAkG07dpAH0pqgg718qMLmIiwRfs" secret:@"BVSK0AWdmXc8ywrFx79hWPaLXhRgDSP3bpYFZ8g"];
+//    [account requestAccessToAccountsWithType:accountType
+//                                     options:nil completion:^(BOOL granted, NSError *error)
+//     {
+//         if (granted == YES)
+//         {
+//             NSArray *arrayOfAccounts = [account
+//                                         accountsWithAccountType:accountType];
+//
+//             if ([arrayOfAccounts count] > 0)
+//             {
+//                 ACAccount *twitterAccount;
+//                 for(ACAccount *ac in arrayOfAccounts)
+//                 {
+//                     if([ac.username isEqualToString:@"ijvRijn"])
+//                     {
+//                         twitterAccount = ac;
+//                     }
+//                 }
+////                 NSString *url =[NSString stringWithFormat:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
+//                 NSString *url = @"https://api.twitter.com/1.1/search/tweets.json?q=%23freebandnames&since_id=24012619984051000&max_id=250126199840518145&result_type=mixed&count=4 ";
+//                 NSURL *requestURL = [NSURL URLWithString:url];
+//
+//                 NSMutableDictionary *parameters =
+//                 [[NSMutableDictionary alloc] init];
+////                 [parameters setObject:@"50" forKey:@"count"];
+////                 [parameters setObject:@"1" forKey:@"include_entities"];
+//
+//                 SLRequest *postRequest = [SLRequest
+//                                           requestForServiceType:SLServiceTypeTwitter
+//                                           requestMethod:SLRequestMethodGET
+//                                           URL:requestURL parameters:parameters];
+//                 postRequest.account = twitterAccount;
+//
+//                 [postRequest performRequestWithHandler:
+//                  ^(NSData *responseData, NSHTTPURLResponse
+//                    *urlResponse, NSError *error)
+//                  {
+//                      NSLog(@"%i",urlResponse.statusCode);
+//                      if(!error && urlResponse.statusCode!=400)
+//                      {
+//                          tweets  = [NSJSONSerialization
+//                                     JSONObjectWithData:responseData
+//                                     options:NSJSONReadingMutableLeaves
+//                                     error:&error];
+//                          if (tweets.count > 0) {
+//                              dispatch_async(dispatch_get_main_queue(), ^{
+//                                  [self.tweetTable reloadData];
+//                                  [self performSelectorInBackground:@selector(loadPictures) withObject:nil];
+//                              });
+//                          }
+//                      }
+//                      else if (urlResponse.statusCode == 400)
+//                      {
+//                          UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Check Credentials" message:@"Please check twitter credentials for user ijvrijn! (Password is 'scheerdemo')" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//                          [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+//                      }
+//
+//                  }];
+//             }
+//         } else {
+//         }
+//     }];
+//}
 
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -113,9 +169,8 @@ NSMutableDictionary *twitPics;
     NSDictionary *tweet = tweets[[indexPath row]];
     
     cell.TweetView.text = tweet[@"text"];
-    NSString *user = [NSString stringWithFormat:@"@%@",[[tweet objectForKey:@"user"] objectForKey:@"screen_name"]];
-    cell.UserField.text = user;
-    UIImage *temp = [GlobalFunctions loadImage:[[tweet objectForKey:@"user"] objectForKey:@"screen_name"]];
+    cell.UserField.text = [NSString stringWithFormat:@"@%@",[tweet objectForKey:@"from_user"]];
+    UIImage *temp = [GlobalFunctions loadImage:[tweet objectForKey:@"from_user"]];
     cell.UserImage.image = temp;
     return cell;
 }
@@ -133,12 +188,12 @@ NSMutableDictionary *twitPics;
     for(int i = 0;i<tweets.count;i++)
     {
         NSDictionary *tweet = tweets[i];
-        NSString *user = [[tweet objectForKey:@"user"] objectForKey:@"screen_name"];
+        NSString *user = [tweet objectForKey:@"from_user"];
         UIImage *temp = [GlobalFunctions loadImage:user];
         
         if(temp == nil)
         {
-            NSURL *picURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.twitter.com/1/users/profile_image?screen_name=%@&size=bigger",user]];
+            NSURL *picURL = [NSURL URLWithString:[tweet objectForKey:@"profile_image_url"]];
             NSData *picData = [NSData dataWithContentsOfURL:picURL];
             UIImage *pic = [UIImage imageWithData:picData];
             [GlobalFunctions saveImage:pic withName:user];
@@ -225,6 +280,21 @@ NSMutableDictionary *twitPics;
             }
         }
     }];
+}
+
+-(void)setTextErrorLabel:(NSString*)text
+{
+    if(!text)
+    {
+        self.errorLabel.hidden = YES;
+        self.tweetTable.hidden = NO;
+    }
+    else
+    {
+        self.tweetTable.hidden = YES;
+        self.errorLabel.hidden = NO;
+        self.errorLabel.text = text;
+    }
 }
 
 @end

@@ -69,7 +69,7 @@ AFOpenFlowView *matFlow;
                     label.text = editItem.UoM;
                     break;
                 case 4:
-                    //label.text = material.Price;
+                    label.text =[NSString stringWithFormat:@"%.2f",editItem.NetPrice.floatValue];
                     break;
                 case 5:
                     label.text = [NSString stringWithFormat:@"%.0f",editItem.Quantity.floatValue];
@@ -105,7 +105,6 @@ AFOpenFlowView *matFlow;
     }
     else
     {
-        
         self.MaterialImage.hidden = NO;
         [matFlow removeFromSuperview];
         matFlow = nil;
@@ -122,7 +121,7 @@ AFOpenFlowView *matFlow;
                     label.text = material.UoM;
                     break;
                 case 4:
-                    //label.text = material.Price;
+                    label.text = material.Price;
                     break;
                 case 5:
                     label.text = [NSString stringWithFormat:@"%.0f",material.Quantity.floatValue];
@@ -229,7 +228,7 @@ AFOpenFlowView *matFlow;
                 label.text = material.UoM;
                 break;
             case 4:
-                //label.text = material.Price;
+                label.text = [NSString stringWithFormat:@"%.2f",material.Price.floatValue];
                 break;
             case 5:
                 label.text = [NSString stringWithFormat:@"%.0f",material.Quantity.floatValue];

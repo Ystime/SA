@@ -294,8 +294,6 @@
         if (!csrfData.cookie) {
             NSArray *requestCookies = request.requestCookies;
             for (NSHTTPCookie *aCookie in requestCookies) {
-                NSLog(aCookie.name);
-                NSLog(aCookie.value);
                 if ([aCookie.name rangeOfString:SAP_XSRF_COOKIE_PREFIX options:NSCaseInsensitiveSearch].location != NSNotFound) {
                     csrfData.cookie = aCookie;
                 }

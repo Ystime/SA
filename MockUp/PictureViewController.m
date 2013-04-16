@@ -73,7 +73,7 @@ typedef enum swipeDir {kLeft,kRight}swipeDir;
     }
     if(indexPath.row < keys.count)
     {
-        Cell.thumbLabel.text = keys[indexPath.row];
+        Cell.thumbLabel.text = [GlobalFunctions getTitleFromKeyword:keys[indexPath.row]];
         Cell.thumbPic.image = [UIImage makeRoundedImage:[picDic objectForKey:keys[indexPath.row]] radius:8.0];
     }
     else //Create the Add Cell

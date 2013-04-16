@@ -110,7 +110,6 @@
     offsetXLabelOnLongGraph=0;
     BOOL multipleLines=[self initAndWarnings];
     
-    
     BOOL addRandomAnchorType=TRUE;
     if (self.anchorTypeArray) addRandomAnchorType=FALSE;
     

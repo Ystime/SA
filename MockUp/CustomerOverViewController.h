@@ -30,5 +30,7 @@
 @property (strong, nonatomic) IBOutlet PictureView *picView;
 @property (strong, nonatomic)BusinessPartner *selectedBUPA;
 @property (strong) CustomerViewController *cvc;
+- (IBAction)changeBottomView:(id)sender;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *BottomControl;
 
 @end

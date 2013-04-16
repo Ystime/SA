@@ -15,6 +15,7 @@
 @implementation NewContactController
 bool scanFlag,pictureFlag;
 UIImage *contactImage;
+NSString *role;
 
 @synthesize editContact,relBUPA;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -36,21 +37,36 @@ UIImage *contactImage;
         temp.layer.masksToBounds = YES;
         
     }
+    role = @"";
     self.ContactImage.layer.borderColor = [[UIColor lightGrayColor]CGColor];
     self.ContactImage.layer.borderWidth = 1.0;
     
     if(editContact)
     {
+        self.TitleLabel.text = @"Change contact details";
         for(UITextField *tf  in self.InputFieldCollection)
         {
             tf.enabled = NO;
         }
         [self setupLabels:editContact];
         [self.saveButton setTitle:@"Update" forState:UIControlStateNormal];
+        self.GenderControl.userInteractionEnabled = NO;
+        NSInteger gender = editContact.Gender.integerValue;
+        if(gender ==1 )
+        {
+            self.GenderControl.selectedSegmentIndex = 0;
+            [self.GenderControl setEnabled:NO forSegmentAtIndex:1];
+        }
+        else if(gender ==2)
+        {
+            self.GenderControl.selectedSegmentIndex = 1;
+            [self.GenderControl setEnabled:NO forSegmentAtIndex:0];
+        }
         self.saveButton.hidden = self.scanButton.hidden = YES;
     }
     else
     {
+        self.TitleLabel.text = @"Create new contact";
         self.saveButton.hidden = self.scanButton.hidden = NO;
         [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
         editContact = [[ContactPerson alloc]init];
@@ -58,6 +74,9 @@ UIImage *contactImage;
         editContact.FaxNumber = [[Phone alloc]init];
         editContact.Email = [[URI alloc]init];
         editContact.Website = [[URI alloc]init];
+        editContact.Twitter = [[URI alloc]init];
+        self.GenderControl.userInteractionEnabled = YES;
+
     }
     scanFlag = NO;
     pictureFlag = NO;
@@ -69,7 +88,7 @@ UIImage *contactImage;
     {
         switch (input.tag) {
             case 1:
-                input.text = cp.Gender;
+//                input.text = cp.Gender;
                 break;
             case 2:
                 input.text = cp.FirstName;
@@ -208,6 +227,11 @@ UIImage *contactImage;
             NSArray *names = [detail componentsSeparatedByString:@":"];
             editContact.Email.URL = names.lastObject;
         }
+        else if ([detail hasPrefix:@"ROLE"])
+        {
+            NSArray *names = [detail componentsSeparatedByString:@":"];
+            editContact.Email.URL = names.lastObject;
+        }
     }
     [self setupLabels:editContact];
 }
@@ -227,19 +251,20 @@ UIImage *contactImage;
                 editContact.LastName = input.text;
                 break;
             case 4:
-                editContact.Email.URL =  input.text;
+                editContact.Email.LongURL =  input.text;
                 break;
             case 5:
                 editContact.PhoneNumber.PhoneNumber = input.text;
                 break;
             case 6:
-                editContact.PhoneNumber.PhoneNumber = input.text;
+                if(![input.text isEqualToString:@""])
+                    editContact.PhoneNumber.PhoneNumber = input.text;
                 break;
             default:
                 break;
         }
     }
-    
+    editContact.Gender = [NSString stringWithFormat:@"%i",self.GenderControl.selectedSegmentIndex-1];
     editContact.RelatedPartnerID = self.relBUPA.BusinessPartnerID;
     editContact.ContactPersonID = @" ";
     
@@ -271,8 +296,10 @@ UIImage *contactImage;
         }
         else
         {
-            alert.message =@"Could not save contact person";
-            [alert show];
+            BusinessPartner *temp = relBUPA;
+            [self dismissViewControllerAnimated:YES completion:^{
+                [[RequestHandler uniqueInstance]loadContacts:temp];
+            }];
         }
     }
     

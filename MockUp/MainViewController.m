@@ -56,6 +56,7 @@ NSMutableDictionary *parents;
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processingResultGetBusinessPartners:) name:kLoadBusinessPartnersCompletedNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(parentsLoaded:) name:kLoadHierarchyCompletedNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kParentsPicLoaded object:nil];
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadParents) withObject:nil];
     
     
@@ -73,8 +74,11 @@ NSMutableDictionary *parents;
     [self.CustomerTable addPullToRefreshWithActionHandler:^{
         [hudBUPAS showInView:_CustomerTable];
         [self.CustomerTable reloadData];
+        [logoFlow removeFromSuperview];
+        logoFlow = nil;
+        [self.loadingParents startAnimating];
         [[RequestHandler uniqueInstance]loadBusinessPartners];
-        [[RequestHandler uniqueInstance]loadHierarchyWithRootNode:@""];
+        [[RequestHandler uniqueInstance]loadParents];
         [self.CustomerTable.pullToRefreshView stopAnimating];
         
         
@@ -116,7 +120,6 @@ NSMutableDictionary *parents;
     [self setMapTypeButton:nil];
     [self setMyPositionButton:nil];
     [self setExtrasView:nil];
-    [self setShowMoreButton:nil];
     [self setFilterImage:nil];
     [self setFilterIconView:nil];
     [self setFlowLabel:nil];
@@ -324,8 +327,8 @@ NSMutableDictionary *parents;
         parents = [notification.userInfo objectForKey:kResponseItems];
         parentKeys = [NSMutableArray arrayWithArray:parents.allKeys];
         [parentKeys insertObject:@"All" atIndex:0];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kParentsPicLoaded object:nil];
-        [[RequestHandler uniqueInstance]loadImagesForParents:parents.allKeys];
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesForParents:) withObject:parents.allKeys];
+//        [[RequestHandler uniqueInstance]loadImagesForParents:parents.allKeys];
     }
 }
 
@@ -412,7 +415,6 @@ NSMutableDictionary *parents;
 {
     /*Mocking up the logo flow*/
     hierLogos = [notification.userInfo objectForKey:kResponseItems];
-    logoFlow = nil;
     logoFlow = [[AFOpenFlowView alloc]initWithFrame:self.FlowView.bounds];
     logoFlow.numberOfImages = parentKeys.count;
     logoFlow.viewDelegate = self;
@@ -421,6 +423,7 @@ NSMutableDictionary *parents;
         UIImage *temp = [UIImage imageWithImage:[hierLogos objectForKey:parentKeys[i]] scaledToSize:CGSizeMake(150, 150)];
         [logoFlow setImage:temp forIndex:i];
     }
+    [self.loadingParents stopAnimating];
     [self.FlowView addSubview:logoFlow];
 }
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
@@ -644,7 +647,6 @@ NSMutableDictionary *parents;
         [self changeView:self.ExtrasView YoriginWith:-268];
         [self changeView:self.MapTypeButton YoriginWith:-208];
         [self changeView:self.MyPositionButton YoriginWith:-208];
-        [self.ShowMoreButton setTitle:@"Hide" forState:UIControlStateNormal];
         [UIView commitAnimations];
     }
     else
@@ -656,7 +658,6 @@ NSMutableDictionary *parents;
         [self changeView:self.ExtrasView YoriginWith:268];
         [self changeView:self.MapTypeButton YoriginWith:208];
         [self changeView:self.MyPositionButton YoriginWith:208];
-        [self.ShowMoreButton setTitle:@"More" forState:UIControlStateNormal];
         self.ExtrasView.hidden = YES;
         [UIView commitAnimations];
         
@@ -755,6 +756,8 @@ NSMutableDictionary *parents;
     {
         CustomerViewController *cvc = segue.destinationViewController;
         cvc.selectedBusinessPartner = sender;
+        if(cvc.selectedBusinessPartner.ParentID)
+            cvc.bupaLogo = [hierLogos objectForKey:cvc.selectedBusinessPartner.ParentID];
     }
 }
 

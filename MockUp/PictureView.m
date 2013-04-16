@@ -11,6 +11,7 @@
 @implementation PictureView
 AFOpenFlowView *pictureFlow;
 NSMutableArray *keys;
+NSString *selectedKey;
 @synthesize cvc,picName,loadingSign;
 - (id)initWithFrame:(CGRect)frame
 {
@@ -70,8 +71,7 @@ NSMutableArray *keys;
     else
         [keys insertObject:@"Add Picture" atIndex:keys.count];
     [self addSubview:pictureFlow];
-    [pictureFlow setSelectedCover:0];
-    self.picName.text = keys[0];
+    [self openFlowView:pictureFlow selectionDidChange:0];
     if(keys.count >0)
     {
         UITapGestureRecognizer *tapPic = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(picViewTapped)];
@@ -82,7 +82,8 @@ NSMutableArray *keys;
 
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
-    picName.text = keys[index];
+    selectedKey = keys[index];
+    picName.text =[GlobalFunctions getTitleFromKeyword:selectedKey];
 }
 
 -(void)picViewTapped
@@ -108,7 +109,7 @@ NSMutableArray *keys;
 //    }
 
     else
-        [cvc showPictureViewForKey:self.picName.text];
+        [cvc showPictureViewForKey:selectedKey];
 }
 
 @end

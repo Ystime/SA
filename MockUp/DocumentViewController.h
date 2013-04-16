@@ -12,8 +12,9 @@
 #import "AddPopover.h"
 #import "ItemViewController.h"
 @class HeaderViewController;
-#import "ZBarSDK.h"
 @class CustomerViewController;
+@class RecentDocumentsViewController;
+#import "ZBarSDK.h"
 #import "MaterialInfoViewController.h"
 
 @interface DocumentViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,ZBarReaderDelegate>
@@ -35,5 +36,5 @@
 - (IBAction)changeItem:(id)sender;
 
 -(void)setHeaderLabelView;
-
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction;
 @end

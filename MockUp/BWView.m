@@ -53,6 +53,7 @@ EQSelect EQSel;
 
 -(void)setupChartsForBusinessPartner:(BusinessPartner*)bupa
 {
+    self.backgroundColor = [UIColor clearColor];
     [self.loadingCharts startAnimating];
     pieValues = [[NSMutableDictionary alloc]init];
     chartValues = [[NSMutableDictionary alloc]init];

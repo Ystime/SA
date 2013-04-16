@@ -31,7 +31,6 @@
 @property (strong, nonatomic) IBOutlet UIView *NewProductsView;
 @property (strong, nonatomic) IBOutlet UIButton *MapTypeButton;
 @property (strong, nonatomic) IBOutlet UIButton *MyPositionButton;
-@property (strong, nonatomic) IBOutlet UIButton *ShowMoreButton;
 @property (strong, nonatomic) IBOutlet StyledPullableView *ExtrasView;
 @property (strong, nonatomic) IBOutlet ExtrasView *ExtrasSubView;
 @property (strong, nonatomic) IBOutlet UIImageView *filterImage;
@@ -39,6 +38,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *FlowLabel;
 @property (strong, nonatomic) IBOutlet UILabel *handleLabel;
 @property (strong, nonatomic) IBOutlet UILabel *filterHandle;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loadingParents;
 
 /*Public objects of this class*/
 @property (strong, nonatomic) NSMutableArray *BusinessPartners;

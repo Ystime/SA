@@ -21,5 +21,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *saveButton;
 @property (strong, nonatomic) IBOutlet UIButton *scanButton;
 @property (strong, nonatomic) IBOutlet UIButton *cancelButton;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *GenderControl;
+@property (strong, nonatomic) IBOutlet UILabel *TitleLabel;
 
 @end

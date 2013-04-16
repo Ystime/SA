@@ -47,6 +47,7 @@ int selectedContact;
     NSString *type = selectedBUPA.BusinessPartnerType;
     if([type isEqualToString:@"Prospect"] || [type isEqualToString:@"Competitor"])
     {
+        self.BottomControl.hidden = YES;
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"NoteView" owner:self options:nil];
         NoteView *subView = [subviewArray objectAtIndex:0];
         subView.cvc = cvc;
@@ -55,9 +56,24 @@ int selectedContact;
     }
     else if([type isEqualToString:@"Customer"])
     {
+        self.BottomControl.hidden = NO;
+        
+        //Setup BW View
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"BW_View" owner:self options:nil];
         BWView *subView = [subviewArray objectAtIndex:0];
-        [self.bottomView addSubview:subView];
+        [self.bottomView insertSubview:subView belowSubview:self.BottomControl];
+//        [self.bottomView addSubview:subView];
+        
+        //Setup Note View,but hide it because BW is visible
+        NSArray *subviewArray2 = [[NSBundle mainBundle] loadNibNamed:@"NoteView" owner:self options:nil];
+        NoteView *subView2 = [subviewArray2 objectAtIndex:0];
+        subView2.cvc = cvc;
+        subView2.hidden = YES;
+        [subView2 setNotes:cvc.notes];
+        [self.bottomView insertSubview:subView2 belowSubview:self.BottomControl];
+
+//        [self.bottomView addSubview:subView2];
+        
         [subView performSelectorInBackground:@selector(setupChartsForBusinessPartner:) withObject:selectedBUPA];
     }
     
@@ -77,7 +93,10 @@ int selectedContact;
 -(void)viewDidAppear:(BOOL)animated
 {
     [self.picView performSelectorInBackground:@selector(showPictures) withObject:nil];
-    [self.TweetView performSelectorInBackground:@selector(getTweets) withObject:nil];
+    NSString *searchTerm = selectedBUPA.Twitter.LongURL;
+    if([searchTerm isEqualToString:@""]||searchTerm == nil)
+        searchTerm = selectedBUPA.BusinessPartnerName;
+    [self.TweetView performSelectorInBackground:@selector(getTweets:) withObject:selectedBUPA];
 }
 
 -(void)viewDidDisappear:(BOOL)animated
@@ -88,6 +107,7 @@ int selectedContact;
         [[NSNotificationCenter defaultCenter]removeObserver:self.bottomView.subviews[0]];
     }
     [[NSNotificationCenter defaultCenter]removeObserver:self.picView];
+    [self.TweetView getTweets:nil];
     
 }
 
@@ -227,7 +247,7 @@ int selectedContact;
                     label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.URL];
                     break;
                 case 3:
-                    label.text = [NSString stringWithFormat:@"Phone: %@",temp.PhoneNumber.PhoneNumber];
+                    label.text = [NSString stringWithFormat:@"Function: %@",temp.PhoneNumber.PhoneNumber];
                     break;
                     
                 default:
@@ -277,7 +297,18 @@ int selectedContact;
     else if([segue.identifier isEqualToString:@"CustomerInfo"])
     {
         InfoViewController *ivc = (InfoViewController*)segue.destinationViewController;
-        [ivc setBupa:selectedBUPA];
+        [ivc setBupa:selectedBUPA withLogo:self.cvc.bupaLogo];
+    }
+}
+- (IBAction)changeBottomView:(id)sender {
+    UISegmentedControl *control = (UISegmentedControl*)sender;
+    for(int i=0;i<self.bottomView.subviews.count;i++)
+    {
+        UIView *temp = self.bottomView.subviews[i];
+        if(i == control.selectedSegmentIndex || [temp isKindOfClass:[UISegmentedControl class]])
+            temp.hidden = NO;
+        else
+            temp.hidden = YES;
     }
 }
 @end

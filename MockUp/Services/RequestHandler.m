@@ -445,7 +445,9 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                 id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:tempMedia.mediaLinkRead.mediaLinkQuery];
                 UIImage *result = [UIImage imageWithData:requestImage.responseData];
                 if(result)
+                {
                     [images setObject:result forKey:tempMedia.Keyword];
+                }
             }
         }
     }
@@ -477,6 +479,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         NSError *error;
         for(NSString *materialID in materials)
         {
+            if(!viewVisible)
+                return;
             ODataQuery *query = [service getMediaCollectionForMaterialEntryQueryWithMaterialNumber:materialID andKeyword:@"thumbnail" andMediaType:@"Attachment"];
             id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
             Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
@@ -642,9 +646,14 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     }
 }
 
--(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title forBusinessPartner:(BusinessPartner*)bupa
+-(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title withCategory:(NSString*)category forBusinessPartner:(BusinessPartner*)bupa
 {
-    NSString *slug= [NSString stringWithFormat:@"Keyword='%@_Time:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Note'",title,[NSDate date],bupa.BusinessPartnerID];
+    NSString *keyword;
+    if(category)
+        keyword = [NSString stringWithFormat:@"%@_%%_%@_%%_%@",category,title,[NSDate date]];
+    else
+        keyword = [NSString stringWithFormat:@"%@_%%_%@",title,[NSDate date]];
+    NSString *slug= [NSString stringWithFormat:@"Keyword='%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Note'",keyword,bupa.BusinessPartnerID];
     MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"text/plain" andSlug:slug];
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
     NSMutableData *body =  (NSMutableData*)[note dataUsingEncoding:NSUTF8StringEncoding];

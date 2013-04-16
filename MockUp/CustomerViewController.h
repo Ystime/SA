@@ -16,6 +16,7 @@
 #import "PictureViewController.h"
 #import "SalesOverViewController.h"
 #import "NewTextController.h"
+#import "NewPictureViewController.h"
 
 @interface CustomerViewController : UIViewController<PullableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate>
 
@@ -28,6 +29,7 @@
 @property (strong, nonatomic) NSMutableDictionary *notes;
 @property BOOL creatingDoc;
 @property (strong, nonatomic) NSDictionary *materialPictures;
+@property (strong) UIImage *bupaLogo;
 
 @property  BOOL documentsLoaded;
 extern NSString * const kCVCLoadedDocs;

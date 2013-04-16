@@ -13,7 +13,9 @@
 
 @implementation InfoViewController
 BusinessPartner *bupa;
+UIImage *Companylogo;
 NSString* prevID;
+UIPopoverController *upc;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -27,17 +29,19 @@ NSString* prevID;
 {
     [super viewDidLoad];
     [UIView changeLayoutToDefaultProjectSettings:self.view];
+
 	// Do any additional setup after loading the view.
 }
 -(void)viewWillAppear:(BOOL)animated
 {
-        self.NameLabel.text = bupa.BusinessPartnerName;
-        self.AddressLabel.text = bupa.Address.Street;
-        self.ZipLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.PostalCode,bupa.Address.City];
-        self.URLView.text = bupa.Website.URL;
-        if ([bupa.BusinessPartnerName hasPrefix:@"Albert"]) {
-            self.CompanyImage.image = [UIImage imageNamed:@"logoAH.png"];
-    }
+    self.NameLabel.text = bupa.BusinessPartnerName;
+    self.AddressLabel.text = bupa.Address.Street;
+    self.ZipLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.PostalCode,bupa.Address.City];
+    self.URLView.text = bupa.Website.LongURL;
+    self.CompanyImage.image = Companylogo;
+//    if ([bupa.BusinessPartnerName hasPrefix:@"Albert"]) {
+//        self.CompanyImage.image = [UIImage imageNamed:@"logoAH.png"];
+//    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,9 +50,12 @@ NSString* prevID;
     // Dispose of any resources that can be recreated.
 }
 
--(void)setBupa:(BusinessPartner *)_bupa
+-(void)setBupa:(BusinessPartner *)_bupa withLogo:(UIImage*)logo
 {
     bupa = _bupa;
+    if(logo)
+        Companylogo=logo;
+    else
+        Companylogo = nil;
 }
-
 @end

@@ -55,7 +55,7 @@
                 label.text = [NSString stringWithFormat:@"%i",material.Quantity.integerValue];
                 break;
             case 5:
-                //                    label.text = [NSString stringWithFormat:@"€ %.2f",material.Price];
+                label.text = [NSString stringWithFormat:@"%.2f",material.Price.floatValue];
                 break;
             default:
                 break;

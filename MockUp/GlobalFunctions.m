@@ -32,6 +32,15 @@
     [formatter setDateFormat:format];
     return [formatter stringFromDate:date];
 }
++(NSString*)getTitleFromKeyword:(NSString*)key
+{
+    if(!([key rangeOfString:@"_%_"].location == NSNotFound))
+    {
+        NSArray *subs = [key componentsSeparatedByString:@"_%_"];
+        key = subs[subs.count-2];
+    }
+    return key;
+}
 
 +(void)shiftView:(UIView*)temp horizontal:(float)pixels
 {

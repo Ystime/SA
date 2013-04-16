@@ -11,13 +11,14 @@
 #import <Social/Social.h>
 #import "TweetCell.h"
 #import "GlobalFunctions.h"
-
+#import "TwitterSearcher.h"
 
 
 @interface TwitterView : UIView <UITableViewDelegate,UITableViewDataSource>
 
--(void)getTweets;
+-(void)getTweets:(BusinessPartner*)bupa;
 @property (strong)IBOutlet UITableView *tweetTable;
+@property (strong)IBOutlet UILabel *errorLabel;
 @property (strong, nonatomic)NSString *searchTerm;
-
+@property (strong, nonatomic)TwitterSearcher *searcher;
 @end

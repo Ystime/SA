@@ -28,6 +28,8 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if(!self.bupaLogo)
+        self.bupaLogo = [UIImage imageNamed:@"AllComps.png"];
     creatingDoc = NO;
     [[RequestHandler uniqueInstance]setViewVisible:YES];
 	// Do any additional setup after loading the view.
@@ -61,26 +63,9 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadMaterials) withObject:nil];
+    [self performSelectorInBackground:@selector(loadNotesWithPrefix:) withObject:nil];
+//    [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:nil];
     
-    //Only load notes for Competitors and Prospects
-    if(![selectedBusinessPartner.BusinessPartnerType isEqualToString:@"Customer"])
-        [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:nil];
-    
-}
-
--(void)setUpPullUpView
-{
-    //    PullUpView.openedCenter = CGPointMake((self.view.frame.size.width/2),self.view.frame.size.height-25 );
-    [PullUpView setupPullableView:PullUpView.frame];
-    self.InsidePullView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
-    self.InsidePullView.layer.borderWidth = 2.0;
-    [UIView changeLayoutToDefaultProjectSettings:self.InsidePullView];
-    
-    PullUpView.openedCenter = CGPointMake(641,718);
-    PullUpView.closedCenter = CGPointMake(641,798);
-    PullUpView.center = PullUpView.closedCenter;
-    PullUpView.handleView.frame = self.PullHandle.frame;
-    PullUpView.delegate = self;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -114,7 +99,7 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
         }
         for(UIButton *button in self.BottomButtons)
         {
-            if (button.tag == 4||button.tag == 7)
+            if (button.tag == 4||button.tag == 7 || button.tag == 10)
                 [button setHidden:NO];
             else
                 [button setHidden:YES];
@@ -162,6 +147,22 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     [super viewDidUnload];
 }
 
+-(void)setUpPullUpView
+{
+    //    PullUpView.openedCenter = CGPointMake((self.view.frame.size.width/2),self.view.frame.size.height-25 );
+    [PullUpView setupPullableView:PullUpView.frame];
+    self.InsidePullView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    self.InsidePullView.layer.borderWidth = 2.0;
+    [UIView changeLayoutToDefaultProjectSettings:self.InsidePullView];
+    
+    PullUpView.openedCenter = CGPointMake(641,718);
+    PullUpView.closedCenter = CGPointMake(641,798);
+    PullUpView.center = PullUpView.closedCenter;
+    PullUpView.handleView.frame = self.PullHandle.frame;
+    PullUpView.delegate = self;
+}
+
+#pragma mark - Clicking buttons or segueing to other views
 - (IBAction)clickedBottomButton:(id)sender
 {
     switch ([sender tag]) {
@@ -200,150 +201,14 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
             break;
         case 9:
             break;
+        case 10:
+            [self performSegueWithIdentifier:@"addNote" sender:nil];
+            break;
         default:
             break;
     }
     [PullUpView setOpened:NO animated:NO];
 }
-
--(void)showDocumentViewWithSalesDocument:(SalesDocument*)sd
-{
-    for(UIButton *button  in self.TopButtons)
-    {
-        button.selected = NO;
-    }
-    
-    self.TitleLabel.text = @"New Document";
-    UINavigationController *navi;
-    for(UIViewController *vc in self.childViewControllers)
-    {
-        if ([vc isKindOfClass:[UINavigationController class]])
-            navi = (UINavigationController*)vc;
-    }
-    DocumentViewController *dvc = navi.viewControllers[0];
-    if(sd)
-    {
-        dvc.changeMode = YES;
-
-    }
-    else
-    {
-        dvc.changeMode = NO;
-    }
-    
-    dvc.tempSalesDocument = sd;
-    creatingDoc = YES;
-    [navi popToRootViewControllerAnimated:NO];
-    [self setViewInContainer:navi];
-    
-}
-
--(void)showPictureViewForKey:(NSString*)key
-{
-    for(UIButton *button in self.TopButtons)
-    {
-        if(button.tag!=3)
-            button.selected = NO;
-        else
-            button.selected = YES;
-    }
-    PictureViewController *pvc;
-    for(UIViewController *vc in self.childViewControllers)
-    {
-        if([vc isKindOfClass:[PictureViewController class]])
-        {
-            pvc = (PictureViewController*)vc;
-            break;
-        }
-        
-    }
-    //    PictureViewController *pvc = self.childViewControllers[2];
-    [self setViewInContainer:pvc];
-    [pvc showPVCWithPictureForKey:key];
-}
-
--(void)salesDocumentsLoaded:(NSNotification*)notification
-{
-    NSDictionary *userInfoDict = [notification userInfo];
-    SalesDocuments = [userInfoDict objectForKey:kResponseItems];
-    /*Temporarely manual filtering in application*/
-    NSMutableArray *temp = [[NSMutableArray alloc]init];
-    for(SalesDocument *sd in SalesDocuments)
-    {
-        if ([sd.CustomerID isEqualToString:selectedBusinessPartner.BusinessPartnerID])
-            [temp addObject:sd];
-    }
-    SalesDocuments = temp;
-    [[NSNotificationCenter defaultCenter]postNotificationName:kCVCLoadedDocs object:nil];
-}
-
--(void)bupaPicturesLoaded:(NSNotification*)notification
-{
-    NSError *error;
-    error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        bupaPictures = [NSMutableDictionary dictionary];
-    }
-    else
-    {
-        bupaPictures = [notification.userInfo objectForKey:kResponseItems];
-    }
-    [[NSNotificationCenter defaultCenter]postNotificationName:kPicturesProcesssed object:self userInfo:notification.userInfo];
-    
-}
-
--(void)bupaNotesLoaded:(NSNotification*)notification
-{
-    NSError *error;
-    error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        notes = [NSMutableDictionary dictionary];
-    }
-    else
-    {
-        notes = [notification.userInfo objectForKey:kResponseItems];
-    }
-    [[NSNotificationCenter defaultCenter]postNotificationName:kNotesProcesssed object:self userInfo:notification.userInfo];
-}
-
--(void)materialsLoaded:(NSNotification*)notification
-{
-    NSError *error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        
-    }
-    else
-    {
-        
-        materials = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialsProcesssed object:self];
-        NSMutableArray *temp = [NSMutableArray array];
-        for(Material *material in materials)
-        {
-            [temp addObject:material.MaterialNumber];
-        }
-        [[RequestHandler uniqueInstance]loadImagesforMaterials:temp];
-    }
-    
-}
--(void)materialPicturesLoaded:(NSNotification*)notification
-{
-    NSError *error;
-    error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        
-    }
-    else
-    {
-        materialPictures = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresProcesssed object:self userInfo:materialPictures];
-    }
-}
-
 - (IBAction)clickedTab:(id)sender
 {
     if(creatingDoc)
@@ -429,7 +294,159 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
         NewTextController *ntc = (NewTextController*)segue.destinationViewController;
         ntc.cvc = self;
     }
+    else if([segue.identifier isEqualToString:@"newPic"])
+    {
+        NewPictureViewController *npvc = segue.destinationViewController;
+        npvc.takenPicture = sender;
+        npvc.bupa = selectedBusinessPartner;
+    }
 }
+-(void)showDocumentViewWithSalesDocument:(SalesDocument*)sd
+{
+    for(UIButton *button  in self.TopButtons)
+    {
+        button.selected = NO;
+    }
+    
+    self.TitleLabel.text = @"New Document";
+    UINavigationController *navi;
+    for(UIViewController *vc in self.childViewControllers)
+    {
+        if ([vc isKindOfClass:[UINavigationController class]])
+            navi = (UINavigationController*)vc;
+    }
+    DocumentViewController *dvc = navi.viewControllers[0];
+    if(sd)
+    {
+        dvc.changeMode = YES;
+
+    }
+    else
+    {
+        dvc.changeMode = NO;
+    }
+    
+    dvc.tempSalesDocument = sd;
+    creatingDoc = YES;
+    [navi popToRootViewControllerAnimated:NO];
+    [self setViewInContainer:navi];
+    
+}
+
+-(void)showPictureViewForKey:(NSString*)key
+{
+    for(UIButton *button in self.TopButtons)
+    {
+        if(button.tag!=3)
+            button.selected = NO;
+        else
+            button.selected = YES;
+    }
+    PictureViewController *pvc;
+    for(UIViewController *vc in self.childViewControllers)
+    {
+        if([vc isKindOfClass:[PictureViewController class]])
+        {
+            pvc = (PictureViewController*)vc;
+            break;
+        }
+        
+    }
+    //    PictureViewController *pvc = self.childViewControllers[2];
+    [self setViewInContainer:pvc];
+    [pvc showPVCWithPictureForKey:key];
+}
+
+#pragma mark - Loading data for Business Partner
+
+
+-(void)loadNotesWithPrefix:(NSString*)prefix
+{
+    [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:prefix];
+}
+-(void)salesDocumentsLoaded:(NSNotification*)notification
+{
+    NSDictionary *userInfoDict = [notification userInfo];
+    SalesDocuments = [userInfoDict objectForKey:kResponseItems];
+    /*Temporarely manual filtering in application*/
+    NSMutableArray *temp = [[NSMutableArray alloc]init];
+    for(SalesDocument *sd in SalesDocuments)
+    {
+        if ([sd.CustomerID isEqualToString:selectedBusinessPartner.BusinessPartnerID])
+            [temp addObject:sd];
+    }
+    SalesDocuments = temp;
+    [[NSNotificationCenter defaultCenter]postNotificationName:kCVCLoadedDocs object:nil];
+}
+
+-(void)bupaPicturesLoaded:(NSNotification*)notification
+{
+    NSError *error;
+    error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        bupaPictures = [NSMutableDictionary dictionary];
+    }
+    else
+    {
+        bupaPictures = [notification.userInfo objectForKey:kResponseItems];
+    }
+    [[NSNotificationCenter defaultCenter]postNotificationName:kPicturesProcesssed object:self userInfo:notification.userInfo];
+    
+}
+
+-(void)bupaNotesLoaded:(NSNotification*)notification
+{
+    NSError *error;
+    error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        notes = [NSMutableDictionary dictionary];
+    }
+    else
+    {
+        notes = [notification.userInfo objectForKey:kResponseItems];
+    }
+    [[NSNotificationCenter defaultCenter]postNotificationName:kNotesProcesssed object:self userInfo:notification.userInfo];
+}
+
+-(void)materialsLoaded:(NSNotification*)notification
+{
+    NSError *error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        
+    }
+    else
+    {
+        
+        materials = [notification.userInfo objectForKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialsProcesssed object:self];
+        NSMutableArray *temp = [NSMutableArray array];
+        for(Material *material in materials)
+        {
+            [temp addObject:material.MaterialNumber];
+        }
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
+    }
+    
+}
+-(void)materialPicturesLoaded:(NSNotification*)notification
+{
+    NSError *error;
+    error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        
+    }
+    else
+    {
+        materialPictures = [notification.userInfo objectForKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresProcesssed object:self userInfo:materialPictures];
+    }
+}
+
+
 
 #pragma mark - Pull Up View Delegate
 - (void)pullableView:(PullableView *)pView didChangeState:(BOOL)opened {
@@ -449,21 +466,26 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     UIImage *capturedImage = (UIImage *) [info objectForKey:
                                           UIImagePickerControllerOriginalImage];
     UIImage *resultingImage = [UIImage imageWithImage:capturedImage scaledToSize:CGSizeMake(640, 480)];
-    NSString *slug = [NSString stringWithFormat:@"Keyword='PhotoFrom:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='PhotoTakenOn:%@.jpeg'",[NSDate date],selectedBusinessPartner.BusinessPartnerID,[NSDate date]];
-    if([[RequestHandler uniqueInstance]uploadPicture:resultingImage forSlug:slug])
-    {
-        [self dismissViewControllerAnimated:YES completion:^{
-            [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
-        }];
-        
-    }
-    else
-    {
-        [self dismissViewControllerAnimated:YES completion:^{
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failed" message:@"The upload of the taken picture failed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-            [alert show];
-        }];
-    }
+    [self dismissViewControllerAnimated:YES completion:^
+     {
+         [self performSegueWithIdentifier:@"newPic" sender:resultingImage];
+     }];
+    
+//    NSString *slug = [NSString stringWithFormat:@"Keyword='PhotoFrom:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='PhotoTakenOn:%@.jpeg'",[NSDate date],selectedBusinessPartner.BusinessPartnerID,[NSDate date]];
+//    if([[RequestHandler uniqueInstance]uploadPicture:resultingImage forSlug:slug])
+//    {
+//        [self dismissViewControllerAnimated:YES completion:^{
+//            [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
+//        }];
+//        
+//    }
+//    else
+//    {
+//        [self dismissViewControllerAnimated:YES completion:^{
+//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failed" message:@"The upload of the taken picture failed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//            [alert show];
+//        }];
+//    }
 }
 
 #pragma mark - AlerView Delegate

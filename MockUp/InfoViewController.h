@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "CustomerViewController.h"
+#import "NoteView.h"
 
 @interface InfoViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIImageView *CompanyImage;
 @property (strong, nonatomic) IBOutlet UILabel *NameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *AddressLabel;
 @property (strong, nonatomic) IBOutlet UILabel *ZipLabel;
-@property (strong, nonatomic) IBOutlet UILabel *PhoneLabel;
 @property (strong, nonatomic) IBOutlet UITextView *URLView;
--(void)setBupa:(BusinessPartner *)_bupa;
+-(void)setBupa:(BusinessPartner *)_bupa withLogo:(UIImage*)logo;
 
 @end
