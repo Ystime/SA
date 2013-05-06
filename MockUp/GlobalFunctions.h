@@ -33,5 +33,5 @@
 +(void)shiftView:(UIView*)temp horizontal:(float)pixels;
 +(void)shiftView:(UIView*)temp vertical:(float)pixels;
 +(NSString*)getTitleFromKeyword:(NSString*)key;
-
++(NSMutableArray*)sortArray:(NSMutableArray*)oldArray onProperty:(NSString *)property ascending:(BOOL)ascend;
 @end

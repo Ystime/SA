@@ -33,10 +33,9 @@
                 item.Material = tempMat.MaterialNumber;
                 item.Description = tempMat.Description;
                 item.UoM = tempMat.UoM;
-                float price = (arc4random()%100000)/100.0;
-                float total = price * item.Quantity.floatValue;
+                float total = tempMat.Price.floatValue * item.Quantity.floatValue;
                 totalValue +=total;
-                item.NetPrice = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",price]];
+                item.NetPrice = tempMat.Price;
                 item.NetValue = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",total]];
                 [sd.Items addObject:item];
             }

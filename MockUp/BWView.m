@@ -12,7 +12,6 @@
 BusinessPartner *bupa;
 NSMutableDictionary *pieValues;
 NSMutableDictionary *chartValues;
-BasicPieChart *piechart;
 
 const NSString *kColors = @"kColors";
 const NSString *kPieValues = @"kPieValues";
@@ -26,8 +25,9 @@ const NSString *kChartTitlesX = @"kChartTitlesX";
 const NSString *kChartValuesY = @"kChartValuesY";
 NSMutableArray *selects;
 NSMutableArray *filters;
+XYPieChart *piechart;
 typedef enum {
-  kCustomer,KDocumentType
+    kCustomer,KDocumentType
 }EQSelect;
 EQSelect EQSel;
 
@@ -62,6 +62,8 @@ EQSelect EQSel;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processErrorNotification:) name:kLoadQueryErrorNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processResultsQuery:) name:kLoadQueryCompletedNotification object:nil];
     [self performSelectorInBackground:@selector(initiateFirstDiagrams) withObject:nil];
+    piechart = [[XYPieChart alloc]initWithFrame:CGRectMake(415, 20, 250, 250) Center:CGPointMake(540, 145) Radius:125];
+    [self insertSubview:piechart atIndex:0];
 }
 
 -(void)initiateFirstDiagrams
@@ -129,7 +131,7 @@ EQSelect EQSel;
         tempString = [tempString stringByReplacingOccurrencesOfString:@"." withString:@""];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"," withString:@"."];
         tempString = [tempString stringByReplacingOccurrencesOfString:@"-" withString:@""];
-
+        
         [values addObject:tempString];
         [titles addObject:result.A0DOC_CATEG_T];
         NSString *description = [NSString stringWithFormat:@"The value of %@s requested by this customer is: %@ ",result.A0DOC_CATEG_T,result.A006EI3ULWC7I23DQTK2PB6GHO_F];
@@ -139,7 +141,7 @@ EQSelect EQSel;
     }
     [pieValues setObject:values forKey:kPieValues];
     [pieValues setObject:colors forKey:kPieColors];
-
+    
     [pieValues setObject:titles forKey:kPieTitles];
     [pieValues setObject:descriptions forKey:kPieDescriptions];
     [pieValues setObject:icons forKey:kPieIcons];
@@ -187,7 +189,8 @@ EQSelect EQSel;
 }
 -(void)processQuery4:(NSMutableArray*)results
 {
-    NSMutableArray *XTitles = [NSMutableArray arrayWithObjects:@"0 Days",@"1-30",@"31-60",@"61-180",@"181-365",@">365",nil];
+    
+    NSMutableArray *XTitles = [NSMutableArray arrayWithObjects:@"0 Days",@"1-30 Days",@"31-60 Days",@"61-180 Days",@"181-365 Days",@">365 Days",nil];
     AZAPP_AR01Result *result = results[0];
     NSMutableArray *tempXValues = [NSMutableArray arrayWithObjects:result.A006EI3ULWC7I23F67E6D3SD18_F,result.A006EI3ULWC7I23F67E6D3SVZW_F,result.A006EI3ULWC7I23F67E6D3TEYK_F,result.A006EI3ULWC7I23F67E6D3TXX8_F,result.A006EI3ULWC7I23F67E6D3UGVW_F,result.A006EI3ULWC7I23F67E6D3UZUK_F,nil];
     int i = 0;
@@ -202,6 +205,7 @@ EQSelect EQSel;
         [XValues insertObject:tempString atIndex:i];
         i++;
     }
+    [chartValues removeAllObjects];
     [chartValues setObject:XTitles forKey:kChartValuesX];
     [chartValues setObject:XValues forKey:kChartValuesY];
     [chartValues setObject:XTitles forKey:kChartTitlesX];
@@ -211,12 +215,10 @@ EQSelect EQSel;
 -(void)processEQ:(NSMutableArray*)results
 {
     [pieValues removeAllObjects];
-    [piechart drawPieChart];
-//    [piechart removeFromSuperview];
     NSMutableArray *values = [NSMutableArray array];
     NSMutableArray *titles = [NSMutableArray array];
     NSMutableArray *titlesID = [NSMutableArray array];
-
+    
     NSMutableArray *colors = [NSMutableArray array];
     NSMutableArray *icons = [NSMutableArray array];
     NSMutableArray *descriptions = [NSMutableArray array];
@@ -256,30 +258,41 @@ EQSelect EQSel;
     [pieValues setObject:icons forKey:kPieIcons];
     [self setupPieChart];
 }
+
 -(void)setupPieChart
 {
+    [piechart setDelegate:self];
+    [piechart setDataSource:self];
+    [piechart setCenter:CGPointMake(125, 125)];
+    [piechart setShowPercentage:NO];
+    [piechart setShowLabel:YES];
+    [piechart setSelectedSliceOffsetRadius:3.0];
+    [self insertSubview:piechart atIndex:0];
+    [piechart reloadData];
 
-    piechart = [[BasicPieChart alloc]initWithFrame:CGRectMake(369,29,200,272)];
-    //    CGPoint temp = self.center;
-    //    temp.x = 1.5*temp.x;
-    //    piechart.center = temp;
-    piechart.delegate = self;
-    piechart.showInfoBox = YES;
-    piechart.infoBoxSmoothenCorners = YES;
-    piechart.fontName=[UIFont fontWithName:@"TrebuchetMS" size:13];
-    piechart.fontColor=[MIMColorClass colorWithComponent:@"0.8,0.2,0.2"];
-    piechart.infoBoxStyle=INFOBOX_STYLE1;
-    piechart.userTouchAllowed = YES;
-    piechart.detailPopUpType = mPIE_DETAIL_POPUP_TYPE3;
-    piechart.arrowDirection = DIRECTION_RIGHT;
-    piechart.layer.masksToBounds = NO;
-    piechart.glossEffect = YES;
-    piechart.tint = REDTINT;
-
-    [piechart drawPieChart];
-    
-    [self addSubview:piechart];
 }
+
+//-(void)setupPieChart
+//{
+//    
+//    piechart = [[BasicPieChart alloc]initWithFrame:CGRectMake(369,29,200,272)];
+//    piechart.delegate = self;
+//    piechart.showInfoBox = YES;
+//    piechart.infoBoxSmoothenCorners = YES;
+//    piechart.fontName=[UIFont fontWithName:@"TrebuchetMS" size:13];
+//    piechart.fontColor=[MIMColorClass colorWithComponent:@"0.8,0.2,0.2"];
+//    piechart.infoBoxStyle=INFOBOX_STYLE1;
+//    piechart.userTouchAllowed = YES;
+//    piechart.detailPopUpType = mPIE_DETAIL_POPUP_TYPE3;
+//    piechart.arrowDirection = DIRECTION_RIGHT;
+//    piechart.layer.masksToBounds = NO;
+//    piechart.glossEffect = YES;
+//    piechart.tint = REDTINT;
+//    
+//    [piechart drawPieChart];
+//    
+//    [self addSubview:piechart];
+//}
 
 -(void)setupBarGraph
 {
@@ -292,11 +305,11 @@ EQSelect EQSel;
     
     barGraph.titleLabel.text = @"Values of open sales documents categorized by age (in days)";
     barGraph.delegate = self;
-//    barGraph.isGradient = YES;
-    barGraph.barLabelStyle = BAR_LABEL_STYLE1;
+    //    barGraph.isGradient = YES;
+    barGraph.barLabelStyle = BAR_LABEL_STYLE2;
     barGraph.barcolorArray=[NSArray arrayWithObjects:[MIMColorClass colorWithComponent:@"0,255,0,1"], nil];
     barGraph.mbackgroundcolor=[MIMColorClass colorWithComponent:@"0,0,0,0"];
-    barGraph.xTitleStyle = XTitleStyle1;
+    barGraph.xTitleStyle = XTitleStyle2;
     barGraph.gradientStyle = VERTICAL_GRADIENT_STYLE;
     barGraph.glossStyle = GLOSS_STYLE_2;
     barGraph.layer.masksToBounds = NO;
@@ -305,101 +318,101 @@ EQSelect EQSel;
 }
 
 #pragma mark - Pie Chart Delegate
--(float)radiusForPie:(id)pieChart
+//-(float)radiusForPie:(id)pieChart
+//{
+//    return 100.0;
+//}
+//
+//-(NSArray *)valuesForPie:(id)pieChart
+//{
+//    return [pieValues objectForKey:kPieValues];
+//    
+//}
+//
+//-(NSArray *)titlesForPie:(id)pieChart
+//{
+//    return [pieValues objectForKey:kPieTitles];
+//}
+//
+//-(NSArray *)colorsForPie:(id)pieChart
+//{
+//    
+//    return [pieValues objectForKey:kPieColors];
+//}
+//
+//-(NSArray*)IconForPie:(id)pieChart
+//{
+//    return [pieValues objectForKey:kPieIcons];
+//}
+//
+//-(MIMColorClass *)colorForBackground:(id)pieChart
+//{
+//    MIMColorClass *bgColor;
+//    
+//    
+//    bgColor=[MIMColorClass colorWithComponent:@"1.0,1.0,1.0,0.0"];
+//    bgColor.alpha = 0.0;
+//    
+//    return bgColor;
+//}
+//
+//-(UIView *)detailedViewForPieSectionAtIndex:(int)index
+//{
+//    NSLog(@"TESTING BITCHTES\n\n\nYES!");
+//    return nil;
+//}
+//
+//-(UIView *)viewForPopUpAtIndex:(int)index
+//{
+//    NSArray *temp = [pieValues objectForKey:kPieTitlesID];
+//    NSString *tempStr = temp[index];
+//    switch (EQSel) {
+//        case kCustomer:
+//        {
+//            EQSel = KDocumentType;
+//            [filters addObject:[NSString stringWithFormat:@"DocumentCategoryId eq '%@'",tempStr]];
+//            [selects removeObject:@"DocumentCategory"];
+//            [selects removeObject:@"DocumentCategoryId"];
+//            [selects addObject:@"Material"];
+//            [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
+//            break;
+//        }
+//        case KDocumentType:
+//        {
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//    return nil;
+//}
+//
+//-(NSArray*)DescriptionForPie:(id)pieChart
+//{
+//    return [pieValues objectForKey:kPieDescriptions];
+//}
+-(UIColor*)colorForDocCategory:(NSString*)documentCategory
 {
-    return 100.0;
-}
-
--(NSArray *)valuesForPie:(id)pieChart
-{
-    return [pieValues objectForKey:kPieValues];
-    
-}
-
--(NSArray *)titlesForPie:(id)pieChart
-{
-    return [pieValues objectForKey:kPieTitles];
-}
-
--(NSArray *)colorsForPie:(id)pieChart
-{
-
-    return [pieValues objectForKey:kPieColors];
-}
-
--(NSArray*)IconForPie:(id)pieChart
-{
-    return [pieValues objectForKey:kPieIcons];
-}
-
--(MIMColorClass *)colorForBackground:(id)pieChart
-{
-    MIMColorClass *bgColor;
-    
-    
-    bgColor=[MIMColorClass colorWithComponent:@"1.0,1.0,1.0,0.0"];
-    bgColor.alpha = 0.0;
-    
-    return bgColor;
-}
-
--(UIView *)detailedViewForPieSectionAtIndex:(int)index
-{
-    NSLog(@"TESTING BITCHTES\n\n\nYES!");
-    return nil;
-}
-
--(UIView *)viewForPopUpAtIndex:(int)index
-{
-    NSArray *temp = [pieValues objectForKey:kPieTitlesID];
-    NSString *tempStr = temp[index];
-    switch (EQSel) {
-        case kCustomer:
-        {
-            EQSel = KDocumentType;
-            [filters addObject:[NSString stringWithFormat:@"DocumentCategoryId eq '%@'",tempStr]];
-            [selects removeObject:@"DocumentCategory"];
-            [selects removeObject:@"DocumentCategoryId"];
-            [selects addObject:@"Material"];
-            [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
-            break;
-        }
-        case KDocumentType:
-        {
-            break;
-        }
-        default:
-            break;
-    }
-    return nil;
-}
-
--(NSArray*)DescriptionForPie:(id)pieChart
-{
-    return [pieValues objectForKey:kPieDescriptions];
-}
--(MIMColorClass*)colorForDocCategory:(NSString*)documentCategory
-{
-    MIMColorClass *result;
+    UIColor *result;
     if([documentCategory isEqualToString:@"A"])
     {
-        result = [MIMColorClass colorWithRed:0 Green:0 Blue:255 Alpha:1];
+        result = [UIColor colorWithRed:0 green:0 blue:255 alpha:1];
     }
     else     if([documentCategory isEqualToString:@"B"])
     {
-        result = [MIMColorClass colorWithRed:255 Green:100 Blue:0 Alpha:1];
+        result = [UIColor colorWithRed:1.0 green:0.5 blue:0 alpha:1];
     }
     else     if([documentCategory isEqualToString:@"C"])
     {
-        result = [MIMColorClass colorWithRed:20 Green:128 Blue:20 Alpha:1];
+        result = [UIColor colorWithRed:0 green:0.5 blue:0.25 alpha:1];
     }
     else     if([documentCategory isEqualToString:@"H"])
     {
-        result = [MIMColorClass colorWithRed:255 Green:0 Blue:0 Alpha:1];
+        result = [UIColor colorWithRed:0.5 green:0 blue:0 alpha:1];
     }
     
     else
-        result = [MIMColorClass colorWithRed:arc4random()%256 Green:arc4random()%256 Blue:arc4random()%256 Alpha:1];
+        result = [UIColor colorWithRed:arc4random()%256 green:arc4random()%256 blue:arc4random()%256 alpha:1];
     return result;
 }
 
@@ -454,5 +467,56 @@ EQSelect EQSel;
     
 }
 
+#pragma mark - XYPiechart Datasource
+
+- (NSUInteger)numberOfSlicesInPieChart:(XYPieChart *)pieChart
+{
+    NSArray *temp = [pieValues objectForKey:kPieValues];
+    if(!temp)
+        return 0;
+    return temp.count;
+}
+
+- (CGFloat)pieChart:(XYPieChart *)pieChart valueForSliceAtIndex:(NSUInteger)index
+{
+    NSArray *temp = [pieValues objectForKey:kPieValues];
+    NSDecimalNumber *tempValue = (NSDecimalNumber*)temp[index];
+    return tempValue.floatValue;
+}
+
+- (NSString *)pieChart:(XYPieChart *)pieChart textForSliceAtIndex:(NSUInteger)index
+{
+    NSArray *titles = [pieValues objectForKey:kPieTitles];
+    NSArray *values = [pieValues objectForKey:kPieValues];
+    NSDecimalNumber *value = values[index];
+    NSString *title = titles[index];
+    return  [NSString stringWithFormat:@"%@, € %.2f",title,value.floatValue];
+}
+
+- (UIColor *)pieChart:(XYPieChart *)pieChart colorForSliceAtIndex:(NSUInteger)index
+{
+    NSArray *temp = [pieValues objectForKey:kPieColors];
+    return temp[index];
+}
+
+#pragma mark - XYPiechart Datasource
+- (void)pieChart:(XYPieChart *)pieChart willSelectSliceAtIndex:(NSUInteger)index
+{
+    
+}
+- (void)pieChart:(XYPieChart *)pieChart didSelectSliceAtIndex:(NSUInteger)index
+{
+    NSArray *temp = [pieValues objectForKey:kPieValues];
+    NSDecimalNumber *tempVal = (NSDecimalNumber*)temp[index];
+    self.valueSelectedPie.text = [NSString stringWithFormat:@"Value: € %.2f",tempVal.floatValue];
+}
+- (void)pieChart:(XYPieChart *)pieChart willDeselectSliceAtIndex:(NSUInteger)index
+{
+    
+}
+- (void)pieChart:(XYPieChart *)pieChart didDeselectSliceAtIndex:(NSUInteger)index
+{
+    
+}
 
 @end

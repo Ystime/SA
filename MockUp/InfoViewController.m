@@ -38,6 +38,7 @@ UIPopoverController *upc;
     self.AddressLabel.text = bupa.Address.Street;
     self.ZipLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.PostalCode,bupa.Address.City];
     self.URLView.text = bupa.Website.LongURL;
+    self.TelephoneLabel.text = bupa.PhoneNumber.PhoneNumber;
     self.CompanyImage.image = Companylogo;
 //    if ([bupa.BusinessPartnerName hasPrefix:@"Albert"]) {
 //        self.CompanyImage.image = [UIImage imageNamed:@"logoAH.png"];

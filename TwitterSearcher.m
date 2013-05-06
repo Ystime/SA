@@ -20,10 +20,10 @@
     // Build the string to search against the twitter search api
     NSString *fromString = selectedBupa.Twitter.LongURL;        
     if(!(fromString == nil || [fromString isEqualToString:@""]))
-        fromString = [NSString stringWithFormat:@"from:%@",fromString];
+        fromString = fromString;
     else
         fromString = selectedBupa.BusinessPartnerName;
-    NSString *urlString = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=50&lang=nl",[self changeStringForSearch:fromString]];
+    NSString *urlString = [NSString stringWithFormat:@"http://search.twitter.com/search.json?q=%@&rpp=50",[self changeStringForSearch:fromString]];
     
 	NSURL *url = [NSURL URLWithString:urlString];
     

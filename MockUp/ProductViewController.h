@@ -26,6 +26,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *ViewButton;
 @property (strong, nonatomic) UIPopoverController *pop;
 @property (strong, nonatomic) NSIndexPath *tappedIndexPath;
+@property NSMutableArray *materials;
+
 
 
 @end

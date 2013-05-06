@@ -11,6 +11,8 @@
 #import "GlobalFunctions.h"
 #import "LGViewHUD.h"
 
+#import "XYPieChart.h"
+
 @interface LogInViewController : UIViewController <UIAlertViewDelegate,UITextFieldDelegate>
 @property (strong, nonatomic) IBOutlet UILabel *VersionLabel;
 - (IBAction)logIn:(id)sender;

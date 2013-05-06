@@ -7,6 +7,8 @@
  
  */
 
+#define kLanguage @"DE"
+
 #import <Foundation/Foundation.h>
 #import "SDMHttpRequestDelegate.h"
 #import "SDMConnectivityHelper.h"
@@ -47,6 +49,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 #define kParentsPicLoaded @"Parents Logos have been recieved"
 #define kMaterialPicuresLoaded @"Material pictures have been recieved"
 #define kAlertsLoaded @"Alerts have been recieved"
+#define kMaterialGroupsLoaded @"Mat Groups loaded"
 #define SERVICE_URL_EMPTY_ERROR_CODE 1001
 #define LOGIN_ERROR_CODE 1002
 #define SERVICE_METADATA_PARSE_ERROR_CODE 1005
@@ -90,12 +93,14 @@ extern NSString * const kLoadHierarchyCompletedNotification;
  */
 /*RequestHandler Methods for Business Partner Object*/
 - (void)loadBusinessPartners;
+- (BusinessPartner*)loadBusinessPartnerWithID:(NSString*)bupaID;
 - (BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner;
 - (void)loadImagesforBusinessPartner:(BusinessPartner*)bupa;
 - (void)loadNotesForBusinessPartner:(BusinessPartner*)bupa withPrefix:(NSString*)pref;
 - (void)loadParents;
--(void)loadImagesForParents:(NSArray*)parentIDs;
+- (void)loadImagesForParents:(NSArray*)parentIDs;
 - (void)loadHierarchyWithRootNode:(NSString*)bupaID;
+
 
 /*RequestHandler Methods for Contact Person Object*/
 - (void)loadContacts:(BusinessPartner*)bupa;
@@ -106,6 +111,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (void)loadMaterials;
 - (Material*)loadMaterial:(NSString*)barcode;
 - (void)loadImagesforMaterials:(NSArray*)materials;
+- (void)loadMaterialGroups;
 
 
 /*RequestHandler Methods for Sales Document Object*/
@@ -113,6 +119,7 @@ extern NSString * const kLoadHierarchyCompletedNotification;
 - (BOOL)createSalesDocument:(SalesDocument*)salesdoc;
 - (void)loadSalesDocumentItems:(SalesDocument*)sd;
 
+-(BOOL)uploadPicture:(UIImage*)photo withKeyword:(NSString*)key andRelatedID:(NSString*)relID andSource:(NSString*)source andType:(NSString*)mediatype;
 -(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug;
 -(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title withCategory:(NSString*)category forBusinessPartner:(BusinessPartner*)bupa;
 /**

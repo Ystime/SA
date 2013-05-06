@@ -37,4 +37,7 @@
 
 -(void)setHeaderLabelView;
 - (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction;
+
+
+
 @end

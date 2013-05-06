@@ -10,11 +10,12 @@
 #import "GlobalFunctions.h"
 #import "ZBarSDK.h"
 
-@interface NewContactController : UIViewController <ZBarReaderDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@interface NewContactController : UIViewController <ZBarReaderDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate>
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 - (IBAction)clickedButton:(id)sender;
 @property ContactPerson *editContact;
 @property BusinessPartner *relBUPA;
+@property UIImage *passphoto;
 @property (strong, nonatomic) IBOutlet UIImageView *ContactImage;
 @property (strong, nonatomic) IBOutletCollection(UITextField) NSArray *InputFieldCollection;
 - (IBAction)scanBusinessCard:(id)sender;

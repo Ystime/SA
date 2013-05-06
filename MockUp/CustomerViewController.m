@@ -57,14 +57,11 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     
     [self setViewInContainer:self.childViewControllers[0]];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(bupaPicturesLoaded:) name:kPicturesLoaded object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialsLoaded:) name:kLoadMaterialCompletedNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialPicturesLoaded:) name:kMaterialPicuresLoaded object:nil];
+    [self performSelectorInBackground:@selector(retrieveMaterials) withObject:nil];
+    [self performSelectorInBackground:@selector(retrieveMaterialPics) withObject:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(bupaNotesLoaded:) name:kNotesLoaded object:nil];
-    
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
-    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadMaterials) withObject:nil];
     [self performSelectorInBackground:@selector(loadNotesWithPrefix:) withObject:nil];
-//    [[RequestHandler uniqueInstance]loadNotesForBusinessPartner:selectedBusinessPartner withPrefix:nil];
     
 }
 
@@ -410,40 +407,18 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
     [[NSNotificationCenter defaultCenter]postNotificationName:kNotesProcesssed object:self userInfo:notification.userInfo];
 }
 
--(void)materialsLoaded:(NSNotification*)notification
+-(void)retrieveMaterials
 {
-    NSError *error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        
-    }
-    else
-    {
-        
-        materials = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialsProcesssed object:self];
-        NSMutableArray *temp = [NSMutableArray array];
-        for(Material *material in materials)
-        {
-            [temp addObject:material.MaterialNumber];
-        }
-        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
-    }
-    
+    while(!self.mvc.Materials){}
+    materials = self.mvc.Materials;
+    [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialsProcesssed object:self];
 }
--(void)materialPicturesLoaded:(NSNotification*)notification
+
+-(void)retrieveMaterialPics
 {
-    NSError *error;
-    error = [notification.userInfo objectForKey:kResponseError];
-    if(error)
-    {
-        
-    }
-    else
-    {
-        materialPictures = [notification.userInfo objectForKey:kResponseItems];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresProcesssed object:self userInfo:materialPictures];
-    }
+    while(!self.mvc.MaterialPictures){}
+    materialPictures = self.mvc.MaterialPictures;
+    [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialPicuresProcesssed object:self userInfo:materialPictures];
 }
 
 
@@ -470,22 +445,6 @@ NSString * const kCVCLoadedDocs = @"CVCLoadedDocuments";
      {
          [self performSegueWithIdentifier:@"newPic" sender:resultingImage];
      }];
-    
-//    NSString *slug = [NSString stringWithFormat:@"Keyword='PhotoFrom:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='PhotoTakenOn:%@.jpeg'",[NSDate date],selectedBusinessPartner.BusinessPartnerID,[NSDate date]];
-//    if([[RequestHandler uniqueInstance]uploadPicture:resultingImage forSlug:slug])
-//    {
-//        [self dismissViewControllerAnimated:YES completion:^{
-//            [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:selectedBusinessPartner];
-//        }];
-//        
-//    }
-//    else
-//    {
-//        [self dismissViewControllerAnimated:YES completion:^{
-//            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failed" message:@"The upload of the taken picture failed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-//            [alert show];
-//        }];
-//    }
 }
 
 #pragma mark - AlerView Delegate

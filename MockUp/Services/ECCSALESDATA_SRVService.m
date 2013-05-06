@@ -3083,7 +3083,7 @@ static SDMODataEntitySchema *mediaForBPParentEntitySchema = nil;
 - (ODataQuery *)getBusinessPartnersEntryQueryWithBusinessPartnerID:(NSString *)BusinessPartnerID
 {
 	BusinessPartnerID = [ODataQuery encodeURLParameter:BusinessPartnerID];
-	NSString *relativePath = [NSString stringWithFormat:@"BusinessPartners(BusinessPartnerID=%@)", BusinessPartnerID];
+	NSString *relativePath = [NSString stringWithFormat:@"BusinessPartners(BusinessPartnerID='%@')", BusinessPartnerID];
 	ODataQuery *query = [self getQueryForRelativePath:relativePath];
 	return query;
 }

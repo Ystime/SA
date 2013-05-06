@@ -15,6 +15,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *NameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *AddressLabel;
 @property (strong, nonatomic) IBOutlet UILabel *ZipLabel;
+@property (strong, nonatomic) IBOutlet UILabel *TelephoneLabel;
 @property (strong, nonatomic) IBOutlet UITextView *URLView;
 -(void)setBupa:(BusinessPartner *)_bupa withLogo:(UIImage*)logo;
 

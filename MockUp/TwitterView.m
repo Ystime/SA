@@ -67,13 +67,14 @@ NSMutableDictionary *twitPics;
 }
 
 - (void)twitterError:(NSNotification *)notification {
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-	UIAlertView *twitterViewAlertView = [[UIAlertView alloc] initWithTitle:@"Twitter Search"
-                                                                   message:@"Twitter search failed"
-                                                                  delegate:self
-                                                         cancelButtonTitle:@"Try Again"
-                                                         otherButtonTitles:@"Cancel",nil];
-    [twitterViewAlertView performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
+        [self performSelectorOnMainThread:@selector(setTextErrorLabel:) withObject:@"No Tweets found" waitUntilDone:YES];
+//    [[NSNotificationCenter defaultCenter]removeObserver:self];
+//	UIAlertView *twitterViewAlertView = [[UIAlertView alloc] initWithTitle:@"Twitter Search"
+//                                                                   message:@"Twitter search failed"
+//                                                                  delegate:self
+//                                                         cancelButtonTitle:@"Try Again"
+//                                                         otherButtonTitles:@"Cancel",nil];
+//    [twitterViewAlertView performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
 }
 
 //-(void)getTweets

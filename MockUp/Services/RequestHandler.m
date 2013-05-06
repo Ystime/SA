@@ -98,12 +98,19 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSDictionary *userInfoDict;
     NSError *error;
     
-    NSMutableArray *items = [service getBusinessPartnersWithData:request.responseData error:&error];
+    NSMutableArray *rawResults = [service getBusinessPartnersWithData:request.responseData error:&error];
+    NSMutableArray *Results = [NSMutableArray array];
+    for(BusinessPartner *bp in rawResults)
+    {
+        if([bp.Address.Country isEqualToString:kLanguage])
+            [Results addObject:bp];
+    }
+    
     if (error) {
         userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
     }
     else {
-        userInfoDict = [NSDictionary dictionaryWithObject:items forKey:kResponseItems];
+        userInfoDict = [NSDictionary dictionaryWithObject:Results forKey:kResponseItems];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:kLoadBusinessPartnersCompletedNotification object:self userInfo:userInfoDict];
 }
@@ -123,26 +130,56 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     }
 }
 
+-(BusinessPartner*)loadBusinessPartnerWithID:(NSString*)bupaID
+{
+    if([SettingsUtilities getDemoStatus])
+    {
+        for(BusinessPartner *bp in [[DemoData getInstance]bupas])
+        {
+            if([bp.BusinessPartnerID isEqualToString:bupaID])
+                return bp;
+        }
+        return nil;
+    }
+    BusinessPartner *result = nil;
+    ODataQuery *query = [service getBusinessPartnersEntryQueryWithBusinessPartnerID:bupaID];
+    id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
+    NSError *error;
+    result = [service getBusinessPartnersEntryWithData:[request responseData] error:&error];
+    return result;
+}
+
 -(BusinessPartner*)createBusinessPartner:(BusinessPartner*)bussPartner
 {
-    BusinessPartner* success = nil;
-    NSError *error;
-    
-    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
-    
-    NSString* test = [service getXMLForCreateRequest:bussPartner error:&error];
-    //    NSLog(@"%@",test);
-    
-    if (csrf) {
-        id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery: service.BusinessPartnersQuery andBody:test andCSRFData:csrf];
-        
-        
-        NSLog(@"REQUEST: %@", [request responseString]);
-        success = [BusinessPartner parseBusinessPartnerEntryWithData:request.responseData error:&error];
-        if(error)
-            success = nil;
+    if([SettingsUtilities getDemoStatus])
+    {
+        bussPartner.BusinessPartnerID = [NSString stringWithFormat:@"%i",[[DemoData getInstance]bupas].count +1];
+        bussPartner.ContactPersons = [NSMutableArray array];
+        [[[DemoData getInstance]bupas]addObject:bussPartner];
+        [[RequestHandler uniqueInstance]loadBusinessPartners];
+        return bussPartner;
     }
-    return success;
+    else
+    {
+        BusinessPartner* success = nil;
+        NSError *error;
+        
+        CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+        
+        NSString* test = [service getXMLForCreateRequest:bussPartner error:&error];
+        //    NSLog(@"%@",test);
+        
+        if (csrf) {
+            id<SDMRequesting> request = [connectivityHelper executeCreateSyncRequestWithQuery: service.BusinessPartnersQuery andBody:test andCSRFData:csrf];
+            
+            
+            NSLog(@"REQUEST: %@", [request responseString]);
+            success = [BusinessPartner parseBusinessPartnerEntryWithData:request.responseData error:&error];
+            if(error)
+                success = nil;
+        }
+        return success;
+    }
 }
 
 #pragma mark - Instance Methods Parents
@@ -150,9 +187,22 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(void)loadParents
 {
-    ODataQuery *query = service.BusinessPartnerParentsQuery;
-    [query expand:@"BusinessPartners"];
-    [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadParentsCompleted:) andUserInfo:nil];
+    if([SettingsUtilities getDemoStatus])
+    {
+        BusinessPartnerParent *parent = [[BusinessPartnerParent alloc]initWithSDMDictionary:nil];
+        parent.BusinessPartnerName = @"FEXS";
+        parent.BusinessPartnerParentID = @"FEXS_PARENT";
+        NSArray *temp = [[DemoData getInstance]bupas];
+        parent.BusinessPartners = [NSMutableArray arrayWithObjects:temp[0],temp[1],nil];
+        NSDictionary *userinfo = [NSDictionary dictionaryWithObject:[NSDictionary dictionaryWithObject:parent forKey:parent.BusinessPartnerParentID] forKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:userinfo];
+    }
+    else
+    {
+        ODataQuery *query = service.BusinessPartnerParentsQuery;
+        [query expand:@"BusinessPartners"];
+        [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadParentsCompleted:) andUserInfo:nil];
+    }
 }
 
 
@@ -170,7 +220,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     {
         for(BusinessPartnerParent *parent in tempParents)
         {
-            if(parent.BusinessPartners.count >0)
+            if(parent.BusinessPartners.count >0 && [parent.Address.Country isEqualToString:kLanguage])
                 [parents setObject:parent forKey:parent.BusinessPartnerParentID];
         }
         userinfo = [NSDictionary dictionaryWithObject:parents forKey:kResponseItems];
@@ -208,7 +258,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     if([SettingsUtilities getDemoStatus])
     {
         NSMutableArray *temp = [[DemoData getInstance]bupas];
-        NSMutableArray *contact = [[NSMutableArray alloc]init];
+        NSMutableArray *contact = [NSMutableArray array];
         for(BusinessPartner *bp in temp)
         {
             if([bp.BusinessPartnerID isEqualToString:bupa.BusinessPartnerID])
@@ -230,6 +280,17 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(ContactPerson*) createContactPerson:(ContactPerson*)contact forBusinessPartner:(BusinessPartner*)bupa
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+        for(BusinessPartner *bp in [[DemoData getInstance]bupas])
+        {
+            if([bp.BusinessPartnerID isEqualToString:bupa.BusinessPartnerID])
+            {
+                [bp.ContactPersons addObject:contact];
+                return contact;
+            }
+        }
+    }
     NSError *error;
     
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
@@ -256,9 +317,14 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSMutableArray *unsortedMaterials = [service getMaterialsWithData:request.responseData error:&error];
     /*For now, manually filter materials starting with Y*/
     NSMutableArray *materials = [NSMutableArray array];
+    NSString *prefix = @"";
+    if([kLanguage isEqualToString:@"DE"])
+        prefix = @"DEDI";
+    else if ([kLanguage isEqualToString:@"NL"])
+        prefix = @"Y";
     for(Material *mat  in unsortedMaterials)
     {
-        if([mat.MaterialNumber hasPrefix:@"Y"])
+        if([mat.MaterialNumber hasPrefix:prefix])
             [materials addObject:mat];
     }
     
@@ -270,11 +336,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     else {
         userInfoDict = [NSDictionary dictionaryWithObject:materials forKey:kResponseItems];
     }
-    if(viewVisible)
-    {
-        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
-        
-    }
+    [[NSNotificationCenter defaultCenter]postNotificationName:kLoadMaterialCompletedNotification object:self userInfo:userInfoDict];
     
 }
 
@@ -293,6 +355,16 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(Material*)loadMaterial:(NSString*)barcode
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+        for(Material *mat in [[DemoData getInstance]materials])
+        {
+            if([mat.EANCode isEqualToString:barcode])
+                return mat;
+        }
+        return nil;
+    }
+    
     ODataQuery *query = service.MaterialsQuery;
     [query filter:@"SalesOrganization eq '1000'"];
     id<SDMRequesting> request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
@@ -306,6 +378,52 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
             result = temp;
     }
     return result;
+}
+
+-(void)loadMaterialGroups
+{
+    if([SettingsUtilities getDemoStatus])
+    {
+        NSDictionary *userInfoDict = [NSDictionary dictionaryWithObject:[[DemoData getInstance]materialGroups] forKey:kResponseItems];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialGroupsLoaded object:nil userInfo:userInfoDict];
+    }
+    else
+    {
+        ODataQuery *query = service.MaterialGroupsQuery;
+        [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(MaterialGroupsLoaded:) andUserInfo:nil];
+    }
+}
+
+
+-(void)MaterialGroupsLoaded:(id<SDMRequesting>)request
+{
+    NSDictionary *userInfoDict;
+    NSError *error;
+    NSMutableArray *groups = [service getMaterialGroupsWithData:[request responseData] error:&error];
+    MaterialGroup *temp = [[MaterialGroup alloc]init];
+    temp.Description = @"All Materials";
+    temp.MaterialGroupID = @"0";
+    NSMutableArray *selectedGroups = [NSMutableArray array];
+    [selectedGroups insertObject:temp atIndex:0];
+    NSString *prefix = @"";
+    if([kLanguage isEqualToString:@"DE"])
+        prefix = @"ZDEDI";
+    else if ([kLanguage isEqualToString:@"NL"])
+        prefix = @"ZTD";
+    
+    
+    for(MaterialGroup *mg in groups)
+    {
+        if([mg.MaterialGroupID hasPrefix:prefix])
+            [selectedGroups addObject:mg];
+    }
+    if(error) {
+        userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
+    }
+    else {
+        userInfoDict = [NSDictionary dictionaryWithObject:selectedGroups forKey:kResponseItems];
+    }
+    [[NSNotificationCenter defaultCenter]postNotificationName:kMaterialGroupsLoaded object:nil userInfo:userInfoDict];
 }
 
 #pragma mark - Instance Methods Sales Documents
@@ -350,6 +468,13 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(BOOL) createSalesDocument:(SalesDocument*)salesdoc
 {
+    
+    if([SettingsUtilities getDemoStatus])
+    {
+        salesdoc.OrderID = [NSString stringWithFormat:@"%i",[[DemoData getInstance]getNextDocId]];
+        [[[DemoData getInstance]salesDocs]addObject:salesdoc];
+        return YES;
+    }
     NSError *error;
     
     [self loginWithUsername:[SettingsUtilities getUsernameFromUserSettings] andPassword:[SettingsUtilities getPasswordFromUserSettings] error:&error];
@@ -412,12 +537,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSMutableDictionary *images= [NSMutableDictionary dictionary];
     if([SettingsUtilities getDemoStatus])
     {
-        if([bupa.BusinessPartnerID isEqualToString:@"1"])
-        {
-            [images setObject:[UIImage imageNamed:@"Scheer Front.jpg"] forKey:@"Scheer Front"];
-            [images setObject:[UIImage imageNamed:@"Scheer Inside.jpg"] forKey:@"Scheer Inside"];
-            [images setObject:[UIImage imageNamed:@"Scheer Tower.jpg"] forKey:@"Scheer Tower"];
-        }
+        images = [[[DemoData getInstance]bupaPictures]objectForKey:bupa.BusinessPartnerID];
     }
     else
     {
@@ -479,8 +599,6 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         NSError *error;
         for(NSString *materialID in materials)
         {
-            if(!viewVisible)
-                return;
             ODataQuery *query = [service getMediaCollectionForMaterialEntryQueryWithMaterialNumber:materialID andKeyword:@"thumbnail" andMediaType:@"Attachment"];
             id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
             Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
@@ -500,6 +618,9 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(void)loadImagesForParents:(NSArray*)parentIDs
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+    }
     NSMutableDictionary *parentsPic = [NSMutableDictionary dictionary];
     NSError *error;
     [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
@@ -518,8 +639,8 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                 [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
         }
         else
-            [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];					
-
+            [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
+        
     }
     NSDictionary *userinfo;
     if(parentsPic.count > 0)
@@ -570,8 +691,43 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         [[NSNotificationCenter defaultCenter]postNotificationName:kPassPhotosLoaded object:self userInfo:temp];
 }
 
+
+
+-(BOOL)uploadPicture:(UIImage*)photo withKeyword:(NSString*)key andRelatedID:(NSString*)relID andSource:(NSString*)source andType:(NSString*)mediatype
+{
+    if([SettingsUtilities getDemoStatus])
+    {
+        NSMutableDictionary *tempDic = [[[DemoData getInstance]bupaPictures]objectForKey:relID];
+        if(!tempDic)
+        {
+            [[[DemoData getInstance]bupaPictures]setObject:[NSMutableDictionary dictionaryWithObject:photo forKey:key] forKey:relID];
+        }
+        else
+            [tempDic setObject:photo forKey:key];
+        return YES;
+    }
+    NSString *slug = [NSString stringWithFormat:@"Keyword='%@',RelatedID='%@',Source='%@',MediaType='%@',Filename='PhotoTakenOn:%@.jpeg'",key,relID,source,mediatype,[NSDate date]];
+    MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
+    NSMutableData *body = (NSMutableData*)UIImageJPEGRepresentation(photo, 0.7);
+    CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
+    if(csrf)
+    {
+        id<SDMRequesting>request = [connectivityHelper executeCreateMediaLinkSyncRequest:link andBody:body andCSRFData:csrf];
+        NSString *result = [request responseStatusMessage];
+        NSLog(@"Result: %@",result);
+        if([result hasPrefix:@"HTTP/1.1 201"])
+            return YES;
+    }
+    return NO;
+}
+
 -(BOOL)uploadPicture:(UIImage*)photo forSlug:(NSString*)slug
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+        return NO;
+        
+    }
     MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
     NSMutableData *body = (NSMutableData*)UIImageJPEGRepresentation(photo, 0.7);
     CSRFData *csrf = [connectivityHelper getCSRFDataForServiceQuery:service.serviceDocumentQuery];
@@ -592,7 +748,22 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSMutableDictionary *notes= [NSMutableDictionary dictionary];
     if([SettingsUtilities getDemoStatus])
     {
-        
+        NSMutableDictionary *tempNotes = [[[DemoData getInstance]bupaNotes]objectForKey:bupa.BusinessPartnerID];
+        for(NSString *key in tempNotes.allKeys)
+        {
+            if(!pref || [key hasPrefix:pref])
+            {
+                NSString *secondKey;
+                if(!([key rangeOfString:@"_%_"].location == NSNotFound))
+                {
+                    NSArray *subs = [key componentsSeparatedByString:@"_%_"];
+                    secondKey = subs[subs.count-2];
+                }
+                else
+                    secondKey = key;
+                [notes setObject:tempNotes[key] forKey:secondKey];
+            }
+        }
     }
     else
     {
@@ -648,6 +819,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title withCategory:(NSString*)category forBusinessPartner:(BusinessPartner*)bupa
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+        NSMutableDictionary *temp = [[[DemoData getInstance]bupaNotes]objectForKey:bupa.BusinessPartnerID];
+        [temp setObject:note forKey:title];
+        return YES;
+    }
     NSString *keyword;
     if(category)
         keyword = [NSString stringWithFormat:@"%@_%%_%@_%%_%@",category,title,[NSDate date]];

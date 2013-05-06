@@ -39,13 +39,13 @@ NSArray *noteKeys;
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 #pragma mark - Table Datasource Delegate
 
@@ -78,14 +78,13 @@ NSArray *noteKeys;
     [[NSNotificationCenter defaultCenter]removeObserver:self];
     NSError *error;
     error = [notification.userInfo objectForKey:kResponseError];
-    if (error)
-        return;
-    else
-    {
-        notes = [notification.userInfo objectForKey:kResponseItems];
-        noteKeys = notes.allKeys;
-        [self reloadData];
-    }
+    
+    notes = [notification.userInfo objectForKey:kResponseItems];
+    if (error || noteKeys.count == 0)
+        notes = [NSMutableDictionary dictionaryWithObject:@"No sales alerts were found for this business partner" forKey:@"No Alerts"];
+    noteKeys = notes.allKeys;
+    [self reloadData];
+    
     
 }
 @end

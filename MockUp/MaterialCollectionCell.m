@@ -31,7 +31,7 @@
 
 -(void)setMaterial:(Material*)material
 {
-    self.MaterialName.text = material.MaterialNumber;
+    self.MaterialName.text = material.Description;
 }
 
 /*

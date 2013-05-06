@@ -13,8 +13,7 @@
 @end
 
 @implementation ProductViewController
-NSMutableArray *materials;
-@synthesize pop,tappedIndexPath;
+@synthesize pop,tappedIndexPath,materials;
 LGViewHUD *loadingMaterials;
 CustomerViewController *cvc;
 BOOL imageAvailable;

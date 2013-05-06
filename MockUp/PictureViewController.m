@@ -162,14 +162,12 @@ typedef enum swipeDir {kLeft,kRight}swipeDir;
     [thumbCollection selectItemAtIndexPath:path animated:YES scrollPosition:UICollectionViewScrollPositionCenteredVertically];    
 }
 - (IBAction)swipeRight:(id)sender {
-    NSLog(@"LEFT SWIPE!");
     if(indexPic-1 >-1)
     {
         [self showPVCWithPictureForKey:keys[indexPic-1]];
     }
 }
 - (IBAction)swipeLeft:(id)sender {
-        NSLog(@"RIGHT SWIPE!");
     if(indexPic+1 < keys.count)
     {
         [self showPVCWithPictureForKey:keys[indexPic+1]];

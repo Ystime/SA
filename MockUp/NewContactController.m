@@ -62,6 +62,7 @@ NSString *role;
             self.GenderControl.selectedSegmentIndex = 1;
             [self.GenderControl setEnabled:NO forSegmentAtIndex:0];
         }
+        self.ContactImage.image = self.passphoto;
         self.saveButton.hidden = self.scanButton.hidden = YES;
     }
     else
@@ -149,6 +150,7 @@ NSString *role;
 - (IBAction)scanBusinessCard:(id)sender
 {
     ZBarReaderViewController *reader = [ZBarReaderViewController new];
+
     reader.readerDelegate = self;
     scanFlag = YES;
     pictureFlag = NO;
@@ -264,7 +266,7 @@ NSString *role;
                 break;
         }
     }
-    editContact.Gender = [NSString stringWithFormat:@"%i",self.GenderControl.selectedSegmentIndex-1];
+    editContact.Gender = [NSString stringWithFormat:@"%i",self.GenderControl.selectedSegmentIndex+1];
     editContact.RelatedPartnerID = self.relBUPA.BusinessPartnerID;
     editContact.ContactPersonID = @" ";
     
@@ -292,7 +294,7 @@ NSString *role;
             {
                 alert.message =@"Could not save picture. Contact details are saved!";
                 [alert show];
-            }
+            } 
         }
         else
         {
@@ -303,5 +305,26 @@ NSString *role;
         }
     }
     
+}
+
+#pragma mark - UITextField Delegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if(textField.tag < self.InputFieldCollection.count)
+    {
+        for(UIView *view in self.InputFieldCollection)
+        {
+            if(view.tag == textField.tag+1)
+                [view becomeFirstResponder];
+        }
+    }
+    else
+        [textField resignFirstResponder];
+    return YES;
+}
+
+-(BOOL)disablesAutomaticKeyboardDismissal
+{
+    return NO;
 }
 @end

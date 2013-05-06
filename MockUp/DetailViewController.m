@@ -155,14 +155,14 @@ LGViewHUD *createHUD;
     bupa.Website.URL = bupa.Website.LongURL= self.URLField.text;
     bupa.Twitter.URL = bupa.Twitter.LongURL = self.TwitterField.text;
     bupa.BusinessPartnerID = @"x";
-    bupa.Address.CountryCodeISO = @"NL";
-    bupa.Address.Country = @"NL";
+    bupa.Address.CountryCodeISO = kLanguage;
+    bupa.Address.Country = kLanguage;
     [createHUD showInView:self.view];
     switch ([sender tag]) {
-        case 1:
+        case 100:
             bupa.BusinessPartnerType = @"Prospect";
             break;
-        case 2:
+        case 101:
             bupa.BusinessPartnerType = @"Competitor";
             break;
         default:
@@ -192,6 +192,7 @@ LGViewHUD *createHUD;
     UIAlertView *resultCreation;
     if(result)
     {
+        bupa = [[RequestHandler uniqueInstance]loadBusinessPartnerWithID:result.BusinessPartnerID];
         resultCreation = [[UIAlertView alloc]initWithTitle:@"Creation succes!" message:@"Creation of new account completed!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         resultCreation.tag = 1;
     }
@@ -220,7 +221,7 @@ LGViewHUD *createHUD;
         }
             break;
         case 2:
-//            [self dismissViewControllerAnimated:YES completion:nil];
+            //            [self dismissViewControllerAnimated:YES completion:nil];
             break;
             
         default:
@@ -229,6 +230,29 @@ LGViewHUD *createHUD;
     
 }
 
+#pragma mark - UITextField Delegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if(textField.tag < 10)
+    {
+        for(UIView *view in self.views)
+        {
+            if(view.tag == textField.tag+1)
+            {
+                [view becomeFirstResponder];
+                break;
+            }
+        }
+    }
+    else
+        [textField resignFirstResponder];
+    return YES;
+}
+
+-(BOOL)disablesAutomaticKeyboardDismissal
+{
+    return NO;
+}
 
 
 @end

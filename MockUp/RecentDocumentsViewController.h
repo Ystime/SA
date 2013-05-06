@@ -11,6 +11,8 @@
 @class RecentDocumentCell;
 @class RDItemCell;
 @interface RecentDocumentsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+- (IBAction)orderDocsOn:(id)sender;
+- (IBAction)orderItemsOn:(id)sender;
 - (IBAction)goBack:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 @property DocumentViewController *dvc;
@@ -19,6 +21,6 @@
 @property (strong, nonatomic) IBOutlet UITableView *ItemTable;
 @property (strong, nonatomic) IBOutlet UIButton *OrderCopyBtn;
 @property (strong, nonatomic) IBOutlet UIButton *ItemCopyBtn;
-- (IBAction)copyOrder:(id)sender;
-- (IBAction)copyItems:(id)sender;
+@property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ItemViews;
+
 @end

@@ -16,6 +16,7 @@
 #import "BWView.h"
 #import "NoteView.h"
 #import "InfoViewController.h"
+#import "XYPieChart.h"
 @class PictureView;
 
 @interface CustomerOverViewController : UIViewController<AFOpenFlowViewDelegate,MFMailComposeViewControllerDelegate,UIWebViewDelegate>

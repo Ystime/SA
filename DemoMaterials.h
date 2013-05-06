@@ -11,4 +11,5 @@
 
 @interface DemoMaterials : NSObject
 +(NSMutableArray*)loadDemoMaterials;
++(NSMutableArray*)loadDemoMaterialGroups;
 @end

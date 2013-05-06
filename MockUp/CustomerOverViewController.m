@@ -16,7 +16,7 @@
 @implementation CustomerOverViewController
 AFOpenFlowView *ContactFlow;
 NSMutableArray *contacts;
-NSDictionary *contactsPhotos;
+NSMutableArray *contactsPhotos;
 int selectedContact;
 @synthesize selectedBUPA,cvc;
 
@@ -61,6 +61,7 @@ int selectedContact;
         //Setup BW View
         NSArray *subviewArray = [[NSBundle mainBundle] loadNibNamed:@"BW_View" owner:self options:nil];
         BWView *subView = [subviewArray objectAtIndex:0];
+        subView.covc = self;
         [self.bottomView insertSubview:subView belowSubview:self.BottomControl];
 //        [self.bottomView addSubview:subView];
         
@@ -173,27 +174,36 @@ int selectedContact;
         self.EmailButton.hidden = YES;
     
     UITapGestureRecognizer *tappedContact = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tappedContacts)];
-    tappedContact.numberOfTapsRequired = 2;
+    tappedContact.numberOfTapsRequired = 1;
     [ContactFlow addGestureRecognizer:tappedContact];
     
 }
 
 -(void)showContactPhotos:(NSNotification*)notification
 {
-    contactsPhotos = [notification.userInfo objectForKey:kResponseItems];
-    for(NSString *key in contactsPhotos.allKeys)
+    contactsPhotos = [NSMutableArray array];
+    NSDictionary *tempPicDic = [notification.userInfo objectForKey:kResponseItems];
+    for(int i=0;i<contacts.count;i++)
     {
-        for(int i = 0;i<contacts.count;i++)
-        {
-            ContactPerson *temp = contacts[i];
-            if([temp.ContactPersonID isEqualToString:key])
-            {
-                [ContactFlow setImage:[UIImage imageWithImage:[contactsPhotos objectForKey:key] scaledToSize:CGSizeMake(150,150)] forIndex:i];
-                break;
-            }
-        }
+        ContactPerson *cp = contacts[i];
+        UIImage *tempPass = [tempPicDic objectForKey:cp.ContactPersonID];
+        if(tempPass)
+               [ContactFlow setImage:[UIImage imageWithImage:tempPass scaledToSize:CGSizeMake(125, 125)] forIndex:i];
+        else
+            tempPass = [UIImage imageNamed:@"group_icon.png"];
+        [contactsPhotos insertObject:tempPass atIndex:i];
     }
-    
+//    for(NSString *key in contactsPhotos.allKeys)
+//    {
+//        for(int i = 0;i<contacts.count;i++)
+//        {
+//            ContactPerson *temp = contacts[i];
+//            if([temp.ContactPersonID isEqualToString:key])
+//            {
+//                [ContactFlow setImage:[UIImage imageWithImage:[contactsPhotos objectForKey:key] scaledToSize:CGSizeMake(150,150)] forIndex:i];
+//                break;
+//            }
+//        }
 }
 
 -(void)tappedContacts
@@ -247,7 +257,7 @@ int selectedContact;
                     label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.URL];
                     break;
                 case 3:
-                    label.text = [NSString stringWithFormat:@"Function: %@",temp.PhoneNumber.PhoneNumber];
+                    label.text = [NSString stringWithFormat:@"Tel.: %@",temp.PhoneNumber.PhoneNumber];
                     break;
                     
                 default:
@@ -293,6 +303,7 @@ int selectedContact;
     {
         NewContactController *ncc = (NewContactController*)segue.destinationViewController;
         ncc.editContact = (ContactPerson*)sender;
+        ncc.passphoto = contactsPhotos[selectedContact];
     }
     else if([segue.identifier isEqualToString:@"CustomerInfo"])
     {
@@ -311,4 +322,8 @@ int selectedContact;
             temp.hidden = YES;
     }
 }
+
+
+#pragma mark - Pie Chart shit
+
 @end

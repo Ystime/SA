@@ -395,4 +395,5 @@ LGViewHUD *creatingDocs;
     }
     return result;
 }
+
 @end

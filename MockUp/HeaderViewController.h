@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DocumentViewController.h"
 #import "SoldToController.h"
-@interface HeaderViewController : UITableViewController
+@interface HeaderViewController : UITableViewController<UITextFieldDelegate>
 - (IBAction)topButtonClicked:(id)sender;
 @property (strong,nonatomic)SalesDocument *sd;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *Labels;

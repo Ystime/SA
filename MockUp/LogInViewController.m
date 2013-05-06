@@ -40,6 +40,7 @@ BOOL firsttry;
             [view setHidden:YES];
         }
     }
+    
 }
 
 - (void)viewDidUnload
@@ -136,7 +137,5 @@ BOOL firsttry;
     [textField resignFirstResponder];
     [self shiftView:self.view vertical:(-352)];
 }
-
-
 
 @end

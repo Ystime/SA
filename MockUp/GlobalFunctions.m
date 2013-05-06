@@ -55,4 +55,11 @@
     oldFrame.origin.y += pixels;
     temp.frame = oldFrame;
 }
+
++(NSMutableArray*)sortArray:(NSMutableArray*)oldArray onProperty:(NSString *)property ascending:(BOOL)ascend
+{
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:property ascending:ascend];
+    NSMutableArray *result= [NSMutableArray arrayWithArray:[oldArray sortedArrayUsingDescriptors:[NSMutableArray arrayWithObject:sortDescriptor]]];
+    return result;
+}
 @end

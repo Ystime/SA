@@ -75,7 +75,7 @@ NSString *selectedKey;
     if(keys.count >0)
     {
         UITapGestureRecognizer *tapPic = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(picViewTapped)];
-        tapPic.numberOfTapsRequired = 2;
+        tapPic.numberOfTapsRequired = 1;
         [self addGestureRecognizer:tapPic];
     }
 }
@@ -101,13 +101,6 @@ NSString *selectedKey;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(picturesProcessed:) name:kPicturesProcesssed object:nil];
         [self.cvc presentViewController:cameraUI animated:YES completion:nil];
     }
-//
-//    if([picName.text isEqualToString:keys.lastObject])
-//    {
-//        NSString *slug = [NSString stringWithFormat:@"Keyword='PhotoFrom:%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='testbeeld.jpg'",[NSDate date],cvc.selectedBusinessPartner.BusinessPartnerID];
-//        [[RequestHandler uniqueInstance]uploadPicture:[UIImage imageNamed:@"testbeeld.jpg"] forSlug:slug];
-//    }
-
     else
         [cvc showPictureViewForKey:selectedKey];
 }

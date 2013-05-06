@@ -12,6 +12,8 @@
 @implementation ExtrasView
 AFOpenFlowView *picFlow;
 NSArray *productTitles;
+NSArray *productKeys;
+NSArray *events;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -27,27 +29,31 @@ NSArray *productTitles;
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Initialization code
-        productTitles = [NSArray arrayWithObjects:@"Star Sign",@"Glass Sign", nil];
+        for(UIView *view in self.subviews)
+        {
+            if(![view isKindOfClass:[UILabel class]])
+            {
+                view.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+                view.layer.borderWidth = 1.0;
+            }
+        }
     }
     return self;
 }
 
--(void)setupViews
+-(void)setupNewProductViewWithProducts:(NSDictionary*)products
 {
-    for(UIView *view in self.subviews)
-    {
-        if(![view isKindOfClass:[UILabel class]])
-        {
-            view.layer.borderColor = [[UIColor lightGrayColor]CGColor];
-            view.layer.borderWidth = 1.0;
-        }
-    }
+
     picFlow = [[AFOpenFlowView alloc]initWithFrame:self.leftView.frame];
     picFlow.viewDelegate = self;
-    picFlow.numberOfImages = 2;
-    [picFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"np1.jpg"] scaledToSize:CGSizeMake(150, 150)] forIndex:0];
-    [picFlow setImage:[UIImage imageWithImage:[UIImage imageNamed:@"np2.jpg"] scaledToSize:CGSizeMake(150, 150)] forIndex:1];
-    self.productTitle.text = productTitles[0];
+    picFlow.numberOfImages = products.count;
+    productKeys = [products.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    for(int i =0;i<productKeys.count;i++)
+    {
+        [picFlow setImage:[UIImage imageWithImage:[products objectForKey:productKeys[i]] scaledToSize:CGSizeMake(150, 150)] forIndex:i];
+    }
+    [self openFlowView:picFlow selectionDidChange:0];
+    [picFlow setSelectedCover:0];
     [self.leftView addSubview:picFlow];
 }
 /*
@@ -65,10 +71,14 @@ NSArray *productTitles;
     switch(tableView.tag)
     {
         case 1:
-            return 2;
-            break;
+        {
+            if(events)
+                return events.count;
+            else
+                return 0;
+        }
         case 2:
-            return 3;
+            return 1;
             break;
         default:
             return 0;
@@ -86,8 +96,9 @@ NSArray *productTitles;
             if(cell == nil)
                 cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"action"];
             cell.imageView.image = [UIImage imageNamed:@"coffee.png"];
-            cell.textLabel.text =[NSString stringWithFormat:@"1%i:00h",indexPath.row];
-            cell.detailTextLabel.text = @"Drink some coffee with your colleagues while you are discussing which football club should win the Champions League!";
+            EKEvent *temp =  events[indexPath.row];
+            cell.textLabel.text = [GlobalFunctions getStringFormat:@"hh:mm" FromDate:temp.startDate];
+            cell.detailTextLabel.text = temp.title;
         }
             break;
         case 2:
@@ -113,6 +124,46 @@ NSArray *productTitles;
 
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
-    self.productTitle.text = productTitles[index];
+    self.productTitle.text = productKeys[index];
+}
+
+#pragma mark - Setting up the calendar
+
+-(void)getCalenderEvents
+{
+    EKEventStore *store = [[EKEventStore alloc]init];
+    [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted,NSError *error)
+     {
+         if(granted)
+         {
+             // Get the appropriate calendar
+             NSCalendar *calendar = [NSCalendar currentCalendar];
+             
+             // Create the start date components
+             NSDateComponents *oneDayAgoComponents = [[NSDateComponents alloc] init];
+             oneDayAgoComponents.day = -1;
+             NSDate *oneDayAgo = [calendar dateByAddingComponents:oneDayAgoComponents
+                                                           toDate:[NSDate date]
+                                                          options:0];
+             
+             // Create the end date components
+             NSDateComponents *oneYearFromNowComponents = [[NSDateComponents alloc] init];
+             oneYearFromNowComponents.day = 1;
+             oneYearFromNowComponents.hour = -([GlobalFunctions getStringFormat:@"hh" FromDate:[NSDate date]].integerValue);
+             oneYearFromNowComponents.minute = -([GlobalFunctions getStringFormat:@"mm" FromDate:[NSDate date]].integerValue);
+             oneYearFromNowComponents.second = -([GlobalFunctions getStringFormat:@"ss" FromDate:[NSDate date]].integerValue);
+             NSDate *oneYearFromNow = [calendar dateByAddingComponents:oneYearFromNowComponents
+                                                                toDate:[NSDate date]
+                                                               options:0];
+             
+             // Create the predicate from the event store's instance method
+             NSPredicate *predicate = [store predicateForEventsWithStartDate:oneDayAgo
+                                                                     endDate:oneYearFromNow
+                                                                   calendars:nil];
+             // Fetch all events that match the predicate
+             events = [store eventsMatchingPredicate:predicate];
+             [self.calendarTable reloadData];
+         }
+     }];
 }
 @end

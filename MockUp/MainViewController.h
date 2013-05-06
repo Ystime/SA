@@ -19,6 +19,7 @@
 #import "UIScrollView+SVPullToRefresh.h"
 #import "CustomerViewController.h"
 #import "DemoBUPA.h"
+#import "ProductCatalogViewController.h"
 @class ExtrasView;
 
 @interface MainViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,UITextFieldDelegate,AFOpenFlowViewDelegate>
@@ -42,6 +43,9 @@
 
 /*Public objects of this class*/
 @property (strong, nonatomic) NSMutableArray *BusinessPartners;
+@property (strong, nonatomic) NSMutableArray *Materials;
+@property (strong, nonatomic) NSMutableDictionary *MaterialPictures;
+@property (strong, nonatomic) NSMutableArray *MaterialGroups;
 @property (strong, nonatomic) NSMutableArray *VisibleBusinessPartners;
 
 - (IBAction)changeMapType:(id)sender;

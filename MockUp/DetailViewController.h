@@ -13,7 +13,7 @@
 #import "GooglePlacesDetail.h"
 #import "LGViewHUD.h"
 @class MainViewController;
-@interface DetailViewController : UIViewController <UIAlertViewDelegate>
+@interface DetailViewController : UIViewController <UIAlertViewDelegate,UITextFieldDelegate>
 
 /*Outlet Collection*/
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *views;

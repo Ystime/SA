@@ -17,21 +17,25 @@
 #import "SalesOverViewController.h"
 #import "NewTextController.h"
 #import "NewPictureViewController.h"
+#import "MainViewController.h"
 
 @interface CustomerViewController : UIViewController<PullableViewDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIAlertViewDelegate>
 
 /*Variable Objects*/
 @property (strong, nonatomic) BusinessPartner *selectedBusinessPartner;
+@property MainViewController *mvc;
 @property (strong, nonatomic) NSMutableArray *SalesDocuments;
 @property (strong, nonatomic) NSMutableArray *SDItems;
 @property (strong, nonatomic) NSMutableArray *materials;
 @property (strong, nonatomic) NSMutableDictionary *bupaPictures;
 @property (strong, nonatomic) NSMutableDictionary *notes;
-@property BOOL creatingDoc;
 @property (strong, nonatomic) NSDictionary *materialPictures;
 @property (strong) UIImage *bupaLogo;
 
+/*Flags*/
+@property BOOL creatingDoc;
 @property  BOOL documentsLoaded;
+
 extern NSString * const kCVCLoadedDocs;
 
 /*Outlets*/

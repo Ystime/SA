@@ -118,4 +118,15 @@
         _upc = pop.popoverController;
     }
 }
+#pragma mark - UITextField Delegate
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+        [textField resignFirstResponder];
+    return YES;
+}
+
+-(BOOL)disablesAutomaticKeyboardDismissal
+{
+    return NO;
+}
 @end

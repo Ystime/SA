@@ -54,29 +54,37 @@ NSArray *categories;
     else
         keyWord = [NSString stringWithFormat:@"%@_%%_%@",self.TitleField.text,[NSDate date]];
 
-    NSString *slug = [NSString stringWithFormat:@"Keyword='%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='PhotoTakenOn:%@.jpeg'",keyWord,self.bupa.BusinessPartnerID,[NSDate date]];
+//    NSString *slug = [NSString stringWithFormat:@"Keyword='%@',RelatedID='%@',Source='MediaForBusinessPartner',MediaType='Attachment',Filename='PhotoTakenOn:%@.jpeg'",keyWord,self.bupa.BusinessPartnerID,[NSDate date]];
     [self.saveBtn setHidden:YES];
     [uploadSign startAnimating];
-    [self performSelectorInBackground:@selector(uploadPictureWithSlug:) withObject:slug];
+    [self performSelectorInBackground:@selector(uploadPictureWithKeyWord:) withObject:keyWord];
 
 }
 
--(void)uploadPictureWithSlug:(NSString*)slug
+-(void)uploadPictureWithKeyWord:(NSString*)key
 {
-    if([[RequestHandler uniqueInstance]uploadPicture:takenPicture forSlug:slug])
+    
+    BOOL succes = ([[RequestHandler uniqueInstance]uploadPicture:takenPicture withKeyword:key andRelatedID:self.bupa.BusinessPartnerID andSource:@"MediaForBusinessPartner" andType:@"Attachment"]);
+    [self.saveBtn setHidden:NO];
+    [uploadSign stopAnimating];
+//    if([[RequestHandler uniqueInstance]uploadPicture:takenPicture forSlug:key])
+    if(succes)
     {
-        [self dismissViewControllerAnimated:YES completion:^{
-            [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:self.bupa];
-        }];
-        
+        [self performSelectorOnMainThread:@selector(uploadSucces) withObject:nil waitUntilDone:NO];
     }
     else
     {
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Upload Failed" message:@"The upload of the taken picture failed" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [alert show];
     }
-    [self.saveBtn setHidden:NO];
-    [uploadSign stopAnimating];
+
+}
+
+-(void)uploadSucces
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforBusinessPartner:) withObject:self.bupa];
+    }];
 }
 - (IBAction)clickedCancel:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];

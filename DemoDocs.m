@@ -24,7 +24,7 @@
 {
     SalesDocument *tempsd1 = [[SalesDocument alloc]initWithSDMEntry:nil];
     tempsd1.OrderID = @"1";
-    tempsd1.OrderType = @"B";
+    tempsd1.OrderType = @"QUOTATION";
     tempsd1.DocumentDate = [NSDate date];
     tempsd1.CustomerID = @"1";
     tempsd1.SalesOrganization = @"1000";
@@ -37,7 +37,7 @@
     
     SalesDocument *tempsd2 = [[SalesDocument alloc]initWithSDMEntry:nil];
     tempsd2.OrderID = @"2";
-    tempsd2.OrderType = @"C";
+    tempsd2.OrderType = @"ORDER";
     tempsd2.DocumentDate = [NSDate date];
     tempsd2.CustomerID = @"1";
     tempsd2.SalesOrganization = @"1000";
@@ -50,7 +50,7 @@
     
     SalesDocument *tempsd3 = [[SalesDocument alloc]initWithSDMEntry:nil];
     tempsd3.OrderID = @"3";
-    tempsd3.OrderType = @"B";
+    tempsd3.OrderType = @"QUOTATION";
     tempsd3.DocumentDate = [NSDate date];
     tempsd3.CustomerID = @"2";
     tempsd3.SalesOrganization = @"1000";
@@ -63,7 +63,7 @@
     
     SalesDocument *tempsd4 = [[SalesDocument alloc]initWithSDMEntry:nil];
     tempsd4.OrderID = @"4";
-    tempsd4.OrderType = @"C";
+    tempsd4.OrderType = @"ORDER";
     tempsd4.DocumentDate = [NSDate date];
     tempsd4.CustomerID = @"2";
     tempsd4.SalesOrganization = @"1000";
@@ -76,7 +76,7 @@
     
     SalesDocument *tempsd5 = [[SalesDocument alloc]initWithSDMEntry:nil];
     tempsd5.OrderID = @"5";
-    tempsd5.OrderType = @"H";
+    tempsd5.OrderType = @"RETURN_ORDER";
     tempsd5.DocumentDate = [NSDate date];
     tempsd5.CustomerID = @"2";
     tempsd5.SalesOrganization = @"1000";

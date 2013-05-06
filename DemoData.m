@@ -9,7 +9,7 @@
 #import "DemoData.h"
 
 @implementation DemoData
-@synthesize bupas,salesDocs,name,materials,BWQuery1,BWQuery4;
+@synthesize bupas,salesDocs,name,materials,materialGroups,BWQuery1,BWQuery4,bupaNotes,bupaPictures;
 static DemoData *instance = nil;
 
 +(DemoData*)getInstance
@@ -27,10 +27,16 @@ static DemoData *instance = nil;
 
 -(void)loadDemoData
 {
+
     DemoBUPA *temp = [[DemoBUPA alloc]init];
     bupas = [temp getDemoBupas];
     materials = [DemoMaterials loadDemoMaterials];
+    materialGroups = [DemoMaterials loadDemoMaterialGroups];
     salesDocs = [DemoDocs loadDemoSalesDocuments];
+    docNumber = salesDocs.count;
+    bupaPictures = [DemoAttachments loadPics];
+    bupaNotes = [DemoAttachments loadNotes];
+    
 }
 
 -(void)addProspect:(BusinessPartner*)prospect;
@@ -65,6 +71,12 @@ static DemoData *instance = nil;
         [userInfoDict setObject:[NSString stringWithFormat:@"4"] forKey:kQueryNumber];
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
     }
+}
+
+-(int)getNextDocId
+{
+    docNumber +=1;
+    return docNumber;
 }
 
 @end

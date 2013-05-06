@@ -13,7 +13,7 @@
 @end
 
 @implementation MainViewController
-@synthesize BusinessPartners,VisibleBusinessPartners;
+@synthesize BusinessPartners,VisibleBusinessPartners,Materials,MaterialGroups;
 NSMutableArray *prospects;
 NSMutableArray *bupasForLogo;
 BOOL firstTime;
@@ -24,6 +24,7 @@ NSMutableDictionary *hierLogos;
 NSMutableArray *parentKeys;
 NSMutableArray *visibleTypes;
 NSMutableDictionary *parents;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -57,8 +58,15 @@ NSMutableDictionary *parents;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processingResultGetBusinessPartners:) name:kLoadBusinessPartnersCompletedNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(parentsLoaded:) name:kLoadHierarchyCompletedNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setupOpenFlow:) name:kParentsPicLoaded object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialsLoaded:) name:kLoadMaterialCompletedNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialPicturesLoaded:) name:kMaterialPicuresLoaded object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(materialGroupsLoaded:) name:kMaterialGroupsLoaded object:nil];
+
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadParents) withObject:nil];
-    
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadMaterials) withObject:nil];
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadMaterialGroups) withObject:nil];
+
+
     
     //Start requesting BUPAs
     
@@ -85,7 +93,7 @@ NSMutableDictionary *parents;
     }];
     [self setupPullView];
     [self setupFilterView];
-    [self.ExtrasSubView setupViews];
+    [self.ExtrasSubView getCalenderEvents];
     
 }
 
@@ -265,6 +273,7 @@ NSMutableDictionary *parents;
         CustomerAnnotation *annotation = [[CustomerAnnotation alloc]initWithBussinessPartner:bp];
         [self.mapView addAnnotation:annotation];
     }
+    [self centerMyPosition:nil];
 }
 
 -(void)loadProspects:(NSString*)searchText
@@ -332,6 +341,59 @@ NSMutableDictionary *parents;
     }
 }
 
+#pragma mark - Loading Materials
+
+-(void)materialsLoaded:(NSNotification*)notification
+{
+    NSError *error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        Materials = [NSMutableArray arrayWithCapacity:0];
+    }
+    else
+    {
+        Materials = [notification.userInfo objectForKey:kResponseItems];
+        NSMutableArray *temp = [NSMutableArray array];
+        for(Material *material in Materials)
+        {
+            [temp addObject:material.MaterialNumber];
+        }
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
+    }
+}
+
+-(void)materialPicturesLoaded:(NSNotification*)notification
+{
+    NSError *error;
+    error = [notification.userInfo objectForKey:kResponseError];
+    if(error)
+    {
+        self.MaterialPictures = [NSMutableDictionary dictionaryWithCapacity:0];
+    }
+    else
+    {
+        self.MaterialPictures = [notification.userInfo objectForKey:kResponseItems];
+        [self selectPromoMaterials];
+    }
+}
+
+-(void)selectPromoMaterials
+{
+    
+    NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
+    for(Material *temp in Materials)
+    {
+        if([temp.MaterialNumber hasSuffix:@"002"])
+            [tempDic setObject:[self.MaterialPictures objectForKey:temp.MaterialNumber] forKey:temp.Description];
+    }
+    [self.ExtrasSubView setupNewProductViewWithProducts:tempDic];
+
+}
+
+-(void)materialGroupsLoaded:(NSNotification*)notification
+{
+    MaterialGroups = [notification.userInfo objectForKey:kResponseItems];
+}
 #pragma mark - MapView Delegate Functions
 
 -(MKAnnotationView*)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
@@ -602,7 +664,7 @@ NSMutableDictionary *parents;
     self.FilterPullView.openedCenter = CGPointMake(125,356);
     self.FilterPullView.closedCenter = CGPointMake(125,487);
     self.FilterPullView.center = self.FilterPullView.closedCenter;
-    self.FilterPullView.handleView.frame = self.filterHandle.frame;
+    self.FilterPullView.handleView.frame = self.filterHandle.frame; 
     
 }
 
@@ -756,8 +818,14 @@ NSMutableDictionary *parents;
     {
         CustomerViewController *cvc = segue.destinationViewController;
         cvc.selectedBusinessPartner = sender;
+        cvc.mvc = self;
         if(cvc.selectedBusinessPartner.ParentID)
             cvc.bupaLogo = [hierLogos objectForKey:cvc.selectedBusinessPartner.ParentID];
+    }
+    else if([segue.identifier isEqualToString:@"goToProducts"])
+    {
+        ProductCatalogViewController *pcvc = segue.destinationViewController;
+        pcvc.mvc = self;
     }
 }
 

@@ -15,6 +15,10 @@
 
 @implementation RecentDocumentsViewController
 SalesDocument *selectedDocument;
+NSMutableArray *selectedItems;
+UIPopoverController *upc;
+int docOrder =-1;
+int itemOrder =-1;
 @synthesize documents;
 
 
@@ -43,6 +47,63 @@ SalesDocument *selectedDocument;
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)orderDocsOn:(id)sender {
+    NSString *selector;
+    int tagNumber = [sender tag];
+    switch (tagNumber) {
+        case 1:
+            selector = @"OrderID";
+            break;
+        case 2:
+            selector = @"OrderType";
+            break;
+        case 3:
+            selector = @"DocumentDate";
+            break;
+        case 4:
+            selector = @"CustomerPurchaseOrderNumber";
+            break;
+        case 5:
+            selector = @"NetValue";
+            break;
+        default:
+            break;
+    }
+    documents = [self sortArray:documents By:selector andAscending:(tagNumber == docOrder)];
+    [self.DocumentTable reloadData];
+    (docOrder == tagNumber)?(docOrder =-1 ): (docOrder =tagNumber);
+}
+
+- (IBAction)orderItemsOn:(id)sender {
+    NSString *selector;
+    int tagNumber = [sender tag];
+    switch (tagNumber) {
+        case 1:
+            selector = @"Material";
+            break;
+        case 2:
+            selector = @"Description";
+            break;
+        case 3:
+            selector = @"Quantity";
+            break;
+        case 4:
+            selector = @"UoM";
+            break;
+        case 5:
+            selector = @"NetPrice";
+            break;
+        case 6:
+            selector = @"NetValue";
+            break;
+        default:
+            break;
+    }
+    selectedDocument.Items = (NSMutableArray*)[self sortArray:selectedDocument.Items By:selector andAscending:(tagNumber == itemOrder)];
+    [self.ItemTable reloadData];
+    (itemOrder == tagNumber)?(itemOrder =-1 ): (itemOrder =tagNumber);
+}
+
 - (IBAction)goBack:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -51,18 +112,24 @@ SalesDocument *selectedDocument;
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    int result = 0;
     if(tableView.tag ==1)
     {
         if(documents)
-            return documents.count;
+            result = documents.count;
+        tableView.hidden = (result==0);
     }
     else if(tableView.tag==2)
     {
-        if(selectedDocument)
-            if(selectedDocument.Items.count >0)
-                return selectedDocument.Items.count;
+        if(selectedDocument && selectedDocument.Items.count >0)
+            result =  selectedDocument.Items.count;
+        
+        for(UIView *view in self.ItemViews)
+        {
+            view.hidden = (result == 0);
+        }
     }
-    return 0;
+    return result;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -104,10 +171,37 @@ SalesDocument *selectedDocument;
         else
             [self.ItemTable reloadData];
     }
-    else
+    else if(tableView.tag ==2)
     {
         if(self.ItemCopyBtn.hidden)
             self.ItemCopyBtn.hidden = NO;
+    }
+    else if(tableView.tag ==3)
+    {
+        [upc dismissPopoverAnimated:YES];
+        if(indexPath.row == 2 && !([selectedDocument.OrderType isEqualToString:@"ORDER"]))
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Not Possible!" message:@"Returns can only be created based upon orders!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+        }
+        else
+        {
+            NSString *action;
+            switch (indexPath.row) {
+                case 0:
+                    action = @"QUOTATION";
+                    break;
+                case 1:
+                    action = @"ORDER";
+                    break;
+                case 2:
+                    action = @"RETURN_ORDER";
+                    break;
+                default:
+                    break;
+            }
+            [self addItemsToDocument:selectedItems withAction:action ];
+        }
     }
 }
 
@@ -127,20 +221,20 @@ SalesDocument *selectedDocument;
     }
     
 }
-- (IBAction)copyOrder:(id)sender {
-    [self addItemsToDocument:selectedDocument.Items];
-}
+//- (IBAction)copyOrder:(id)sender {
+//    [self addItemsToDocument:selectedDocument.Items];
+//}
+//
+//- (IBAction)copyItems:(id)sender {
+//    NSMutableArray *temp = [NSMutableArray array];
+//    for(NSIndexPath *path in self.ItemTable.indexPathsForSelectedRows)
+//    {
+//        [temp addObject:selectedDocument.Items[path.row]];
+//    }
+//    [self addItemsToDocument:temp];
+//}
 
-- (IBAction)copyItems:(id)sender {
-    NSMutableArray *temp = [NSMutableArray array];
-    for(NSIndexPath *path in self.ItemTable.indexPathsForSelectedRows)
-    {
-        [temp addObject:selectedDocument.Items[path.row]];
-    }
-    [self addItemsToDocument:temp];
-}
-
--(void)addItemsToDocument:(NSArray*)items
+-(void)addItemsToDocument:(NSArray*)items withAction:(NSString*)action
 {
     for(SalesDocItem *item in items)
     {
@@ -150,9 +244,36 @@ SalesDocument *selectedDocument;
         temp.Description = item.Description;
         temp.UoM = item.UoM;
         temp.Price = item.NetPrice;
-        
-        [self.dvc addItemWithQuantity:item.Quantity.integerValue andMaterial:temp andAction:selectedDocument.OrderType];
+        [self.dvc addItemWithQuantity:item.Quantity.integerValue andMaterial:temp andAction:action];
     }
     [self.dvc.ItemsTable reloadData];
 }
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    selectedItems = [NSMutableArray array];
+    UITableViewController *utvc = segue.destinationViewController;
+    UIStoryboardPopoverSegue *pop = (UIStoryboardPopoverSegue*)segue;
+    upc  = pop.popoverController;
+    utvc.tableView.delegate = self;
+    if([segue.identifier isEqualToString:@"addOrder"])
+    {
+        selectedItems = selectedDocument.Items;
+    }
+    else if([segue.identifier isEqualToString:@"addItems"])
+    {
+        for(NSIndexPath *path in self.ItemTable.indexPathsForSelectedRows)
+        {
+            [selectedItems addObject:selectedDocument.Items[path.row]];
+        }
+    }
+}
+
+-(NSArray*)sortArray:(NSArray*)oldArray By:(NSString*)attribute andAscending:(BOOL)ascend
+{
+    NSMutableArray* oldSortedItems = [NSMutableArray arrayWithArray:oldArray];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:attribute ascending:ascend];
+    return  [oldSortedItems sortedArrayUsingDescriptors:[NSMutableArray arrayWithObject:sortDescriptor]];
+}
+
 @end
