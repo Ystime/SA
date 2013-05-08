@@ -61,7 +61,7 @@ LGViewHUD *creatingDocs;
         tempSalesDocument.OrderID = @" ";
         tempSalesDocument.Currency = @"EUR";
         tempSalesDocument.DocumentDate = [NSDate date];
-        tempSalesDocument.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];
+        tempSalesDocument.NetValue = [NSDecimalNumber decimalNumberWithString:@"0"];
     }
     self.ShipToLabel.text = cvc.selectedBusinessPartner.BusinessPartnerName;
     [self setHeaderLabelView];
@@ -123,7 +123,7 @@ LGViewHUD *creatingDocs;
         return nil;
 }
 #pragma mark - Add Item 
-- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction andPrice:(NSDecimalNumber*)price
 {
     SalesDocItem *item = [[SalesDocItem alloc]init];
     item.Quantity = [NSNumber numberWithInt:quant];
@@ -132,7 +132,9 @@ LGViewHUD *creatingDocs;
     item.UoM = material.UoM;
     item.ItemNumber = docAction;
     item.OrderID = item.Plant = item.Status.Delivery_Status = item.Status.Overall_Status = item.Status.Invoice_Status = @" ";
-    item.NetPrice = item.NetValue = [NSDecimalNumber decimalNumberWithString:@"1"];    
+    item.NetPrice = price;
+    float totalValue = item.Quantity.floatValue * item.NetPrice.floatValue;
+    item.NetValue = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",totalValue]];
     [tempSalesDocument.Items addObject:item];
     
 }

@@ -12,5 +12,6 @@
 @interface DemoBW : NSObject
 +(NSMutableArray*)loadBWQuery1;
 +(NSMutableArray*)loadBWQuery4;
++(NSMutableArray*)loadBWQueryEQ;
 
 @end

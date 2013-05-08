@@ -548,14 +548,14 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 <color key="shadowColor" cocoaTouchSystemColor="lightTextColor"/>
                             </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" id="dnJ-Bc-F1N">
-                                <rect key="frame" x="278" y="58" width="727" height="644"/>
+                                <rect key="frame" x="278" y="58" width="727" height="690"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="rdL-0Y-8eg" id="PeK-3w-PZb"/>
                                 </connections>
                             </mapView>
                             <view contentMode="scaleToFill" id="hur-zk-xYo">
-                                <rect key="frame" x="20" y="502" width="250" height="200"/>
+                                <rect key="frame" x="20" y="502" width="250" height="246"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="All companies" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Bpr-4f-iKG">
@@ -823,8 +823,12 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 <nil key="highlightedColor"/>
                                 <color key="shadowColor" cocoaTouchSystemColor="lightTextColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="prospect_search.png" id="m0q-sn-D1n">
+                                <rect key="frame" x="637" y="14" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="RZP-ml-1Zz">
-                                <rect key="frame" x="747" y="662" width="120" height="30"/>
+                                <rect key="frame" x="748" y="710" width="120" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.20804767219387754" green="0.20804767219387754" blue="0.20804767219387754" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -841,7 +845,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                 </connections>
                             </button>
                             <button opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="Q3S-NS-rVF">
-                                <rect key="frame" x="875" y="662" width="120" height="30"/>
+                                <rect key="frame" x="876" y="710" width="120" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -860,10 +864,6 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                     <action selector="centerMyPosition:" destination="rdL-0Y-8eg" eventType="touchUpInside" id="zLE-dK-D4G"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="prospect_search.png" id="m0q-sn-D1n">
-                                <rect key="frame" x="637" y="14" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <view autoresizesSubviews="NO" contentMode="scaleToFill" id="bZD-GW-OJq" customClass="StyledPullableView">
                                 <rect key="frame" x="276" y="468" width="727" height="299"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -980,8 +980,8 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="eyU-Ha-N4n">
-                                                <rect key="frame" x="473" y="235" width="120" height="30"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="eyU-Ha-N4n">
+                                                <rect key="frame" x="472" y="235" width="120" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -995,7 +995,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                 </state>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="cB1-Hw-T2j">
-                                                <rect key="frame" x="601" y="235" width="120" height="30"/>
+                                                <rect key="frame" x="600" y="235" width="120" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.20804767220000001" green="0.20804767220000001" blue="0.20804767220000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1018,14 +1018,14 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                 <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Actions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ugs-QZ-0ZH">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Calendar" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ugs-QZ-0ZH">
                                                 <rect key="frame" x="244" y="211" width="237" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
                                                 <color key="textColor" red="0.40000000600000002" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Personal Notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KbG-EM-2rX">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Personal Tasks" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KbG-EM-2rX">
                                                 <rect key="frame" x="484" y="211" width="237" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
@@ -1040,6 +1040,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                             <outlet property="middleView" destination="9tE-yR-6TI" id="LjQ-KZ-LoR"/>
                                             <outlet property="productTitle" destination="uwa-wy-BEm" id="BvQ-zy-7P6"/>
                                             <outlet property="rightView" destination="IoF-uW-uVK" id="dNI-1N-RLG"/>
+                                            <outlet property="taskTable" destination="QbJ-xI-SuI" id="LNS-OH-pVq"/>
                                         </connections>
                                     </view>
                                 </subviews>
@@ -1993,7 +1994,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                     <outlet property="delegate" destination="iI6-w0-vnh" id="gs7-rs-3Wk"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="left" text="Role" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="zuy-Fm-355">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="left" text="Function" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="zuy-Fm-355">
                                 <rect key="frame" x="20" y="96" width="246" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2090,7 +2091,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="scanBusinessCard:" destination="iI6-w0-vnh" eventType="touchUpInside" id="IaR-5V-55h"/>
+                                    <action selector="scanBusinessCard:" destination="iI6-w0-vnh" eventType="touchUpInside" id="osy-aX-4Ne"/>
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="aep-Nc-xRH">
@@ -2105,6 +2106,11 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                     </segment>
                                 </segments>
                             </segmentedControl>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="whiteLarge" id="xKe-kZ-Od4">
+                                <rect key="frame" x="62" y="16" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -2115,6 +2121,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                         <outlet property="TitleLabel" destination="dgf-n0-Fry" id="gTC-oz-GyS"/>
                         <outlet property="cancelButton" destination="IfA-hF-b9J" id="TA1-0z-mtH"/>
                         <outlet property="saveButton" destination="K6l-KT-Uck" id="cYN-y2-WCr"/>
+                        <outlet property="savingIndicator" destination="xKe-kZ-Od4" id="Bgp-zY-3zI"/>
                         <outlet property="scanButton" destination="XhG-ZW-pgC" id="tAe-Ha-Gdz"/>
                         <outletCollection property="ViewCollection" destination="K6l-KT-Uck" id="ZRi-fr-EdO"/>
                         <outletCollection property="ViewCollection" destination="IfA-hF-b9J" id="tAk-al-BaL"/>
@@ -3014,7 +3021,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         </label>
-                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="3" contentMode="left" text="99,999 €" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" id="72A-CL-9mW">
+                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="6" contentMode="left" text="99,999 €" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" id="72A-CL-9mW">
                                                             <rect key="frame" x="467" y="11" width="90" height="21"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -3049,6 +3056,7 @@ In no event shall {INSERT COMPANY NAME} be liable for any damages (including, wi
                                                     <outletCollection property="Labels" destination="moH-q9-Ime" id="QfT-a8-Tm3"/>
                                                     <outletCollection property="Labels" destination="USW-Ll-6hh" id="2gE-tJ-rsq"/>
                                                     <outletCollection property="Labels" destination="avR-Gl-FuM" id="dF1-bn-JrF"/>
+                                                    <outletCollection property="Labels" destination="72A-CL-9mW" id="Q0G-d5-WTh"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
@@ -5113,6 +5121,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="outlet" name="middleView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="productTitle" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="rightView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="taskTable" candidateClass="UITableView"/>
             </relationships>
         </class>
         <class className="HeaderViewController" superclassName="UITableViewController">
@@ -5226,6 +5235,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="outlet" name="TitleLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="cancelButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="savingIndicator" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="scanButton" candidateClass="UIButton"/>
                 <relationship kind="outletCollection" name="InputFieldCollection" candidateClass="UITextField"/>
                 <relationship kind="outletCollection" name="ViewCollection" candidateClass="UIView"/>
@@ -5411,8 +5421,8 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="VHG-8a-30V"/>
         <segue reference="qt6-M5-iKW"/>
+        <segue reference="VHG-8a-30V"/>
         <segue reference="OcA-eD-QPo"/>
         <segue reference="kOT-Qt-Jzv"/>
     </inferredMetricsTieBreakers>

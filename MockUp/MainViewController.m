@@ -93,11 +93,15 @@ NSMutableDictionary *parents;
     }];
     [self setupPullView];
     [self setupFilterView];
-    [self.ExtrasSubView getCalenderEvents];
+
     
 }
 
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    [self.ExtrasSubView getCalenderEvents];
+    [self.ExtrasSubView getCalendarTasks];
+}
 -(void)viewDidAppear:(BOOL)animated
 {
     
@@ -106,11 +110,7 @@ NSMutableDictionary *parents;
         firstTime = NO;
         [self setMapRegion:_mapView.userLocation.coordinate forKilometers:50];
     }
-    
-    /*
-     Set the labels on the default HUD
-     */
-    
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -227,7 +227,10 @@ NSMutableDictionary *parents;
 
 
 #pragma mark - Loading Business Partners
-
+-(void)clearBusinessPartners
+{
+    
+}
 -(void)processingResultGetBusinessPartners:(NSNotification*)notification
 {
     [hudBUPAS hideWithAnimation:HUDAnimationHideFadeOut];
@@ -393,6 +396,17 @@ NSMutableDictionary *parents;
 -(void)materialGroupsLoaded:(NSNotification*)notification
 {
     MaterialGroups = [notification.userInfo objectForKey:kResponseItems];
+    Materials = [NSMutableArray array];
+    for(MaterialGroup *mg in MaterialGroups)
+    {
+        [Materials addObjectsFromArray:mg.MaterialSet];
+    }
+    NSMutableArray *temp = [NSMutableArray array];
+    for(Material *material in Materials)
+    {
+        [temp addObject:material.MaterialNumber];
+    }
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
 }
 #pragma mark - MapView Delegate Functions
 

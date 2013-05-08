@@ -54,7 +54,7 @@ LGViewHUD *createHUD;
         self.ZipField.text = bupa.Address.PostalCode;
         self.CityField.text = bupa.Address.City;
         self.PhoneField.text = bupa.PhoneNumber.PhoneNumber;
-        self.EmailField.text = bupa.Email.URL;
+        self.EmailField.text = bupa.Email.LongURL;
         self.URLField.text = bupa.Website.URL;
         for(UITextField *tf in self.TextFieldCollection)
         {
@@ -151,7 +151,7 @@ LGViewHUD *createHUD;
     bupa.Address.PostalCode = self.ZipField.text;
     bupa.Address.City = self.CityField.text;
     bupa.PhoneNumber.PhoneNumber = self.PhoneField.text;
-    bupa.Email.URL = bupa.Email.LongURL = self.EmailField.text;
+    bupa.Email.LongURL = bupa.Email.LongURL = self.EmailField.text;
     bupa.Website.URL = bupa.Website.LongURL= self.URLField.text;
     bupa.Twitter.URL = bupa.Twitter.LongURL = self.TwitterField.text;
     bupa.BusinessPartnerID = @"x";

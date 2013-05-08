@@ -121,10 +121,10 @@ AFOpenFlowView *matFlow;
                     label.text = material.UoM;
                     break;
                 case 4:
-                    label.text = material.Price;
+                    label.text = [NSString stringWithFormat:@"%@ %.2f",material.Price.Currency,material.Price.Price.floatValue];
                     break;
                 case 5:
-                    label.text = [NSString stringWithFormat:@"%.0f",material.Quantity.floatValue];
+                    label.text = [NSString stringWithFormat:@"%.0f",material.MinimumOrderQuantity.floatValue];
                     break;
                 case 6:
                     label.text = material.EANCode;
@@ -198,7 +198,7 @@ AFOpenFlowView *matFlow;
     {
         ProductViewController *pvc = (ProductViewController*)parent;
         [pvc.pop dismissPopoverAnimated:YES];
-        [pvc addItemWithQuantity:self.QuantitySlider.value andMaterial:self.material andAction:itemAction];
+        [pvc addItemWithQuantity:self.QuantitySlider.value andMaterial:self.material andAction:itemAction andPrice:self.material.Price.Price];
     }
 }
 
@@ -228,10 +228,10 @@ AFOpenFlowView *matFlow;
                 label.text = material.UoM;
                 break;
             case 4:
-                label.text = [NSString stringWithFormat:@"%.2f",material.Price.floatValue];
+                label.text = [NSString stringWithFormat:@"%.2f",material.Price.Price.floatValue];
                 break;
             case 5:
-                label.text = [NSString stringWithFormat:@"%.0f",material.Quantity.floatValue];
+                label.text = [NSString stringWithFormat:@"%.0f",material.MinimumOrderQuantity.floatValue];
                 break;
             case 6:
                 label.text = material.EANCode;

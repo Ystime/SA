@@ -210,7 +210,7 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
 {
     if([SettingsUtilities getDemoStatus])
     {
-        
+        [[DemoData getInstance]postNotificationfor:@"EQQuery"];
     }
     else
     {

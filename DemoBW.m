@@ -65,6 +65,43 @@
     return results;
 }
 
++(NSMutableArray*)loadBWQueryEQ
+{
+    int number = arc4random()%4;
+    NSMutableArray *results = [NSMutableArray array];
+    
+    for(int i=0;i<=number;i++)
+    {
+        ZAPP_ORDER03Result *result = [[ZAPP_ORDER03Result alloc]initWithSDMDictionary:nil];
+        float value = (arc4random()%1000000)/100;
+        NSString *netValue = [NSString stringWithFormat:@"%.2f",value];
+        result.NetValue = [NSDecimalNumber decimalNumberWithString:netValue];
+        result.NetValueStringFormat = [NSString stringWithFormat:@"%@ EUR",netValue];
+        switch (i) {
+            case 0:
+                result.DocumentCategory = @"Inquiry";
+                result.DocumentCategoryId = @"A";
+                break;
+            case 1:
+                result.DocumentCategory = @"Quotation";
+                result.DocumentCategoryId = @"B";
+                break;
+            case 2:
+                result.DocumentCategory = @"Order";
+                result.DocumentCategoryId = @"C";
+                break;
+            case 3:
+                result.DocumentCategory = @"Return Order";
+                result.DocumentCategoryId = @"H";
+                break;
+            default:
+                break;
+        }
+        [results addObject:result];
+    }
+    return results;
+}
+
 
 +(float)getRandomValue:(float)multiplier
 {

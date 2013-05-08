@@ -52,10 +52,10 @@
                 label.text = material.UoM;
                 break;
             case 4:
-                label.text = [NSString stringWithFormat:@"%i",material.Quantity.integerValue];
+                label.text = [NSString stringWithFormat:@"%i",material.MinimumOrderQuantity.integerValue];
                 break;
             case 5:
-                label.text = [NSString stringWithFormat:@"%.2f",material.Price.floatValue];
+                label.text = [NSString stringWithFormat:@"%.2f",material.Price.Price.floatValue];
                 break;
             default:
                 break;

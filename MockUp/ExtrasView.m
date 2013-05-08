@@ -14,6 +14,10 @@ AFOpenFlowView *picFlow;
 NSArray *productTitles;
 NSArray *productKeys;
 NSArray *events;
+NSMutableArray *tasks;
+EKEventStore *store;
+EKReminder *selectedReminder;
+
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -35,6 +39,7 @@ NSArray *events;
             {
                 view.layer.borderColor = [[UIColor lightGrayColor]CGColor];
                 view.layer.borderWidth = 1.0;
+                store  = [[EKEventStore alloc] init];
             }
         }
     }
@@ -43,7 +48,7 @@ NSArray *events;
 
 -(void)setupNewProductViewWithProducts:(NSDictionary*)products
 {
-
+    
     picFlow = [[AFOpenFlowView alloc]initWithFrame:self.leftView.frame];
     picFlow.viewDelegate = self;
     picFlow.numberOfImages = products.count;
@@ -78,8 +83,10 @@ NSArray *events;
                 return 0;
         }
         case 2:
-            return 1;
-            break;
+            if(tasks)
+                return tasks.count;
+            else
+                return 0;
         default:
             return 0;
             break;
@@ -102,12 +109,15 @@ NSArray *events;
         }
             break;
         case 2:
+        {
+            EKReminder *reminder = tasks[indexPath.row];
             cell = [tableView dequeueReusableCellWithIdentifier:@"note"];
             if(cell == nil)
                 cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"note"];
             cell.imageView.image = [UIImage imageNamed:@"warning.png"];
-            cell.textLabel.text =@"Alert!";
-            cell.detailTextLabel.text = @"Write hours before project controller Ms. Willemse sends an angry email";
+            cell.textLabel.text = reminder.title;
+            cell.detailTextLabel.text = reminder.notes;
+        }
             break;
         default:
             break;
@@ -117,10 +127,20 @@ NSArray *events;
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:cell.textLabel.text message:cell.detailTextLabel.text delegate:nil cancelButtonTitle:@"OK"otherButtonTitles: nil];
-    [alert show];
+    if(tableView.tag ==1)
+    {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:cell.textLabel.text message:cell.detailTextLabel.text delegate:nil cancelButtonTitle:@"OK"otherButtonTitles: nil];
+        [alert show];
+    }
+    else if(tableView.tag ==2)
+    {
+        selectedReminder = tasks[indexPath.row];
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:selectedReminder.title message:selectedReminder.notes delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Completed", nil];
+        [alert show];
+    }
 }
+
 
 - (void)openFlowView:(AFOpenFlowView *)openFlowView selectionDidChange:(int)index
 {
@@ -131,7 +151,6 @@ NSArray *events;
 
 -(void)getCalenderEvents
 {
-    EKEventStore *store = [[EKEventStore alloc]init];
     [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted,NSError *error)
      {
          if(granted)
@@ -141,7 +160,7 @@ NSArray *events;
              
              // Create the start date components
              NSDateComponents *oneDayAgoComponents = [[NSDateComponents alloc] init];
-             oneDayAgoComponents.day = -1;
+             oneDayAgoComponents.day = 0;
              NSDate *oneDayAgo = [calendar dateByAddingComponents:oneDayAgoComponents
                                                            toDate:[NSDate date]
                                                           options:0];
@@ -165,5 +184,60 @@ NSArray *events;
              [self.calendarTable reloadData];
          }
      }];
+}
+
+-(void)getCalendarTasks
+{
+
+    tasks = [NSMutableArray array];
+    [store requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted,NSError *error)
+     {
+         if(granted)
+         {
+             NSPredicate *predicate = [store predicateForRemindersInCalendars:nil];
+             [store fetchRemindersMatchingPredicate:predicate completion:^(NSArray *reminders)
+              {
+                  for(EKReminder *reminder in reminders)
+                  {
+                      if(!reminder.completed)
+                          [tasks addObject:reminder];
+                  }
+                  [self.taskTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+              }];
+         }
+     }];
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == alertView.cancelButtonIndex)
+    {
+        
+    }
+    else
+    {
+        [store requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted,NSError *error)
+         {
+             if(granted)
+             {
+                 NSPredicate *predicate = [store predicateForRemindersInCalendars:nil];
+                 [store fetchRemindersMatchingPredicate:predicate completion:^(NSArray *reminders)
+                  {
+                      for(EKReminder *reminder in reminders)
+                      {
+                          if([reminder.calendarItemIdentifier isEqualToString:selectedReminder.calendarItemIdentifier])
+                          {
+                              NSError *error;
+                              reminder.completed = YES;
+                              [store saveReminder:reminder commit:YES error:&error];
+                              [self getCalendarTasks];
+                              return;
+                          }
+                      }
+                      [self.taskTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+                  }];
+             }
+         }];
+    }
 }
 @end

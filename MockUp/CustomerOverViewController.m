@@ -245,7 +245,7 @@ int selectedContact;
         ContactPerson *temp = [contacts objectAtIndex:index];
         for(UILabel *label in self.contactLabels)
         {
-            if([temp.Email.URL isEqualToString:@""])
+            if([temp.Email.LongURL isEqualToString:@""])
                 self.EmailButton.hidden = YES;
             else
                 self.EmailButton.hidden = NO;
@@ -254,10 +254,10 @@ int selectedContact;
                     label.text = [NSString stringWithFormat:@"%@ %@",temp.FirstName,temp.LastName];
                     break;
                 case 2:
-                    label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.URL];
+                    label.text = [NSString stringWithFormat:@"Email: %@",temp.Email.LongURL];
                     break;
                 case 3:
-                    label.text = [NSString stringWithFormat:@"Tel.: %@",temp.PhoneNumber.PhoneNumber];
+                    label.text = [NSString stringWithFormat:@"Function: %@",temp.Function];
                     break;
                     
                 default:
@@ -281,7 +281,7 @@ int selectedContact;
     {
         MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
         mailer.mailComposeDelegate = self;
-        NSArray *toRecipients = [NSArray arrayWithObjects:contact.Email.URL,nil];
+        NSArray *toRecipients = [NSArray arrayWithObjects:contact.Email.LongURL,nil];
         [mailer setToRecipients:toRecipients];
         [self presentViewController:mailer animated:YES completion:nil];
     }

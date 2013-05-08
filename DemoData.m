@@ -71,6 +71,14 @@ static DemoData *instance = nil;
         [userInfoDict setObject:[NSString stringWithFormat:@"4"] forKey:kQueryNumber];
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
     }
+    
+    else if ([identifier isEqualToString:@"EQQuery"])
+    {
+        NSMutableDictionary *userInfoDict;
+        userInfoDict = [NSMutableDictionary dictionaryWithObject:[DemoBW loadBWQueryEQ] forKey:kResponseItems];
+        [userInfoDict setObject:[NSString stringWithFormat:@"99"] forKey:kQueryNumber];
+        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
+    }
 }
 
 -(int)getNextDocId

@@ -203,10 +203,10 @@ BOOL imageAvailable;
     }
 }
 
-- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction andPrice:(NSDecimalNumber*)price
 {
     DocumentViewController *ndvc = (DocumentViewController*)self. navigationController.viewControllers[0];
-    [ndvc addItemWithQuantity:quant andMaterial:material andAction:docAction];
+    [ndvc addItemWithQuantity:quant andMaterial:material andAction:docAction andPrice:price];
 }
 
 -(void)imagesProcessed

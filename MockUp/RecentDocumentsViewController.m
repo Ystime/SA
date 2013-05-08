@@ -244,7 +244,7 @@ int itemOrder =-1;
         temp.Description = item.Description;
         temp.UoM = item.UoM;
         temp.Price = item.NetPrice;
-        [self.dvc addItemWithQuantity:item.Quantity.integerValue andMaterial:temp andAction:action];
+        [self.dvc addItemWithQuantity:item.Quantity.integerValue andMaterial:temp andAction:action andPrice:item.NetPrice];
     }
     [self.dvc.ItemsTable reloadData];
 }

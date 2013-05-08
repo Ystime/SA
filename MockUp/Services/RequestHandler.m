@@ -401,7 +401,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSError *error;
     NSMutableArray *groups = [service getMaterialGroupsWithData:[request responseData] error:&error];
     MaterialGroup *temp = [[MaterialGroup alloc]init];
-    temp.Description = @"All Materials";
+    temp.Description = @"All Products";
     temp.MaterialGroupID = @"0";
     NSMutableArray *selectedGroups = [NSMutableArray array];
     [selectedGroups insertObject:temp atIndex:0];
@@ -415,7 +415,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     for(MaterialGroup *mg in groups)
     {
         if([mg.MaterialGroupID hasPrefix:prefix])
+        {
+            ODataQuery *query = mg.MaterialSetQuery;
+            NSError *error;
+            mg.MaterialSet = [service getMaterialsWithData:[[connectivityHelper executeBasicSyncRequestWithQuery:query]responseData] error:&error];
             [selectedGroups addObject:mg];
+        }
     }
     if(error) {
         userInfoDict = [NSDictionary dictionaryWithObject:error forKey:kResponseError];
@@ -618,29 +623,35 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 
 -(void)loadImagesForParents:(NSArray*)parentIDs
 {
-    if([SettingsUtilities getDemoStatus])
-    {
-    }
     NSMutableDictionary *parentsPic = [NSMutableDictionary dictionary];
     NSError *error;
     [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:@"All"];
-    for(NSString *parent in parentIDs)
+    if([SettingsUtilities getDemoStatus])
     {
-        ODataQuery *query = [service getMediaCollectionForBPParentEntryQueryWithParentID:parent andKeyword:@"LOGO" andMediaType:@"Attachment"];
-        id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
-        Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
-        if(!error)
+        for(NSString *parent in parentIDs)
         {
-            id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
-            UIImage *logo = [UIImage imageWithData:requestImage.responseData];
-            if(logo)
-                [parentsPic setObject:logo forKey:parent];
+            [parentsPic setObject:[UIImage imageNamed:@"FEXS_LOGO.png"] forKey:parent];
+        }   
+    }
+    else{
+        for(NSString *parent in parentIDs)
+        {
+            ODataQuery *query = [service getMediaCollectionForBPParentEntryQueryWithParentID:parent andKeyword:@"LOGO" andMediaType:@"Attachment"];
+            id<SDMRequesting>request = [connectivityHelper executeBasicSyncRequestWithQuery:query];
+            Media *result = [service getMediasetEntryWithData:request.responseData error:&error];
+            if(!error)
+            {
+                id<SDMRequesting>requestImage = [connectivityHelper executeBasicSyncRequestWithQuery:result.mediaLinkRead.mediaLinkQuery];
+                UIImage *logo = [UIImage imageWithData:requestImage.responseData];
+                if(logo)
+                    [parentsPic setObject:logo forKey:parent];
+                else
+                    [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
+            }
             else
                 [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
+            
         }
-        else
-            [parentsPic setObject:[UIImage imageNamed:@"AllComps.png"] forKey:parent];
-        
     }
     NSDictionary *userinfo;
     if(parentsPic.count > 0)

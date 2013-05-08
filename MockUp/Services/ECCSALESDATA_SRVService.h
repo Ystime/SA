@@ -18,6 +18,7 @@
 @class Phone;
 @class URI;
 @class DocumentStatus;
+@class StandardPrice;
 
 #pragma mark GeoCode
 @interface GeoCode : BaseComplexType {
@@ -134,22 +135,22 @@
 
 #pragma mark URI
 @interface URI : BaseComplexType {
+	NSString *m_Comment;
+	NSNumber *m_Default;
 	NSString *m_URIType;
 	NSString *m_URL;
 	NSString *m_LongURL;
-	NSNumber *m_Default;
-	NSString *m_Comment;
 }
+
+@property (strong, nonatomic) NSString *Comment; ///< Comment - Edm.String
+
+@property (strong, nonatomic) NSNumber *Default; ///< Default - Edm.Boolean
 
 @property (strong, nonatomic) NSString *URIType; ///< URIType - Edm.String
 
 @property (strong, nonatomic) NSString *URL; ///< URI - Edm.String
 
 @property (strong, nonatomic) NSString *LongURL; ///< URI - Edm.String
-
-@property (strong, nonatomic) NSNumber *Default; ///< Default - Edm.Boolean
-
-@property (strong, nonatomic) NSString *Comment; ///< Comment - Edm.String
 
 
 /**
@@ -171,16 +172,56 @@
 
 #pragma mark DocumentStatus
 @interface DocumentStatus : BaseComplexType {
-	NSString *m_Overall_Status;
-	NSString *m_Invoice_Status;
 	NSString *m_Delivery_Status;
+	NSString *m_Invoice_Status;
+	NSString *m_Overall_Status;
 }
 
-@property (strong, nonatomic) NSString *Overall_Status; ///< Overall_Status - Edm.String
+@property (strong, nonatomic) NSString *Delivery_Status; ///< Delivery_Status - Edm.String
 
 @property (strong, nonatomic) NSString *Invoice_Status; ///< Invoice_Status - Edm.String
 
-@property (strong, nonatomic) NSString *Delivery_Status; ///< Delivery_Status - Edm.String
+@property (strong, nonatomic) NSString *Overall_Status; ///< Overall_Status - Edm.String
+
+
+/**
+ Static method that loads all of the complex type property labels.
+ This method is called when the ECCSALESDATA_SRVService class is initialized.
+ @param sdmProperties Dictionary containing all of the complex type properties.
+*/
++ (void)loadLabels:(NSMutableDictionary *)sdmProperties;
+
+/**
+ Static method that returns the label for a given property name.
+ @param aPropertyName Property name.
+ @return Property label.
+*/
++ (NSString *)getLabelForProperty:(NSString *)aPropertyName;
+
+@end
+
+
+#pragma mark StandardPrice
+@interface StandardPrice : BaseComplexType {
+	NSDate *m_PricingDate;
+	NSString *m_Taxcode;
+	NSString *m_PriceQuantityUnit;
+	NSDecimalNumber *m_PriceQuantity;
+	NSString *m_Currency;
+	NSDecimalNumber *m_Price;
+}
+
+@property (strong, nonatomic) NSDate *PricingDate; ///< PricingDate - Edm.DateTime
+
+@property (strong, nonatomic) NSString *Taxcode; ///< Taxcode - Edm.String
+
+@property (strong, nonatomic) NSString *PriceQuantityUnit; ///< PriceQuantityUnit - Edm.String
+
+@property (strong, nonatomic) NSDecimalNumber *PriceQuantity; ///< PriceQuantity - Edm.Decimal
+
+@property (strong, nonatomic) NSString *Currency; ///< Currency - Edm.String
+
+@property (strong, nonatomic) NSDecimalNumber *Price; ///< Price - Edm.Decimal
 
 
 /**
@@ -246,6 +287,7 @@
 	NSString *m_FirstName;
 	NSString *m_ContactPersonID;
 	NSString *m_FullName;
+	NSString *m_Function;
     ODataQuery *m_MediaCollectionQuery;
 	NSMutableArray *m_MediaCollection;
 
@@ -263,6 +305,7 @@
 @property (strong, nonatomic) NSString *FirstName; ///< FirstName - Edm.String
 @property (strong, nonatomic) NSString *ContactPersonID; ///< ContactPersonID - Edm.String
 @property (strong, nonatomic) NSString *FullName; ///< FullName - Edm.String
+@property (strong, nonatomic) NSString *Function; ///< Function - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
 @property (strong, nonatomic) NSMutableArray *MediaCollection;
@@ -345,42 +388,42 @@
 
 #pragma mark - BusinessPartner
 @interface BusinessPartner : BaseEntityType {
-	URI *m_Website;
-	URI *m_Email;
-	Phone *m_FaxNumber;
-	Phone *m_PhoneNumber;
-	Address *m_Address;
 	URI *m_Twitter;
+	Address *m_Address;
+	Phone *m_PhoneNumber;
+	Phone *m_FaxNumber;
+	URI *m_Email;
+	URI *m_Website;
+	NSString *m_ParentID;
+	NSString *m_BusinessPartnerID;
 	NSString *m_BusinessPartnerName;
 	NSString *m_BusinessPartnerType;
-	NSString *m_BusinessPartnerID;
-	NSString *m_ParentID;
-    ODataQuery *m_ContactPersonsQuery;
-	NSMutableArray *m_ContactPersons;
-    ODataQuery *m_MediaCollectionQuery;
-	NSMutableArray *m_MediaCollection;
     ODataQuery *m_SalesDocumentsQuery;
 	NSMutableArray *m_SalesDocuments;
+    ODataQuery *m_MediaCollectionQuery;
+	NSMutableArray *m_MediaCollection;
+    ODataQuery *m_ContactPersonsQuery;
+	NSMutableArray *m_ContactPersons;
 
 }
 
-@property (strong, nonatomic) URI *Website; ///< Website 
-@property (strong, nonatomic) URI *Email; ///< Email 
-@property (strong, nonatomic) Phone *FaxNumber; ///< FaxNumber 
-@property (strong, nonatomic) Phone *PhoneNumber; ///< PhoneNumber 
-@property (strong, nonatomic) Address *Address; ///< Address 
 @property (strong, nonatomic) URI *Twitter; ///< Twitter 
+@property (strong, nonatomic) Address *Address; ///< Address 
+@property (strong, nonatomic) Phone *PhoneNumber; ///< PhoneNumber 
+@property (strong, nonatomic) Phone *FaxNumber; ///< FaxNumber 
+@property (strong, nonatomic) URI *Email; ///< Email 
+@property (strong, nonatomic) URI *Website; ///< Website 
+@property (strong, nonatomic) NSString *ParentID; ///< ParentID - Edm.String
+@property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
 @property (strong, nonatomic) NSString *BusinessPartnerName; ///< BusinessPartnerName - Edm.String
 @property (strong, nonatomic) NSString *BusinessPartnerType; ///< BusinessPartnerType - Edm.String
-@property (strong, nonatomic) NSString *BusinessPartnerID; ///< BusinessPartnerID - Edm.String
-@property (strong, nonatomic) NSString *ParentID; ///< ParentID - Edm.String
 #pragma mark Entity Navigation Properties
-@property (strong, nonatomic) ODataQuery *ContactPersonsQuery;
-@property (strong, nonatomic) NSMutableArray *ContactPersons;
-@property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
-@property (strong, nonatomic) NSMutableArray *MediaCollection;
 @property (strong, nonatomic) ODataQuery *SalesDocumentsQuery;
 @property (strong, nonatomic) NSMutableArray *SalesDocuments;
+@property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
+@property (strong, nonatomic) NSMutableArray *MediaCollection;
+@property (strong, nonatomic) ODataQuery *ContactPersonsQuery;
+@property (strong, nonatomic) NSMutableArray *ContactPersons;
 
 #pragma mark Static Methods
 /**
@@ -448,12 +491,12 @@
 
 #pragma mark Entity Navigation Property loading methods
 /**
- Navigation property. Loads ContactPersons details for this entity from the provided data.
- @param aData The NSData containing the ContactPersons information to be parsed.
+ Navigation property. Loads SalesDocuments details for this entity from the provided data.
+ @param aData The NSData containing the SalesDocuments information to be parsed.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
  @return Returns YES if the method completed successfully.
 */
-- (BOOL)loadContactPersonsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (BOOL)loadSalesDocumentsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
  Navigation property. Loads MediaCollection details for this entity from the provided data.
@@ -464,43 +507,43 @@
 - (BOOL)loadMediaCollectionWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 /**
- Navigation property. Loads SalesDocuments details for this entity from the provided data.
- @param aData The NSData containing the SalesDocuments information to be parsed.
+ Navigation property. Loads ContactPersons details for this entity from the provided data.
+ @param aData The NSData containing the ContactPersons information to be parsed.
  @param error A pointer to an NSError object that will hold the error info if one occurs.
  @return Returns YES if the method completed successfully.
 */
-- (BOOL)loadSalesDocumentsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
+- (BOOL)loadContactPersonsWithData:(NSData *)aData error:(NSError * __autoreleasing *)error;
 
 
 @end
 
 #pragma mark - Material
 @interface Material : BaseEntityType {
-	NSNumber *m_Quantity;
-	NSString *m_UoM;
-	NSString *m_Plant;
-	NSString *m_Description;
-	NSString *m_MaterialNumber;
-	NSString *m_EANCategory;
-	NSString *m_EANCode;
-	NSString *m_SalesOrganization;
+	StandardPrice *m_Price;
 	NSString *m_MaterialGroup;
-	NSDecimalNumber *m_Price;
+	NSString *m_SalesOrganization;
+	NSString *m_EANCode;
+	NSString *m_EANCategory;
+	NSString *m_MaterialNumber;
+	NSString *m_Description;
+	NSString *m_Plant;
+	NSString *m_UoM;
+	NSDecimalNumber *m_MinimumOrderQuantity;
     ODataQuery *m_MediaCollectionQuery;
 	NSMutableArray *m_MediaCollection;
 
 }
 
-@property (strong, nonatomic) NSNumber *Quantity; ///< Int2 - Edm.Int16
-@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
-@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSString *MaterialNumber; ///< MaterialNumber - Edm.String
-@property (strong, nonatomic) NSString *EANCategory; ///< EANCategory - Edm.String
-@property (strong, nonatomic) NSString *EANCode; ///< EANCode - Edm.String
-@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
+@property (strong, nonatomic) StandardPrice *Price; ///< Price 
 @property (strong, nonatomic) NSString *MaterialGroup; ///< MaterialGroup - Edm.String
-@property (strong, nonatomic) NSDecimalNumber *Price; ///< Price - Edm.Decimal
+@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
+@property (strong, nonatomic) NSString *EANCode; ///< EANCode - Edm.String
+@property (strong, nonatomic) NSString *EANCategory; ///< EANCategory - Edm.String
+@property (strong, nonatomic) NSString *MaterialNumber; ///< MaterialNumber - Edm.String
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
+@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
+@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
+@property (strong, nonatomic) NSDecimalNumber *MinimumOrderQuantity; ///< MinimumOrderQuantity - Edm.Decimal
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *MediaCollectionQuery;
 @property (strong, nonatomic) NSMutableArray *MediaCollection;
@@ -584,36 +627,36 @@
 #pragma mark - SalesDocument
 @interface SalesDocument : BaseEntityType {
 	DocumentStatus *m_Status;
-	NSString *m_OrderID;
-	NSString *m_OrderType;
-	NSString *m_Description;
-	NSDate *m_DocumentDate;
-	NSString *m_CustomerID;
-	NSString *m_SalesOrganization;
-	NSString *m_DistributionChannel;
-	NSString *m_Division;
-	NSDecimalNumber *m_NetValue;
 	NSString *m_Currency;
 	NSDate *m_RequestedDeliveryDate;
 	NSString *m_CustomerPurchaseOrderNumber;
+	NSDecimalNumber *m_NetValue;
+	NSString *m_Division;
+	NSString *m_DistributionChannel;
+	NSString *m_SalesOrganization;
+	NSString *m_CustomerID;
+	NSDate *m_DocumentDate;
+	NSString *m_Description;
+	NSString *m_OrderType;
+	NSString *m_OrderID;
     ODataQuery *m_ItemsQuery;
 	NSMutableArray *m_Items;
 
 }
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
-@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
-@property (strong, nonatomic) NSString *OrderType; ///< OrderType - Edm.String
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSDate *DocumentDate; ///< DocumentDate - Edm.DateTime
-@property (strong, nonatomic) NSString *CustomerID; ///< CustomerID - Edm.String
-@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
-@property (strong, nonatomic) NSString *DistributionChannel; ///< DistributionChannel - Edm.String
-@property (strong, nonatomic) NSString *Division; ///< Division - Edm.String
-@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
 @property (strong, nonatomic) NSString *Currency; ///< Currency - Edm.String
 @property (strong, nonatomic) NSDate *RequestedDeliveryDate; ///< RequestedDeliveryDate - Edm.DateTime
 @property (strong, nonatomic) NSString *CustomerPurchaseOrderNumber; ///< CustomerPurchaseOrderNumber - Edm.String
+@property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
+@property (strong, nonatomic) NSString *Division; ///< Division - Edm.String
+@property (strong, nonatomic) NSString *DistributionChannel; ///< DistributionChannel - Edm.String
+@property (strong, nonatomic) NSString *SalesOrganization; ///< SalesOrganization - Edm.String
+@property (strong, nonatomic) NSString *CustomerID; ///< CustomerID - Edm.String
+@property (strong, nonatomic) NSDate *DocumentDate; ///< DocumentDate - Edm.DateTime
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
+@property (strong, nonatomic) NSString *OrderType; ///< OrderType - Edm.String
+@property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 #pragma mark Entity Navigation Properties
 @property (strong, nonatomic) ODataQuery *ItemsQuery;
 @property (strong, nonatomic) NSMutableArray *Items;
@@ -697,13 +740,13 @@
 #pragma mark - SalesDocItem
 @interface SalesDocItem : BaseEntityType {
 	DocumentStatus *m_Status;
-	NSString *m_Material;
-	NSString *m_Description;
-	NSString *m_Plant;
-	NSNumber *m_Quantity;
-	NSString *m_UoM;
-	NSDecimalNumber *m_NetPrice;
 	NSDecimalNumber *m_NetValue;
+	NSDecimalNumber *m_NetPrice;
+	NSString *m_UoM;
+	NSNumber *m_Quantity;
+	NSString *m_Plant;
+	NSString *m_Description;
+	NSString *m_Material;
 	NSString *m_ItemNumber;
 	NSString *m_OrderID;
     ODataQuery *m_SalesDocumentQuery;
@@ -712,13 +755,13 @@
 }
 
 @property (strong, nonatomic) DocumentStatus *Status; ///< Status 
-@property (strong, nonatomic) NSString *Material; ///< Material - Edm.String
-@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
-@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
-@property (strong, nonatomic) NSNumber *Quantity; ///< Int2 - Edm.Int16
-@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
-@property (strong, nonatomic) NSDecimalNumber *NetPrice; ///< NetPrice - Edm.Decimal
 @property (strong, nonatomic) NSDecimalNumber *NetValue; ///< NetValue - Edm.Decimal
+@property (strong, nonatomic) NSDecimalNumber *NetPrice; ///< NetPrice - Edm.Decimal
+@property (strong, nonatomic) NSString *UoM; ///< UoM - Edm.String
+@property (strong, nonatomic) NSNumber *Quantity; ///< Int2 - Edm.Int16
+@property (strong, nonatomic) NSString *Plant; ///< Plant - Edm.String
+@property (strong, nonatomic) NSString *Description; ///< Description - Edm.String
+@property (strong, nonatomic) NSString *Material; ///< Material - Edm.String
 @property (strong, nonatomic) NSString *ItemNumber; ///< ItemNumber - Edm.String
 @property (strong, nonatomic) NSString *OrderID; ///< OrderID - Edm.String
 #pragma mark Entity Navigation Properties

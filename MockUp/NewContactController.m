@@ -16,7 +16,8 @@
 bool scanFlag,pictureFlag;
 UIImage *contactImage;
 NSString *role;
-
+UIPopoverController *upc;
+ZBarReaderViewController *reader;
 @synthesize editContact,relBUPA;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -83,13 +84,19 @@ NSString *role;
     pictureFlag = NO;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    self.saveButton.hidden = NO;
+    [self.savingIndicator stopAnimating];
+}
+
 -(void)setupLabels:(ContactPerson*)cp
 {
     for(UITextField *input in self.InputFieldCollection)
     {
         switch (input.tag) {
             case 1:
-//                input.text = cp.Gender;
+               input.text = cp.Function;
                 break;
             case 2:
                 input.text = cp.FirstName;
@@ -98,7 +105,7 @@ NSString *role;
                 input.text = cp.LastName;
                 break;
             case 4:
-                input.text = cp.Email.URL;
+                input.text = cp.Email.LongURL;
                 break;
             case 5:
                 input.text = cp.PhoneNumber.PhoneNumber;
@@ -125,7 +132,9 @@ NSString *role;
 - (IBAction)clickedButton:(id)sender {
     switch ([sender tag]) {
         case 1:
-            [self saveContactPerson];
+            self.saveButton.hidden = YES;
+            [self.savingIndicator startAnimating];
+            [self performSelectorInBackground:@selector(saveContactPerson) withObject:nil];
             break;
         case 2:
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -149,14 +158,45 @@ NSString *role;
 }
 - (IBAction)scanBusinessCard:(id)sender
 {
-    ZBarReaderViewController *reader = [ZBarReaderViewController new];
+    reader = [ZBarReaderViewController new];
 
     reader.readerDelegate = self;
+    reader.showsZBarControls = NO;
+    reader.cameraOverlayView = [self setOverlayPickerView];
     scanFlag = YES;
     pictureFlag = NO;
-    [self presentViewController:reader animated:YES completion:nil];
+    [self presentViewController:reader animated:YES completion:^{
+
+    }];
 }
 
+- (UIView *)setOverlayPickerView{
+    UIView *v=[[UIView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
+    [v setBackgroundColor:[UIColor clearColor]];
+    UIToolbar *myToolBar = [[UIToolbar alloc] init];
+    UIBarButtonItem *backButton=[[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(dismissOverlayView:)];
+    UIBarButtonItem *cameraButton=[[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(takePictureOfCard)];
+    cameraButton.style = UIBarButtonItemStyleBordered;
+//    UIBarButtonItem *fixed=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [myToolBar setItems:[NSArray arrayWithObjects:backButton,cameraButton,nil]];
+    [myToolBar setBarStyle:UIBarStyleDefault];
+    CGRect toolBarFrame;
+    toolBarFrame = CGRectMake(0, 724, 1024, 44);
+    [myToolBar setFrame:toolBarFrame];
+    [v addSubview:myToolBar];
+    return  v;
+}
+
+- (void)dismissOverlayView:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+-(void)takePictureOfCard
+{
+    NSLog(@"It Works!");
+    [reader takePicture];
+    pictureFlag = YES;
+    scanFlag  = NO;
+}
 - (void) imagePickerController: (UIImagePickerController*) reader
  didFinishPickingMediaWithInfo: (NSDictionary*) info
 {
@@ -227,12 +267,12 @@ NSString *role;
         else if ([detail hasPrefix:@"EMAIL"])
         {
             NSArray *names = [detail componentsSeparatedByString:@":"];
-            editContact.Email.URL = names.lastObject;
+            editContact.Email.LongURL = names.lastObject;
         }
         else if ([detail hasPrefix:@"ROLE"])
         {
             NSArray *names = [detail componentsSeparatedByString:@":"];
-            editContact.Email.URL = names.lastObject;
+            editContact.Function = names.lastObject;
         }
     }
     [self setupLabels:editContact];
@@ -244,7 +284,7 @@ NSString *role;
     {
         switch (input.tag) {
             case 1:
-                editContact.Gender = input.text;
+                editContact.Function = input.text;
                 break;
             case 2:
                 editContact.FirstName = input.text;
@@ -254,13 +294,14 @@ NSString *role;
                 break;
             case 4:
                 editContact.Email.LongURL =  input.text;
+                editContact.Email.URIType = @"smtp";
                 break;
             case 5:
                 editContact.PhoneNumber.PhoneNumber = input.text;
+                editContact.PhoneNumber.PhoneType = @"landline";
                 break;
             case 6:
-                if(![input.text isEqualToString:@""])
-                    editContact.PhoneNumber.PhoneNumber = input.text;
+//                editContact.Function = input.text;
                 break;
             default:
                 break;
@@ -273,7 +314,12 @@ NSString *role;
     if([editContact.LastName isEqualToString:@""]|| [editContact.FirstName isEqualToString:@""])
     {
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Name" message:@"First and last name are required!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [alert show];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+    }
+    else if(![self validateEmailAdress:editContact.Email.LongURL])
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Invalid Email" message:@"Emailaddress is invalid! Use format john@smnl.nl!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
     }
     else
     {
@@ -282,7 +328,6 @@ NSString *role;
         if(success && !(self.ContactImage.image == nil))
         {
             BusinessPartner *temp = relBUPA;
-//            NSString *slug = [NSString stringWithFormat:@"Keyword='Passphoto',RelatedID='%@',Source='MediaForContactPerson',MediaType='Attachment',Filename='PassPhotoOf_%@.jpeg'",success.ContactPersonID,success.FullName];
             NSString *slug = [NSString stringWithFormat:@"Keyword='Passphoto',RelatedID='%@',Source='MediaForContactPerson',MediaType='Attachment'",success.ContactPersonID];
             if([[RequestHandler uniqueInstance]uploadPicture:self.ContactImage.image forSlug:slug])
             {
@@ -293,18 +338,26 @@ NSString *role;
             else
             {
                 alert.message =@"Could not save picture. Contact details are saved!";
-                [alert show];
+                [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];;
             } 
         }
         else
         {
-            BusinessPartner *temp = relBUPA;
-            [self dismissViewControllerAnimated:YES completion:^{
-                [[RequestHandler uniqueInstance]loadContacts:temp];
-            }];
+            [self performSelectorOnMainThread:@selector(saveCompleted) withObject:nil waitUntilDone:NO];
         }
     }
+    self.saveButton.hidden = NO;
+    [self.savingIndicator stopAnimating];
     
+}
+
+-(void)saveCompleted
+{
+
+    BusinessPartner *temp = relBUPA;
+    [self dismissViewControllerAnimated:YES completion:^{
+        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadContacts:) withObject:temp];
+    }];
 }
 
 #pragma mark - UITextField Delegate
@@ -323,8 +376,43 @@ NSString *role;
     return YES;
 }
 
+-(BOOL)validateEmailAdress:(NSString*)emailadres
+{
+    if([emailadres isEqualToString:@""] ||emailadres == nil)
+        return YES;
+    if([emailadres rangeOfString:@"@"].location == NSNotFound)
+        return NO;
+    NSArray *subs = [emailadres componentsSeparatedByString:@"@"];
+    if(!subs.count == 2)
+        return NO;
+    NSString *domain = subs[1];
+    NSArray *subsDomain = [domain componentsSeparatedByString:@"."];
+    if(subsDomain.count < 2 || subsDomain.count > 3)
+        return NO;
+    for(NSString* sub in subsDomain)
+    {
+        if (sub.length < 2)
+            return NO;
+    }
+    return YES;
+}
+
+
 -(BOOL)disablesAutomaticKeyboardDismissal
 {
     return NO;
 }
+
+#pragma mark - TableView Delegate
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [upc dismissPopoverAnimated:YES];
+    if(indexPath.row == 1)
+    {
+        [self scanBusinessCard:nil];
+    }
+}
+
 @end

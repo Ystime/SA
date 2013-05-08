@@ -116,6 +116,9 @@
 		DA1350E416DCABBA001252EB /* RO.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1350E116DCABBA001252EB /* RO.png */; };
 		DA1C8A0A16E5F31300D1A1EA /* PullableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1C8A0716E5F31300D1A1EA /* PullableView.m */; };
 		DA1C8A0B16E5F31300D1A1EA /* StyledPullableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1C8A0916E5F31300D1A1EA /* StyledPullableView.m */; };
+		DA233C67173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.m in Sources */ = {isa = PBXBuildFile; fileRef = DA233C66173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.m */; };
+		DA233C6A173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA233C68173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceDocument.xml */; };
+		DA233C6B173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */ = {isa = PBXBuildFile; fileRef = DA233C69173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceMetadata.xml */; };
 		DA2927041717FCF300D55876 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2926FB1717FCF300D55876 /* NSObject+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA2927051717FCF300D55876 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2926FD1717FCF300D55876 /* NSString+SBJSON.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA2927061717FCF300D55876 /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2926FF1717FCF300D55876 /* SBJsonBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -235,6 +238,7 @@
 		DA7485F316EF40F3007682EF /* Y000000003.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DA7485EE16EF40F3007682EF /* Y000000003.jpg */; };
 		DA7485F416EF40F3007682EF /* Y000000004.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DA7485EF16EF40F3007682EF /* Y000000004.jpg */; };
 		DA7485F516EF40F3007682EF /* Y000000005.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DA7485F016EF40F3007682EF /* Y000000005.jpg */; };
+		DA7A579D1737AA27008A92B0 /* FEXS_LOGO.png in Resources */ = {isa = PBXBuildFile; fileRef = DA7A579C1737AA27008A92B0 /* FEXS_LOGO.png */; };
 		DA7B68A716BBDAA10062D76B /* pos.png in Resources */ = {isa = PBXBuildFile; fileRef = DA7B68A616BBDAA10062D76B /* pos.png */; };
 		DA882D3F170DBF2D007579F1 /* app2 144.png in Resources */ = {isa = PBXBuildFile; fileRef = DA882D3E170DBF2D007579F1 /* app2 144.png */; };
 		DA882D41170DBF30007579F1 /* app2 72.png in Resources */ = {isa = PBXBuildFile; fileRef = DA882D40170DBF30007579F1 /* app2 72.png */; };
@@ -298,9 +302,6 @@
 		DAC962E616E9F53800652CAC /* Front 1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DAC962E316E9F53800652CAC /* Front 1.jpeg */; };
 		DAC962E716E9F53800652CAC /* Shelf.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAC962E416E9F53800652CAC /* Shelf.jpg */; };
 		DAC962EA16EA196F00652CAC /* DemoBW.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC962E916EA196F00652CAC /* DemoBW.m */; };
-		DACB85F817169BAC0099A9D0 /* ECCSALESDATA_SRVService.m in Sources */ = {isa = PBXBuildFile; fileRef = DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */; };
-		DACB85FB17169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */ = {isa = PBXBuildFile; fileRef = DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */; };
-		DACB85FC17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */ = {isa = PBXBuildFile; fileRef = DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */; };
 		DACC379416C2635E0016CF5F /* GlobalFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = DACC379316C2635E0016CF5F /* GlobalFunctions.m */; };
 		DAD35CEA1726AF1A0031B373 /* default (1).gpx in Resources */ = {isa = PBXBuildFile; fileRef = DAD35CE91726AF1A0031B373 /* default (1).gpx */; };
 		DAD4FE2316BBF2FD00753536 /* Compa_ON.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4FE1F16BBF2FD00753536 /* Compa_ON.png */; };
@@ -345,7 +346,6 @@
 		C3A01396169C2C570051357F /* Sales Around-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sales Around-Info.plist"; sourceTree = "<group>"; };
 		C3A01398169C2C570051357F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C3A0139A169C2C570051357F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C3A0139C169C2C570051357F /* All Round Sales Rep-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "All Round Sales Rep-Prefix.pch"; sourceTree = "<group>"; };
 		C3A0139D169C2C570051357F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C3A0139E169C2C570051357F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C3A013A3169C2C570051357F /* LogInViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogInViewController.h; sourceTree = "<group>"; };
@@ -520,6 +520,10 @@
 		DA1C8A0716E5F31300D1A1EA /* PullableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullableView.m; sourceTree = "<group>"; };
 		DA1C8A0816E5F31300D1A1EA /* StyledPullableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StyledPullableView.h; sourceTree = "<group>"; };
 		DA1C8A0916E5F31300D1A1EA /* StyledPullableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StyledPullableView.m; sourceTree = "<group>"; };
+		DA233C65173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECCSALESDATA_SRVService.h; sourceTree = "<group>"; };
+		DA233C66173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECCSALESDATA_SRVService.m; sourceTree = "<group>"; };
+		DA233C68173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceDocument.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceDocument.xml; sourceTree = "<group>"; };
+		DA233C69173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceMetadata.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceMetadata.xml; sourceTree = "<group>"; };
 		DA2926F91717FCF300D55876 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		DA2926FA1717FCF300D55876 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		DA2926FB1717FCF300D55876 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -758,6 +762,7 @@
 		DA7485EE16EF40F3007682EF /* Y000000003.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Y000000003.jpg; sourceTree = "<group>"; };
 		DA7485EF16EF40F3007682EF /* Y000000004.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Y000000004.jpg; sourceTree = "<group>"; };
 		DA7485F016EF40F3007682EF /* Y000000005.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Y000000005.jpg; sourceTree = "<group>"; };
+		DA7A579C1737AA27008A92B0 /* FEXS_LOGO.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FEXS_LOGO.png; sourceTree = "<group>"; };
 		DA7B68A616BBDAA10062D76B /* pos.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pos.png; sourceTree = "<group>"; };
 		DA882D3E170DBF2D007579F1 /* app2 144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app2 144.png"; path = "../app2 144.png"; sourceTree = "<group>"; };
 		DA882D40170DBF30007579F1 /* app2 72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app2 72.png"; path = "../app2 72.png"; sourceTree = "<group>"; };
@@ -840,10 +845,6 @@
 		DAC962E416E9F53800652CAC /* Shelf.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Shelf.jpg; sourceTree = "<group>"; };
 		DAC962E816EA196F00652CAC /* DemoBW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoBW.h; sourceTree = "<group>"; };
 		DAC962E916EA196F00652CAC /* DemoBW.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoBW.m; sourceTree = "<group>"; };
-		DACB85F617169BAC0099A9D0 /* ECCSALESDATA_SRVService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECCSALESDATA_SRVService.h; sourceTree = "<group>"; };
-		DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ECCSALESDATA_SRVService.m; sourceTree = "<group>"; };
-		DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceDocument.xml; sourceTree = "<group>"; };
-		DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ECCSALESDATA_SRVServiceMetadata.xml; sourceTree = "<group>"; };
 		DACC379216C2635E0016CF5F /* GlobalFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalFunctions.h; sourceTree = "<group>"; };
 		DACC379316C2635E0016CF5F /* GlobalFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalFunctions.m; sourceTree = "<group>"; };
 		DAD35CE91726AF1A0031B373 /* default (1).gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "default (1).gpx"; sourceTree = "<group>"; };
@@ -980,7 +981,6 @@
 				C3A01396169C2C570051357F /* Sales Around-Info.plist */,
 				C3A01397169C2C570051357F /* InfoPlist.strings */,
 				C3A0139A169C2C570051357F /* main.m */,
-				C3A0139C169C2C570051357F /* All Round Sales Rep-Prefix.pch */,
 				DA43ACA3169DC1DE008A7978 /* UIImageAdditions.h */,
 				DA74759916F3256A00964EB0 /* Material_Image.h */,
 				DA59B2C4170F102B0045784A /* Settings.bundle */,
@@ -1427,8 +1427,8 @@
 		DA4208E1169C6A4400788BE5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DACB85F617169BAC0099A9D0 /* ECCSALESDATA_SRVService.h */,
-				DACB85F717169BAC0099A9D0 /* ECCSALESDATA_SRVService.m */,
+				DA233C65173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.h */,
+				DA233C66173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.m */,
 				DAB2318816DCE25400B68DD5 /* BW Services */,
 				DADD9E2416CE3ECD00A6A0A5 /* RequestHandler.h */,
 				DADD9E5016CE4A7900A6A0A5 /* RequestHandler.m */,
@@ -1442,8 +1442,8 @@
 		DA4208F9169C6A4400788BE5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DACB85F917169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml */,
-				DACB85FA17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml */,
+				DA233C68173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceDocument.xml */,
+				DA233C69173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceMetadata.xml */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1788,6 +1788,7 @@
 		DA7485EB16EF3E32007682EF /* BUPA */ = {
 			isa = PBXGroup;
 			children = (
+				DA7A579C1737AA27008A92B0 /* FEXS_LOGO.png */,
 				DAF1AB0A16EF1F340073A342 /* Scheer Front.jpg */,
 				DAF1AB0B16EF1F340073A342 /* Scheer Inside.jpg */,
 				DAF1AB0C16EF1F340073A342 /* Scheer Tower.jpg */,
@@ -2284,8 +2285,6 @@
 				DAB163651713063200036099 /* MainStoryboard.storyboard in Resources */,
 				DA30867217142C21000130F9 /* Prospect_BTN.png in Resources */,
 				DA30867317142C21000130F9 /* Competitor_BTN.png in Resources */,
-				DACB85FB17169BB60099A9D0 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */,
-				DACB85FC17169BB60099A9D0 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */,
 				DA2927101718291400D55876 /* App - logo final 72.png in Resources */,
 				DA2927111718291400D55876 /* App - logo final 144.png in Resources */,
 				DA2927121718291400D55876 /* Naamloos 72.png in Resources */,
@@ -2294,6 +2293,9 @@
 				DA726BEC171C094400FCB8D4 /* female.png in Resources */,
 				DA726BED171C094400FCB8D4 /* male.png in Resources */,
 				DAD35CEA1726AF1A0031B373 /* default (1).gpx in Resources */,
+				DA7A579D1737AA27008A92B0 /* FEXS_LOGO.png in Resources */,
+				DA233C6A173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceDocument.xml in Resources */,
+				DA233C6B173A3FF2002F1AB8 /* ECCSALESDATA_SRVServiceMetadata.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2428,7 +2430,6 @@
 				DA0FF934170EFA1900F4EC22 /* MIMWallGraph.m in Sources */,
 				DA0FF935170EFA1900F4EC22 /* MultiWallLongGraph.m in Sources */,
 				DA6A1B2E1712E9FF00D974DE /* ZAPP_AR01Service.m in Sources */,
-				DACB85F817169BAC0099A9D0 /* ECCSALESDATA_SRVService.m in Sources */,
 				DA2927041717FCF300D55876 /* NSObject+SBJSON.m in Sources */,
 				DA2927051717FCF300D55876 /* NSString+SBJSON.m in Sources */,
 				DA2927061717FCF300D55876 /* SBJsonBase.m in Sources */,
@@ -2442,6 +2443,7 @@
 				DAEDBDFB171EE6D600EA225A /* ProductCell.m in Sources */,
 				DA3B64CE17253F3E0011DB91 /* DemoAttachments.m in Sources */,
 				DAB5DD3F172A726400523EF7 /* XYPieChart.m in Sources */,
+				DA233C67173A3FEA002F1AB8 /* ECCSALESDATA_SRVService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,7 @@
 #import "GlobalFunctions.h"
 #import "ZBarSDK.h"
 
-@interface NewContactController : UIViewController <ZBarReaderDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate>
+@interface NewContactController : UIViewController <ZBarReaderDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextFieldDelegate,UITableViewDelegate>
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 - (IBAction)clickedButton:(id)sender;
 @property ContactPerson *editContact;
@@ -24,5 +24,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *cancelButton;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *GenderControl;
 @property (strong, nonatomic) IBOutlet UILabel *TitleLabel;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *savingIndicator;
 
 @end

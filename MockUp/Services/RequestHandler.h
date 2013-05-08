@@ -7,7 +7,7 @@
  
  */
 
-#define kLanguage @"DE"
+#define kLanguage @"NL"
 
 #import <Foundation/Foundation.h>
 #import "SDMHttpRequestDelegate.h"

@@ -40,7 +40,9 @@
             case 5:
                 label.text = [NSString stringWithFormat:@"%.2f €",item.NetValue.doubleValue];
                 break;
-                
+            case 6:
+                label.text = [NSString stringWithFormat:@"%.2f €",item.NetPrice.floatValue];
+                break;
             default:
                 break;
         }

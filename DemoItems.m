@@ -33,9 +33,9 @@
                 item.Material = tempMat.MaterialNumber;
                 item.Description = tempMat.Description;
                 item.UoM = tempMat.UoM;
-                float total = tempMat.Price.floatValue * item.Quantity.floatValue;
+                float total = tempMat.Price.Price.floatValue * item.Quantity.floatValue;
                 totalValue +=total;
-                item.NetPrice = tempMat.Price;
+                item.NetPrice = tempMat.Price.Price;
                 item.NetValue = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",total]];
                 [sd.Items addObject:item];
             }

@@ -18,7 +18,7 @@
 @interface ProductViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UITableViewDataSource,UITableViewDelegate>
 - (IBAction)goBack:(id)sender;
 - (IBAction)switchView:(id)sender;
-- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction;
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction andPrice:(NSDecimalNumber*)price;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 @property (strong, nonatomic) IBOutlet UITableView *MaterialTable;
 @property (strong, nonatomic) IBOutlet UICollectionView *MaterialCollection;

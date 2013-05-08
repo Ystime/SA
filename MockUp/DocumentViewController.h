@@ -36,8 +36,7 @@
 - (IBAction)changeItem:(id)sender;
 
 -(void)setHeaderLabelView;
-- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction;
-
+- (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction andPrice:(NSDecimalNumber*)price;
 
 
 @end

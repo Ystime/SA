@@ -10,12 +10,15 @@
 #import "MainViewController.h"
 #import <EventKit/EventKit.h>
 
-@interface ExtrasView : UIView <UITableViewDataSource,UITableViewDelegate,AFOpenFlowViewDelegate>
+@interface ExtrasView : UIView <UITableViewDataSource,UITableViewDelegate,AFOpenFlowViewDelegate,UIAlertViewDelegate>
 @property (strong,nonatomic) IBOutlet UIView *leftView;
 @property (strong,nonatomic) IBOutlet UIView *rightView;
 @property (strong,nonatomic) IBOutlet UIView *middleView;
 @property (strong,nonatomic) IBOutlet UILabel *productTitle;
 @property (strong,nonatomic) IBOutlet UITableView *calendarTable;
+@property (strong,nonatomic) IBOutlet UITableView *taskTable;
+
 -(void)setupNewProductViewWithProducts:(NSDictionary*)products;
 -(void)getCalenderEvents;
+-(void)getCalendarTasks;
 @end
