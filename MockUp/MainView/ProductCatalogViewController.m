@@ -49,7 +49,7 @@ BOOL visible;
     visible = YES;
     [self.loadingPicIV startAnimating];
     [self performSelectorInBackground:@selector(getMaterialGroups) withObject:nil];
-
+    
     [self performSelectorInBackground:@selector(getMaterialPics) withObject:nil];
 }
 
@@ -105,24 +105,17 @@ BOOL visible;
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    switch (row) {
-        case 0:
-            mpKeys = allKeys;
-            break;
-        case 1:
-            mpKeys = [NSArray arrayWithObjects:allKeys[0],allKeys[1],allKeys[2], nil];
-            break;
-        case 2:
-            mpKeys = [NSArray arrayWithObjects:allKeys[3],allKeys[4], nil];
-            break;
-        case 3:
-            mpKeys = [NSArray arrayWithObjects:allKeys[5],allKeys[6], nil];
-            break;
-        case 4:
-            mpKeys = [NSArray arrayWithObjects:allKeys[7],allKeys[8], nil];
-            break;
-        default:
-            break;
+    if(row == 0)
+        mpKeys = allKeys;
+    else
+    {
+        NSMutableArray *temp = [NSMutableArray array];
+        MaterialGroup *mg = materialGroups[row];
+        for(Material* mat in mg.MaterialSet)
+        {
+            [temp addObject:mat.MaterialNumber];
+        }
+        mpKeys = [NSArray arrayWithArray:temp];
     }
     [self.MaterialCollectionView reloadData];
 }

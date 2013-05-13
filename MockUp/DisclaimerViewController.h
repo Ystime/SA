@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GlobalFunctions.h"
 
 @interface DisclaimerViewController : UIViewController
 - (IBAction)doneClicked:(id)sender;
+@property (strong, nonatomic) IBOutlet UIImageView *GWStatus;
+@property (strong, nonatomic) IBOutlet UIImageView *ECCStatus;
+@property (strong, nonatomic) IBOutlet UITextView *Disclaimer;
 
 @end

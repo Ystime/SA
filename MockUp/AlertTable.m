@@ -80,6 +80,7 @@ NSArray *noteKeys;
     error = [notification.userInfo objectForKey:kResponseError];
     
     notes = [notification.userInfo objectForKey:kResponseItems];
+    noteKeys = notes.allKeys;
     if (error || noteKeys.count == 0)
         notes = [NSMutableDictionary dictionaryWithObject:@"No sales alerts were found for this business partner" forKey:@"No Alerts"];
     noteKeys = notes.allKeys;

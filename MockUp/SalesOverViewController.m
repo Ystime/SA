@@ -16,6 +16,8 @@
 BusinessPartner *selectedBUPA;
 NSMutableArray *salesDocuments;
 NSMutableArray *allSDs;
+NSMutableArray *selectedType;
+BOOL docOpenStatus;
 NSMutableArray *selectedSDItems;
 LGViewHUD *loadingItems;
 int lastSortedSD;
@@ -48,6 +50,8 @@ int selectedRow;
     loadingItems.activityIndicatorOn = YES;
     loadingItems.topText = @"Loading";
     loadingItems.bottomText = @"Items...";
+    docOpenStatus = YES;
+    selectedType = [NSMutableArray arrayWithObjects:@"ORDER",@"QUOTATION", nil];
     cvc = (CustomerViewController*)self.parentViewController;
     selectedBUPA = cvc.selectedBusinessPartner;
     [self.AlertTable performSelectorInBackground:@selector(loadAlertsForBusinessPartner:) withObject:selectedBUPA];
@@ -108,26 +112,8 @@ int selectedRow;
 -(void)salesDocumentsLoaded
 {
     lastSortedSD = -1;
-    for(UIButton* button in self.TypeButtons)
-    {
-        switch (button.tag) {
-            case 1:
-                [self orderType:@"QUOTATION" visible:button.selected];
-                break;
-            case 2:
-                [self orderType:@"ORDER" visible:button.selected];
-                break;
-            case 3:
-                [self orderType:@"RETURN_ORDER" visible:button.selected];
-                break;
-            default:
-                break;
-        }
-        selectedSDItems = nil;
-        [self.ItemTable reloadData];
-    }
     self.NothingLabel.text = @"This Customer has no Sales Documents (for these filters)";
-    [self.DocumentTable reloadData];
+    [self reloadVisibleSalesDocuments];
 }
 
 -(void)getSalesDocs
@@ -152,6 +138,36 @@ int selectedRow;
     [self.ItemTable reloadData];
 }
 
+
+-(void)reloadVisibleSalesDocuments
+{
+    NSMutableArray *temp = [NSMutableArray array];
+    salesDocuments = [NSMutableArray array];
+    /*
+     First check documents if they have the right status 
+     */
+    if(docOpenStatus)
+    {
+        for(SalesDocument *sd in allSDs)
+        {
+                if(![sd.Status.Overall_Status isEqualToString:@"COMPLETELY_PROCESSED"])
+                    [temp addObject:sd];
+        }
+    }
+    else
+    {
+        temp = allSDs;
+    }
+    for(SalesDocument *sd in temp)
+    {
+        if([selectedType containsObject:sd.OrderType])
+            [salesDocuments addObject:sd];
+    }
+    selectedSDItems = nil;
+
+    [self.DocumentTable reloadData];
+    [self.ItemTable reloadData];
+}
 
 #pragma mark - TableView Datasource
 
@@ -428,11 +444,13 @@ int selectedRow;
             if(!button.selected)
             {
                 button.selected = YES;
+                docOpenStatus = [sender tag]==2;
                 /*Filter the list of documents on the tag, 1= open,2 =all;*/
+                [self reloadVisibleSalesDocuments];
             }
         }
     }
-    
+
 }
 
 - (IBAction)filterOnType:(id)sender {
@@ -441,21 +459,26 @@ int selectedRow;
         button.selected = NO;
     else
         button.selected = YES;
+    NSString *type;
     switch (button.tag) {
         case 1:
-            [self orderType:@"QUOTATION" visible:button.selected];
+            type = @"QUOTATION";
             break;
         case 2:
-            [self orderType:@"ORDER" visible:button.selected];
+            type = @"ORDER";
             break;
         case 3:
-            [self orderType:@"RETURN_ORDER" visible:button.selected];
+            type = @"RETURN_ORDER";
             break;
         default:
             break;
     }
-    selectedSDItems = nil;
-    [self.ItemTable reloadData];
+    if(button.selected)
+        [selectedType addObject:type];
+    else
+        [selectedType removeObject:type];
+    [self reloadVisibleSalesDocuments];
+
 }
 
 -(void)orderType:(NSString*)type visible:(BOOL)vis

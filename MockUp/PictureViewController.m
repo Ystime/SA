@@ -102,9 +102,9 @@ typedef enum swipeDir {kLeft,kRight}swipeDir;
     {
         indexPic = indexPath.row;
         thumbCell *temp = (thumbCell*)[thumbCollection cellForItemAtIndexPath:indexPath];
+        self.mainPictureTitle.text = temp.thumbLabel.text;
         self.mainPicture.image =  [UIImage makeRoundedImage:temp.thumbPic.image radius:16.0];
-        thumbCell *cell = (thumbCell*)[collectionView cellForItemAtIndexPath:indexPath];
-        cell.layer.borderWidth = 2.0;
+        temp.layer.borderWidth = 2.0;
     }
     else //Add cell was selected
     {

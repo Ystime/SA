@@ -323,7 +323,4 @@ int selectedContact;
     }
 }
 
-
-#pragma mark - Pie Chart shit
-
 @end

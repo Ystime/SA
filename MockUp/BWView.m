@@ -519,4 +519,6 @@ EQSelect EQSel;
     
 }
 
+#pragma mark - CorePlot
+
 @end

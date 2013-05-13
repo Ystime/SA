@@ -268,6 +268,7 @@ NSMutableDictionary *parents;
 
 -(void)annotateVisibleCustomers
 {
+    self.ProspectSearchField.text = @"";
     NSMutableArray *annotationsToRemove = [self.mapView.annotations mutableCopy];
     [annotationsToRemove removeObject:_mapView.userLocation];
     [self.mapView removeAnnotations:annotationsToRemove];
@@ -276,7 +277,7 @@ NSMutableDictionary *parents;
         CustomerAnnotation *annotation = [[CustomerAnnotation alloc]initWithBussinessPartner:bp];
         [self.mapView addAnnotation:annotation];
     }
-    [self centerMyPosition:nil];
+//    [self centerMyPosition:nil];
 }
 
 -(void)loadProspects:(NSString*)searchText
@@ -311,9 +312,7 @@ NSMutableDictionary *parents;
     }
     else
     {
-        MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.mapView.userLocation.coordinate, 50000, 50000);
-        MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
-        [self.mapView setRegion:adjustedRegion animated:YES];
+        [self centerMyPosition:nil];
     }
 }
 
@@ -396,6 +395,12 @@ NSMutableDictionary *parents;
 -(void)materialGroupsLoaded:(NSNotification*)notification
 {
     MaterialGroups = [notification.userInfo objectForKey:kResponseItems];
+    
+    /*
+     Code below can be used in case materials can not be requested but material groups with materials can....
+    */
+    
+    /*
     Materials = [NSMutableArray array];
     for(MaterialGroup *mg in MaterialGroups)
     {
@@ -407,6 +412,7 @@ NSMutableDictionary *parents;
         [temp addObject:material.MaterialNumber];
     }
     [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
+     */
 }
 #pragma mark - MapView Delegate Functions
 
@@ -515,7 +521,12 @@ NSMutableDictionary *parents;
     else
     {
         BusinessPartnerParent *tempParent = [parents objectForKey:bupaID];
-        VisibleBusinessPartners = tempParent.BusinessPartners;
+        VisibleBusinessPartners = [NSMutableArray array];
+        for(BusinessPartner *bp in BusinessPartners)
+        {
+            if([tempParent.BusinessPartners containsObject:bp.BusinessPartnerID])
+                [VisibleBusinessPartners addObject:bp];
+        }
         self.FlowLabel.text = tempParent.BusinessPartnerName;
     }
     
@@ -833,7 +844,7 @@ NSMutableDictionary *parents;
         CustomerViewController *cvc = segue.destinationViewController;
         cvc.selectedBusinessPartner = sender;
         cvc.mvc = self;
-        if(cvc.selectedBusinessPartner.ParentID)
+        if(cvc.selectedBusinessPartner.ParentID.length !=0)
             cvc.bupaLogo = [hierLogos objectForKey:cvc.selectedBusinessPartner.ParentID];
     }
     else if([segue.identifier isEqualToString:@"goToProducts"])

@@ -12,6 +12,7 @@
 
 @interface PictureViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
 @property (strong, nonatomic) IBOutlet UIImageView *mainPicture;
+@property (strong, nonatomic) IBOutlet UILabel *mainPictureTitle;
 @property (strong, nonatomic) IBOutlet UICollectionView *thumbCollection;
 -(void)showPVCWithPictureForKey:(NSString*)picKey;
 

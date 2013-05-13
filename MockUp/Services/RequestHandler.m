@@ -201,6 +201,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     {
         ODataQuery *query = service.BusinessPartnerParentsQuery;
         [query expand:@"BusinessPartners"];
+        [query select:@"Address,BusinessPartnerParentID,BusinessPartnerName,BusinessPartners/BusinessPartnerID"];
         [connectivityHelper executeBasicAsyncRequestWithQuery:query andRequestDelegate:self andDidFinishSelector:@selector(loadParentsCompleted:) andUserInfo:nil];
     }
 }
@@ -221,7 +222,15 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         for(BusinessPartnerParent *parent in tempParents)
         {
             if(parent.BusinessPartners.count >0 && [parent.Address.Country isEqualToString:kLanguage])
+            {
+                NSMutableArray *temp = [NSMutableArray array];
+                for(BusinessPartner *bp in parent.BusinessPartners)
+                {
+                    [temp addObject:bp.BusinessPartnerID];
+                }
+                parent.BusinessPartners = temp;
                 [parents setObject:parent forKey:parent.BusinessPartnerParentID];
+            }
         }
         userinfo = [NSDictionary dictionaryWithObject:parents forKey:kResponseItems];
     }
@@ -806,7 +815,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
                     if(!([tempMedia.Keyword rangeOfString:@"_%_"].location == NSNotFound))
                     {
                         NSArray *subs = [tempMedia.Keyword componentsSeparatedByString:@"_%_"];
-                        tempMedia.Keyword = subs[subs.count-2];
+                        if(subs.count == 3)
+                        {
+                            tempMedia.Keyword = [NSString stringWithFormat:@"[%@] %@",subs[0],subs[1]];
+                        }
+                        else
+                            tempMedia.Keyword = subs[subs.count-2];
                     }
                     [notes setObject:result forKey:tempMedia.Keyword];
                 }

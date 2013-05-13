@@ -8,6 +8,7 @@
 
 #import "DisclaimerViewController.h"
 
+
 @interface DisclaimerViewController ()
 
 @end
@@ -26,7 +27,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.Disclaimer.layer.borderColor = [[UIColor darkGrayColor]CGColor];
+    self.Disclaimer.layer.borderWidth = 1.0;
 	// Do any additional setup after loading the view.
+}
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self checkAvailability];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,5 +45,28 @@
 
 - (IBAction)doneClicked:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)checkAvailability
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://knowledge.nl4b.com"]
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:10];
+    [request setHTTPMethod: @"GET"];
+    
+    NSError *requestError;
+    NSURLResponse *urlResponse = nil;
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSHTTPURLResponse *temp = (NSHTTPURLResponse*)urlResponse;
+    if(!temp)
+       self.ECCStatus.image =  self.GWStatus.image = [UIImage imageNamed:@"Status_Red.png"];
+    else
+    {
+        if(temp.statusCode == 500)
+            self.ECCStatus.image =  self.GWStatus.image = [UIImage imageNamed:@"Status_Green.png"];
+        else
+            self.ECCStatus.image =  self.GWStatus.image = [UIImage imageNamed:@"Status_Orange.png"];
+    }
+
 }
 @end
