@@ -17,5 +17,5 @@
 - (IBAction)closeCatalog:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *Views;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loadingPicIV;
-
+@property UIPopoverController *pop;
 @end

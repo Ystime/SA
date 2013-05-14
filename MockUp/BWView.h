@@ -13,10 +13,9 @@
 #import "XYPieChart.h"
 #import "CustomerOverViewController.h"
 #import "CorePlot-CocoaTouch.h"
-@interface BWView : UIScrollView <BarGraphDelegate,XYPieChartDataSource,XYPieChartDelegate,CPTPlotDataSource,UIActionSheetDelegate>
+@interface BWView : UIScrollView <BarGraphDelegate,CPTPlotDataSource,UIActionSheetDelegate,CPTPieChartDelegate,CPTPieChartDataSource>
 -(void)setupChartsForBusinessPartner:(BusinessPartner*)bupa;
 @property (strong, nonatomic) IBOutlet UILabel *TitleLabel;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *loadingCharts;
-@property (strong, nonatomic) IBOutlet UILabel *valueSelectedPie;
 @property CustomerOverViewController *covc;
+@property (strong, nonatomic) CPTGraphHostingView *PieChartView;
 @end

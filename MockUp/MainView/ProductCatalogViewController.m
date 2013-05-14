@@ -7,6 +7,7 @@
 //
 
 #import "ProductCatalogViewController.h"
+#import "MaterialInfoViewController.h"
 
 @interface ProductCatalogViewController ()
 
@@ -85,6 +86,20 @@ BOOL visible;
     return cell;
 }
 
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    Material *temp;
+    for(Material *mat in self.mvc.Materials)
+    {
+        if([mat.MaterialNumber isEqualToString:mpKeys[indexPath.row]])
+        {
+            temp = mat;
+            break;
+        }
+    }
+    if(temp)
+        [self performSegueWithIdentifier:@"infoProduct" sender:temp];
+}
 #pragma mark - Picker View delegate & datasource
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
@@ -125,6 +140,16 @@ BOOL visible;
     [self dismissViewControllerAnimated:YES completion:^{}];
 }
 
+#pragma mark - Segue
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:@"infoProduct"])
+    {
+        MaterialInfoViewController *mivc = segue.destinationViewController;
+        mivc.material = sender;
+        
+    }
+}
 #pragma mark - Listeners
 
 -(void)getMaterialGroups
