@@ -34,7 +34,7 @@
 - (void)drawRect:(CGRect)rect
 {
     
-    CGColorSpaceRef BgRGBColorspace = CGColorSpaceCreateDeviceRGB();
+//    CGColorSpaceRef BgRGBColorspace = CGColorSpaceCreateDeviceRGB();
     //
     //    CGFloat BGLocations3[2] = { 0.0, 1.0 };
     //    CGFloat BgComponents3[12] = {0.290,0.07,0.552 , 1.0,  // Start color

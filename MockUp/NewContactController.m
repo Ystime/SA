@@ -64,7 +64,7 @@ ZBarReaderViewController *reader;
             [self.GenderControl setEnabled:NO forSegmentAtIndex:0];
         }
         self.ContactImage.image = self.passphoto;
-        self.saveButton.hidden = self.scanButton.hidden = YES;
+        self.saveButton.hidden = self.scanButton.hidden =YES;
     }
     else
     {
@@ -86,7 +86,7 @@ ZBarReaderViewController *reader;
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    self.saveButton.hidden = NO;
+
     [self.savingIndicator stopAnimating];
 }
 
@@ -192,7 +192,6 @@ ZBarReaderViewController *reader;
 }
 -(void)takePictureOfCard
 {
-    NSLog(@"It Works!");
     [reader takePicture];
     pictureFlag = YES;
     scanFlag  = NO;
@@ -327,13 +326,10 @@ ZBarReaderViewController *reader;
         ContactPerson *success = [[RequestHandler uniqueInstance]createContactPerson:editContact forBusinessPartner:relBUPA];
         if(success && !(self.ContactImage.image == nil))
         {
-            BusinessPartner *temp = relBUPA;
             NSString *slug = [NSString stringWithFormat:@"Keyword='Passphoto',RelatedID='%@',Source='MediaForContactPerson',MediaType='Attachment'",success.ContactPersonID];
             if([[RequestHandler uniqueInstance]uploadPicture:self.ContactImage.image forSlug:slug])
             {
-                [self dismissViewControllerAnimated:YES completion:^{
-                    [[RequestHandler uniqueInstance]loadContacts:temp];
-                }];
+                [self performSelectorOnMainThread:@selector(saveCompleted) withObject:nil waitUntilDone:NO];
             }
             else
             {

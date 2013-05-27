@@ -54,7 +54,6 @@ typedef enum swipeDir {kLeft,kRight}swipeDir;
 
 -(void)viewDidUnload
 {
-    NSLog(@"VIEW IS REMOVED");
 }
 
 -(void)dealloc

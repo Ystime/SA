@@ -13,6 +13,7 @@
 
 +(NSMutableDictionary*)loadNotes;
 +(NSMutableDictionary*)loadPics;
++(NSMutableDictionary*)loadPassphotos;
 
 
 

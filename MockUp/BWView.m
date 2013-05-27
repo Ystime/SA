@@ -23,7 +23,10 @@ const NSString *kPieIcons = @"kPieIcons";
 const NSString *kChartValuesX = @"kChartValuesX";
 const NSString *kChartTitlesX = @"kChartTitlesX";
 const NSString *kChartValuesY = @"kChartValuesY";
-NSString *selectedDocCat;
+const float barWidth = 0.25f;
+const float barInitialX = 0.25f;
+
+
 NSMutableArray *selects;
 NSMutableArray *filters;
 float totalSumPieChart;
@@ -40,7 +43,7 @@ UIActivityIndicatorView *loadingCharts;
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-
+        
     }
     return self;
 }
@@ -50,7 +53,6 @@ UIActivityIndicatorView *loadingCharts;
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Initialization code
-        
     }
     return self;
 }
@@ -63,22 +65,21 @@ UIActivityIndicatorView *loadingCharts;
     loadingCharts.center = self.center;
     [loadingCharts startAnimating];
     [self insertSubview:loadingCharts atIndex:0];
-    self.backgroundColor = [UIColor clearColor];
     pieValues = [[NSMutableDictionary alloc]init];
     chartValues = [[NSMutableDictionary alloc]init];
-    selects = [[NSMutableArray alloc]initWithObjects:@"DocumentCategory",@"NetValue",@"DocumentCategoryId",@"NetValueStringFormat",nil];
-    filters = [[NSMutableArray alloc]initWithObjects:[NSString stringWithFormat:@"CustomerId eq '%@'",bupa.BusinessPartnerID], nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processErrorNotification:) name:kLoadQueryErrorNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(processResultsQuery:) name:kLoadQueryCompletedNotification object:nil];
     [self performSelectorInBackground:@selector(initiateFirstDiagrams) withObject:nil];
-
+//    [self initiateFirstDiagrams];
+    
 }
 
 -(void)initiateFirstDiagrams
 {
-    [[BWRequests uniqueInstance]loadQuery4ForBusinessPartner:bupa andDebit:bupa.BusinessPartnerID andKeyDate:[NSDate date]];
     EQSel = kCustomer;
-    [[BWRequests uniqueInstance]loadEQForBusinessPartner:bupa withFilters:filters andSelectFields:selects];
+    [self initPlot];
+    [[BWRequests uniqueInstance]loadQuery4ForBusinessPartner:bupa andDebit:bupa.BusinessPartnerID andKeyDate:[NSDate date]];
+    [self loadPieChartDataFor:EQSel withIndexOfSelectedPieSlice:0];
 }
 
 -(void)requestEQ
@@ -90,9 +91,11 @@ UIActivityIndicatorView *loadingCharts;
 
 -(void)processErrorNotification:(NSNotification*)notification
 {
-//    NSString *text = self.TitleLabel.text;
-//    if(![text hasSuffix:@"!)"])
-//        self.TitleLabel.text = [text stringByAppendingString:@" (One or more could not be loaded!)"];
+        if([[notification.userInfo objectForKey:@"Number of the Query"]isEqualToString:@"99"])
+        {
+            [self.PieChartView setHidden:YES];
+            [loadingCharts stopAnimating];
+        }
 }
 -(void)processResultsQuery:(NSNotification*)notification
 {
@@ -159,37 +162,7 @@ UIActivityIndicatorView *loadingCharts;
     [pieValues setObject:icons forKey:kPieIcons];
 }
 
--(CPTFill*)getColorForDocumentType:(NSString*)type
-{
-    CPTFill *result;
-    if([type isEqualToString:@"Quotation"])
-    {
-        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1.0 green:0.5492 blue:0 alpha:1]];
-    }
-    else if([type isEqualToString:@"Inquiry"])
-    {
-        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1 green:0.84 blue:0 alpha:1]];
-    }
-    else if([type isEqualToString:@"Invoice"])
-    {
-        result =[CPTFill fillWithColor:[CPTColor colorWithComponentRed:65 green:105 blue:225 alpha:1]];
-    }
-    else if([type isEqualToString:@"Order"])
-    {
-        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.13333 green:0.545098 blue:0.133333 alpha:1]];
-    }
-    else if([type isEqualToString:@"Returns"])
-    {
-        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1 green:0 blue:0 alpha:1]];
-    }
-    else
-    {
-        result =[CPTFill fillWithColor:[CPTColor colorWithComponentRed:255 green:255 blue:255 alpha:1]];
-    }
-    return result;
-    
-    
-}
+
 -(void)processQuery2:(NSMutableArray*)results
 {
     
@@ -221,6 +194,7 @@ UIActivityIndicatorView *loadingCharts;
     [chartValues setObject:XValues forKey:kChartValuesY];
     [chartValues setObject:XTitles forKey:kChartTitlesX];
     [self setupBarGraph];
+    //    [self.BarGraphView.hostedGraph reloadData];
 }
 
 -(void)processEQ:(NSMutableArray*)results
@@ -233,6 +207,7 @@ UIActivityIndicatorView *loadingCharts;
     NSMutableArray *colors = [NSMutableArray array];
     NSMutableArray *icons = [NSMutableArray array];
     NSMutableArray *descriptions = [NSMutableArray array];
+    [self.PieChartView.hostedGraph performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
     for(ZAPP_ORDER03Result *result in results)
     {
         switch (EQSel) {
@@ -242,6 +217,8 @@ UIActivityIndicatorView *loadingCharts;
                 [values addObject:result.NetValue];
                 [titles addObject:[NSString stringWithFormat:@"%@",result.DocumentCategory]];
                 [titlesID addObject:result.DocumentCategoryId];
+                if(self.PieChartView.gestureRecognizers.count >0)
+                    [self.PieChartView removeGestureRecognizer:self.PieChartView.gestureRecognizers[0]];
                 break;
             }
             case KDocumentType:
@@ -249,12 +226,17 @@ UIActivityIndicatorView *loadingCharts;
                 totalSumPieChart +=result.NetValue.floatValue;
                 [values addObject:result.NetValue];
                 [titles addObject:result.MaterialGroup];
-                self.PieChartView.hostedGraph.title =[NSString stringWithFormat:@"Value material groups for %@",selectedDocCat];
+                UIPinchGestureRecognizer *recog = [[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(pieChartPinched)];
+                [self.PieChartView addGestureRecognizer:recog];
                 break;
             }
             default:
                 break;
         }
+        if(result.DocumentCategory)
+            [colors addObject:[self getColorForDocumentType:result.DocumentCategory]];
+        else
+            [colors addObject:[self getColorForDocumentType:@""]];
     }
     [pieValues setObject:values forKey:kPieValues];
     [pieValues setObject:colors forKey:kPieColors];
@@ -262,13 +244,9 @@ UIActivityIndicatorView *loadingCharts;
     [pieValues setObject:titles forKey:kPieTitles];
     [pieValues setObject:descriptions forKey:kPieDescriptions];
     [pieValues setObject:icons forKey:kPieIcons];
-    if(EQSel == kCustomer)
-        [self initPlot];
-    else
-    {
-        self.PieChartView.hidden = NO;
-        [self.PieChartView.hostedGraph performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
-    }
+    self.PieChartView.hidden = NO;
+    [self.PieChartView.hostedGraph performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
+    
 }
 
 -(void)setupBarGraph
@@ -290,6 +268,7 @@ UIActivityIndicatorView *loadingCharts;
     barGraph.gradientStyle = VERTICAL_GRADIENT_STYLE;
     barGraph.glossStyle = GLOSS_STYLE_2;
     barGraph.layer.masksToBounds = NO;
+    self.BarGraphView.hidden = YES;
     [barGraph drawBarChart];
     [self addSubview:barGraph];
 }
@@ -349,31 +328,60 @@ UIActivityIndicatorView *loadingCharts;
 
 #pragma mark - CPTPlotDataSource methods
 -(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot {
-    
-    return [(NSArray*)[pieValues objectForKey:kPieValues]count];
+    if([plot isKindOfClass:[CPTPieChart class]])
+    {
+        return [(NSArray*)[pieValues objectForKey:kPieValues]count];
+    }
+    else if([plot isKindOfClass:[CPTBarPlot class]])
+    {
+        NSArray *results = [chartValues objectForKey:kChartValuesY];
+        if(results.count >= 1)
+        {
+            return results.count;
+        }
+        else
+            return 0;
+    }
+    else
+        return 0;
 }
+
 
 -(NSNumber *)numberForPlot:(CPTPlot *)plot field:(NSUInteger)fieldEnum recordIndex:(NSUInteger)index {
     if(CPTPieChartFieldSliceWidth == fieldEnum)
+    {
+        NSArray *temp = [pieValues objectForKey:kPieValues];
+        if(temp.count == 0)
+            return 0;
         return [(NSArray*)[pieValues objectForKey:kPieValues]objectAtIndex:index];
+    }
+    
+    else if(CPTBarPlotFieldBarTip == fieldEnum)
+        return [(NSArray*)[chartValues objectForKey:kChartValuesY]objectAtIndex:index];
+    
     return 0;
 }
 
 -(CPTLayer *)dataLabelForPlot:(CPTPlot *)plot recordIndex:(NSUInteger)index {
     
-    static CPTMutableTextStyle *labelText = nil;
-    if (!labelText) {
-        labelText= [[CPTMutableTextStyle alloc] init];
-        labelText.color = [CPTColor darkGrayColor];
+    if([plot isKindOfClass:[CPTPieChart class]])
+    {
+        static CPTMutableTextStyle *labelText = nil;
+        if (!labelText) {
+            labelText= [[CPTMutableTextStyle alloc] init];
+            labelText.color = [CPTColor darkGrayColor];
+        }
+        NSArray *temp = [pieValues objectForKey:kPieValues];
+        NSDecimalNumber *tempValue = [temp objectAtIndex:index];
+        float percent = tempValue.floatValue / totalSumPieChart;
+        NSString *label = [NSString stringWithFormat:@"€ %.2f (%.1f %%)",tempValue.floatValue,percent*100.0f];
+        return [[CPTTextLayer alloc]initWithText:label style:labelText];
+    }
+    else if([plot isKindOfClass:[CPTBarPlot  class]])
+    {
     }
     
-    NSDecimalNumber *tempValue = [(NSArray*)[pieValues objectForKey:kPieValues]objectAtIndex:index];
-    float percent = tempValue.floatValue / totalSumPieChart;
-    NSString *label = [NSString stringWithFormat:@"€ %.2f (%.1f %%)",tempValue.floatValue,percent*100.0f];
-    return [[CPTTextLayer alloc]initWithText:label style:labelText];
-//    
-//    
-//    return nil;
+    return nil;
 }
 
 -(NSString *)legendTitleForPieChart:(CPTPieChart *)pieChart recordIndex:(NSUInteger)index {
@@ -381,60 +389,111 @@ UIActivityIndicatorView *loadingCharts;
     return @"N/A";
 }
 
-//-(CPTFill*)sliceFillForPieChart:(CPTPieChart *)pieChart recordIndex:(NSUInteger)idx
-//{
-//    return [self getColorForDocumentType:[(NSArray*)[pieValues objectForKey:kPieTitles]objectAtIndex:idx]];
-//}
+-(CPTFill*)getColorForDocumentType:(NSString*)type
+{
+    CPTFill *result;
+    if([type isEqualToString:@"Quotation"])
+    {
+        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1.0 green:0.5492 blue:0 alpha:1]];
+    }
+    else if([type isEqualToString:@"Inquiry"])
+    {
+        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1 green:0.84 blue:0 alpha:1]];
+    }
+    else if([type isEqualToString:@"Invoice"])
+    {
+        result =[CPTFill fillWithColor:[CPTColor colorWithComponentRed:65 green:105 blue:225 alpha:1]];
+    }
+    else if([type isEqualToString:@"Order"])
+    {
+        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.13333 green:0.545098 blue:0.133333 alpha:1]];
+    }
+    else if([type isEqualToString:@"Returns"])
+    {
+        result = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:1 green:0 blue:0 alpha:1]];
+    }
+    else
+    {
+        result =[CPTFill fillWithColor:[CPTColor colorWithComponentRed:((float)(((arc4random()%100)+1)/100.0)) green:((float)(((arc4random()%100)+1)/100.0))  blue:((float)(((arc4random()%100)+1)/100.0))  alpha:1]];
+    }
+    return result;
+}
+
+-(CPTFill*)sliceFillForPieChart:(CPTPieChart *)pieChart recordIndex:(NSUInteger)idx
+{
+    return [self getColorForDocumentType:[(NSArray*)[pieValues objectForKey:kPieTitles]objectAtIndex:idx]];
+}
 
 #pragma mark - Configure PieChart
 -(void)initPlot {
-    [self configureHost];
-    [self configureGraph];
-    [self configureChart];
+    [self configureHosts];
+    [self configureGraphs];
+    [self configurePlots];
     [self configureLegend];
+    [self configureAxes];
 }
 
--(void)configureHost {
+-(void)configureHosts {
     CGRect frame = CGRectMake(315, 10, 400, 300);
     self.PieChartView = [(CPTGraphHostingView*)[CPTGraphHostingView alloc]initWithFrame:frame];
-//    self.PieChartView.allowPinchScaling = NO;
-
     [self addSubview:self.PieChartView];
+//    
+//    self.BarGraphView = [(CPTGraphHostingView*)[CPTGraphHostingView alloc]initWithFrame:CGRectMake(10, 10, 350, 300)];
+//    [self addSubview:self.BarGraphView];
 }
 
--(void)configureGraph {
+-(void)configureGraphs {
     // 1 - Create and initialize graph
-    CPTGraph *graph = [[CPTXYGraph alloc] initWithFrame:self.PieChartView.bounds];
-    self.PieChartView.hostedGraph = graph;
-    graph.paddingLeft = 0.0f;
-    graph.paddingTop = 0.0f;
-    graph.paddingRight = 0.0f;
-    graph.paddingBottom = 0.0f;
-    graph.axisSet = nil;
-
+    CPTGraph *pieChart = [[CPTXYGraph alloc] initWithFrame:self.PieChartView.bounds];
+    self.PieChartView.hostedGraph = pieChart;
+    pieChart.paddingLeft = 0.0f;
+    pieChart.paddingTop = 0.0f;
+    pieChart.paddingRight = 0.0f;
+    pieChart.paddingBottom = 0.0f;
+    pieChart.axisSet = nil;
+    
+    CPTGraph *barGraph = [[CPTXYGraph alloc] initWithFrame:self.BarGraphView.bounds];
+    barGraph.plotAreaFrame.masksToBorder = NO;
+    self.BarGraphView.hostedGraph = barGraph;
+    barGraph.paddingBottom = 30.0f;
+    barGraph.paddingLeft  = 30.0f;
+    barGraph.paddingTop    = -1.0f;
+    barGraph.paddingRight  = -5.0f;
+    
+    
     // 2 - Set up text style
     CPTMutableTextStyle *textStyle = [CPTMutableTextStyle textStyle];
     textStyle.color = [CPTColor grayColor];
     textStyle.fontName = @"Helvetica-Bold";
     textStyle.fontSize = 15.0f;
+    
+    
     // 3 - Configure title
-    NSString *title = @"Sales per Document type";
-    graph.title = title;
-    graph.titleTextStyle = textStyle;
-    graph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
-    graph.titleDisplacement = CGPointMake(0.0f, -12.0f);
-    // 4 - Set theme
-//    [graph applyTheme:[CPTTheme themeNamed:kCPTPlainWhiteTheme]];
+    pieChart.title = @"Sales per Document type";
+    pieChart.titleTextStyle = textStyle;
+    pieChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
+    pieChart.titleDisplacement = CGPointMake(0.0f, -12.0f);
+    
+    barGraph.title = @"Values  open sales documents (periods)";
+    barGraph.titleTextStyle = textStyle;
+    barGraph.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
+    barGraph.titleDisplacement = CGPointMake(0.0f,-12.0f);
+    
+    
+    CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *) barGraph.defaultPlotSpace;
+    plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.0f) length:CPTDecimalFromFloat(6.0f)];
+    plotSpace.yRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromFloat(0.0f) length:CPTDecimalFromFloat(800.0f)];
+    
 }
 
--(void)configureChart {
+-(void)configurePlots {
     // 1 - Get reference to graph
-    CPTGraph *graph = self.PieChartView.hostedGraph;
+    CPTGraph *pie = self.PieChartView.hostedGraph;
     CPTPieChart *pieChart = [[CPTPieChart alloc] init];
     pieChart.dataSource = self;
     pieChart.delegate = self;
     pieChart.pieRadius = 75.0;
-    pieChart.identifier = graph.title;
+    pieChart.identifier = pie.title;
     pieChart.startAngle = M_PI_4;
     pieChart.sliceDirection = CPTPieDirectionClockwise;
     pieChart.backgroundColor = [[UIColor clearColor]CGColor];
@@ -445,7 +504,22 @@ UIActivityIndicatorView *loadingCharts;
     overlayGradient = [overlayGradient addColorStop:[[CPTColor blackColor] colorWithAlphaComponent:0.4] atPosition:1.0];
     pieChart.overlayFill = [CPTFill fillWithGradient:overlayGradient];
     // 4 - Add chart to graph
-    [graph addPlot:pieChart];
+    [pie addPlot:pieChart];
+    
+    CPTBarPlot *barChart = [CPTBarPlot tubularBarPlotWithColor:[CPTColor greenColor] horizontalBars:NO];
+    barChart.identifier = self.BarGraphView.hostedGraph.title;
+    CPTMutableLineStyle *barlineStyle = [[CPTMutableLineStyle alloc]init];
+    barlineStyle.lineColor = [CPTColor lightGrayColor];
+    barlineStyle.lineWidth = 0.2;
+    
+    barChart.dataSource = self;
+    barChart.delegate = self;
+    barChart.barWidth = CPTDecimalFromFloat(barWidth);
+    barChart.barOffset = CPTDecimalFromFloat(barInitialX);
+    barChart.lineStyle = barlineStyle;
+    [self.BarGraphView.hostedGraph addPlot:barChart toPlotSpace:self.BarGraphView.hostedGraph.defaultPlotSpace];
+    
+    
 }
 
 -(void)configureLegend
@@ -461,34 +535,91 @@ UIActivityIndicatorView *loadingCharts;
     graph.legendDisplacement = CGPointMake(0.0, 0.0);
 }
 
+-(void)configureAxes
+{
+    CPTMutableTextStyle *axisTitleStyle = [CPTMutableTextStyle textStyle];
+    axisTitleStyle.color = [CPTColor darkGrayColor];
+    axisTitleStyle.fontName = @"Helvetica-Bold";
+    axisTitleStyle.fontSize = 12.0f;
+    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
+    axisLineStyle.lineWidth = 2.0f;
+    axisLineStyle.lineColor = [[CPTColor darkGrayColor] colorWithAlphaComponent:1];
+    
+    CPTXYAxisSet *axisSet = (CPTXYAxisSet *) self.BarGraphView.hostedGraph.axisSet;
+    axisSet.xAxis.labelingPolicy = CPTAxisLabelingPolicyNone;
+    //    axisSet.xAxis.title = @"Value of open orders by period";
+    //    axisSet.xAxis.titleTextStyle = axisTitleStyle;
+    //    axisSet.xAxis.titleOffset = 10.0f;
+    //    axisSet.xAxis.axisLineStyle = axisLineStyle;
+    
+    axisSet.yAxis.labelingPolicy = CPTAxisLabelingPolicyNone;
+    //    axisSet.yAxis.title = @"Value";
+    //    axisSet.yAxis.titleTextStyle = axisTitleStyle;
+    //    axisSet.yAxis.titleOffset = 5.0f;
+    //    axisSet.yAxis.axisLineStyle = axisLineStyle;
+}
+
 
 #pragma mark - CPTPieChart Delegate methods
 -(void)pieChart:(CPTPieChart *)plot sliceWasSelectedAtRecordIndex:(NSUInteger)idx
 {
-    if(idx !=tappedSlice)
+    if(![SettingsUtilities getDemoStatus])
     {
-        tappedSlice = idx;
-        selectedDocCat = [(NSArray*)[pieValues objectForKey:kPieTitles]objectAtIndex:idx ];
+        if(idx !=tappedSlice)
+        {
+            tappedSlice = idx;
+        }
+        else{
+            switch (EQSel){
+                case kCustomer:
+                    EQSel = KDocumentType;
+                    [self loadPieChartDataFor:EQSel withIndexOfSelectedPieSlice:tappedSlice];
+                    break;
+                case KDocumentType:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
-    else
+}
+
+-(void)loadPieChartDataFor:(EQSelect)type withIndexOfSelectedPieSlice:(int)index
+{
+    switch (type) {
+        case kCustomer:
+            self.PieChartView.hostedGraph.title = @"Value per Document Category";
+            selects = [[NSMutableArray alloc]initWithObjects:@"DocumentCategory",@"NetValue",@"DocumentCategoryId",@"NetValueStringFormat",nil];
+            filters = [[NSMutableArray alloc]initWithObjects:[NSString stringWithFormat:@"CustomerId eq '%@'",bupa.BusinessPartnerID], nil];
+            break;
+        case KDocumentType:
+            self.PieChartView.hostedGraph.title = [NSString stringWithFormat:@"Value material groups for %@",[(NSArray*)[pieValues objectForKey:kPieTitles]objectAtIndex:index]];;
+            
+            [filters addObject:[NSString stringWithFormat:@"DocumentCategoryId eq '%@'",[(NSArray*)[pieValues objectForKey:kPieTitlesID]objectAtIndex:index]]];
+            selects = [NSMutableArray arrayWithObjects:@"MaterialGroup",@"NetValue",nil];
+            break;
+        default:
+            break;
+    }
+    [self.PieChartView setHidden:YES];
+    loadingCharts.center = self.PieChartView.center;
+    [loadingCharts startAnimating];
+    [self performSelectorInBackground:@selector(requestEQ) withObject:nil];
+    
+}
+
+-(void)pieChartPinched
+{
+    if(![SettingsUtilities getDemoStatus])
     {
         switch (EQSel) {
-            case kCustomer:
-                EQSel = KDocumentType;
-                [filters addObject:[NSString stringWithFormat:@"DocumentCategoryId eq '%@'",[(NSArray*)[pieValues objectForKey:kPieTitlesID]objectAtIndex:idx]]];
-                selects = [NSMutableArray arrayWithObjects:@"MaterialGroup",@"NetValue",nil];
-                [self.PieChartView setHidden:YES];
-                loadingCharts.center = self.PieChartView.center;
-                [loadingCharts startAnimating];
-                [self performSelectorInBackground:@selector(requestEQ) withObject:nil];
-                break;
             case KDocumentType:
+                EQSel = kCustomer;
+                [self loadPieChartDataFor:EQSel withIndexOfSelectedPieSlice:0];
                 break;
             default:
                 break;
         }
     }
 }
-
-
 @end

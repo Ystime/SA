@@ -34,7 +34,10 @@ BOOL visible;
     [super viewDidLoad];
     for(UIView *view in self.Views)
         [UIView changeLayoutToDefaultProjectSettings:view];
-    
+    self.view.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    self.view.layer.borderWidth = 1.0;
+//    UIViewController *vc = self.tabBarController.viewControllers[1];
+//    vc.view;
 	// Do any additional setup after loading the view.
 }
 
@@ -169,7 +172,7 @@ BOOL visible;
         return;
     materialPics = self.mvc.MaterialPictures;
     allKeys = mpKeys = [materialPics.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    [self.MaterialCollectionView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    [self.MaterialCollectionView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
     [self.GroupPicker selectRow:0 inComponent:0 animated:NO];
 }
 @end

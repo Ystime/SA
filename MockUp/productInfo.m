@@ -20,7 +20,8 @@
     {
         ProductCatalogViewController *pvcv = self.sourceViewController;
         pvcv.pop = pop;
-        pop.popoverContentSize = CGSizeMake(350, 400);
+        mivc.parent = pvcv;
+        pop.popoverContentSize = CGSizeMake(350, 600);
         MaterialCollectionCell *pc = (MaterialCollectionCell*)[pvcv.MaterialCollectionView cellForItemAtIndexPath:pvcv.MaterialCollectionView.indexPathsForSelectedItems[0]];
         [pop presentPopoverFromRect:pc.frame inView:pvcv.MaterialCollectionView permittedArrowDirections:(UIPopoverArrowDirectionRight|UIPopoverArrowDirectionLeft) animated:YES];
         mivc.MaterialImage.image = pc.MaterialImage.image;

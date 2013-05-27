@@ -210,7 +210,21 @@ NSString * const kLoadQueryErrorNotification = @"Error loading Query";
 {
     if([SettingsUtilities getDemoStatus])
     {
-        [[DemoData getInstance]postNotificationfor:@"EQQuery"];
+        sleep(2);
+        NSMutableDictionary *userInfoDict;
+        userInfoDict = [NSMutableDictionary dictionaryWithObject:[DemoBW loadBWQueryEQForCustomer:bupa.BusinessPartnerID] forKey:kResponseItems];
+        if([(NSArray*)[ userInfoDict objectForKey:kResponseItems]count] >0)
+        {
+            [userInfoDict setObject:[NSString stringWithFormat:@"99"] forKey:kQueryNumber];
+            [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
+        }
+        else
+        {
+            [userInfoDict setObject:@"No records found!" forKey:kResponseError];
+            [userInfoDict setObject:@"99" forKey:kQueryNumber];
+            [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryErrorNotification object:self userInfo:userInfoDict];
+
+        }
     }
     else
     {

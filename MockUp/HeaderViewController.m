@@ -33,6 +33,7 @@
     [UIView changeLayoutToDefaultProjectSettings:self.view];
     
     
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -43,34 +44,13 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    if(!self.cartMode)
+        [self.CustomerCell setAccessoryType:UITableViewCellAccessoryNone];
     self.POField.text = sd.CustomerPurchaseOrderNumber;
     self.ShipToLabel.text = ndvc.ShipToLabel.text;
     if(!(sd.RequestedDeliveryDate == nil))
         [self.DlvDatePicker setDate:sd.RequestedDeliveryDate];
-    for(UILabel *label in self.Labels)
-    {
-        switch (label.tag) {
-            case 1:
-                label.text = ndvc.cvc.selectedBusinessPartner.BusinessPartnerName;
-                break;
-            case 2:
-                label.text = [SettingsUtilities getUsernameFromUserSettings];
-                break;
-            case 3:
-                label.text = sd.SalesOrganization;
-                break;
-            case 4:
-                label.text = sd.Division;
-                break;
-            case 5:
-                label.text = sd.DistributionChannel;
-                break;
-            case 6:
-                break;
-            default:
-                break;
-        }
-    }
+    [self refreshLabels];
 }
 
 - (void)didReceiveMemoryWarning
@@ -107,21 +87,67 @@
     ndvc = (DocumentViewController*)nv;
 }
 
+-(void)refreshLabels
+{
+    if(sd.CustomerID)
+        self.DoneButton.enabled = YES;
+    for(UILabel *label in self.Labels)
+    {
+        switch (label.tag) {
+            case 1:
+                if(!self.cartMode)
+                    label.text = ndvc.cvc.selectedBusinessPartner.BusinessPartnerName;
+                else
+                {
+                    for(BusinessPartner *bp in ndvc.customers)
+                        if([bp.BusinessPartnerID isEqualToString:self.sd.CustomerID])
+                        {
+                            label.text = bp.BusinessPartnerName;
+                            break;
+                        }
+                }
+                break;
+            case 2:
+                label.text = [SettingsUtilities getUsernameFromUserSettings];
+                break;
+            case 3:
+                label.text = sd.SalesOrganization;
+                break;
+            case 4:
+                label.text = sd.Division;
+                break;
+            case 5:
+                label.text = sd.DistributionChannel;
+                break;
+            case 6:
+                break;
+            default:
+                break;
+        }
+    }
+    
+}
+
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    SoldToController *stc = (SoldToController*)segue.destinationViewController;
+    stc.hvc = self;
+    UIStoryboardPopoverSegue *pop = (UIStoryboardPopoverSegue*)segue;
+    _upc = pop.popoverController;
     if([segue.identifier isEqualToString:@"shipToChoice"])
     {
-        SoldToController *stc = (SoldToController*)segue.destinationViewController;
-        stc.hvc = self;
-        UIStoryboardPopoverSegue *pop = (UIStoryboardPopoverSegue*)segue;
-        _upc = pop.popoverController;
+        
+    }
+    if([segue.identifier isEqualToString:@"customerChoice"])
+    {
+        stc.customers = self.ndvc.customers;
     }
 }
 #pragma mark - UITextField Delegate
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-        [textField resignFirstResponder];
+    [textField resignFirstResponder];
     return YES;
 }
 

@@ -35,7 +35,7 @@ UIPopoverController *upc;
 -(void)viewWillAppear:(BOOL)animated
 {
     self.NameLabel.text = bupa.BusinessPartnerName;
-    self.AddressLabel.text = bupa.Address.Street;
+    self.AddressLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.Street,bupa.Address.HouseNumber];
     self.ZipLabel.text = [NSString stringWithFormat:@"%@ %@",bupa.Address.PostalCode,bupa.Address.City];
     self.URLView.text = bupa.Website.LongURL;
     self.TelephoneLabel.text = bupa.PhoneNumber.PhoneNumber;

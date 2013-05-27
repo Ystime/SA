@@ -20,6 +20,7 @@
 #import "CustomerViewController.h"
 #import "DemoBUPA.h"
 #import "ProductCatalogViewController.h"
+#import "Suspect.h"
 @class ExtrasView;
 
 @interface MainViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,MKMapViewDelegate,UITextFieldDelegate,AFOpenFlowViewDelegate>
@@ -30,12 +31,13 @@
 @property (strong, nonatomic) IBOutlet UIView *FlowView;
 @property (strong, nonatomic) IBOutlet UIView *ActionView;
 @property (strong, nonatomic) IBOutlet UIView *NewProductsView;
+@property (strong, nonatomic) IBOutlet UIView *FilterIconView;
 @property (strong, nonatomic) IBOutlet UIButton *MapTypeButton;
 @property (strong, nonatomic) IBOutlet UIButton *MyPositionButton;
+@property (strong, nonatomic) IBOutlet UIButton *ProductsButton;
 @property (strong, nonatomic) IBOutlet StyledPullableView *ExtrasView;
 @property (strong, nonatomic) IBOutlet ExtrasView *ExtrasSubView;
 @property (strong, nonatomic) IBOutlet UIImageView *filterImage;
-@property (strong, nonatomic) IBOutlet UIView *FilterIconView;
 @property (strong, nonatomic) IBOutlet UILabel *FlowLabel;
 @property (strong, nonatomic) IBOutlet UILabel *handleLabel;
 @property (strong, nonatomic) IBOutlet UILabel *filterHandle;

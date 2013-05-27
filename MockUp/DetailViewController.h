@@ -12,6 +12,7 @@
 #import "SuspectAnnotation.h"
 #import "GooglePlacesDetail.h"
 #import "LGViewHUD.h"
+#import "Suspect.h"
 @class MainViewController;
 @interface DetailViewController : UIViewController <UIAlertViewDelegate,UITextFieldDelegate>
 
@@ -34,6 +35,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *CompetitorButton;
 @property (strong, nonatomic) IBOutlet UILabel *SaveAsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *TitleLabel;
+@property Suspect *suspect;
 
 /*Objects*/
 @property (strong, nonatomic) SuspectAnnotation *prospect;

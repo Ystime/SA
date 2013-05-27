@@ -14,4 +14,5 @@
 -(void)addBupa:(BusinessPartner*)bupa;
 -(void)addContact:(ContactPerson*)cont toBUPA:(NSString*)bupaID;
 -(void)createBUPAS;
+-(NSMutableArray*)createNodes;
 @end

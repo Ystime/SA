@@ -9,7 +9,7 @@
 #import "GooglePlacesSearchParser.h"
 
 @implementation GooglePlacesSearchParser
-@synthesize prospects;
+@synthesize suspects;
 NSXMLParser *parser;
 SuspectAnnotation* prospect;
 NSMutableString* currentElementValue;
@@ -25,14 +25,14 @@ NSString *vicinityString;
     [parser setDelegate:self];
     if([parser parse] == NO)
         NSLog(@"ERROR");
-    return prospects;
+    return suspects;
 }
 
 -(void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
 {
     if([elementName isEqualToString:@"PlaceSearchResponse"])
     {
-        prospects = [[NSMutableArray alloc]init];
+        suspects = [[NSMutableArray alloc]init];
     }
 
 }
@@ -53,7 +53,7 @@ NSString *vicinityString;
     {
         CLLocationCoordinate2D test = CLLocationCoordinate2DMake(lattitudeString.doubleValue, longitudeString.doubleValue);
         prospect = [[SuspectAnnotation alloc]initWithName:nameString coordinate:test reference:referenceString vicinity:vicinityString];
-        [prospects addObject:prospect];
+        [suspects addObject:prospect];
         lattitudeString = longitudeString = nameString = referenceString = nil;
         prospect = nil;
     }

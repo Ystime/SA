@@ -7,7 +7,8 @@
 //
 
 #import "MaterialInfoViewController.h"
-
+#import "ProductCatalogViewController.h"
+#import "DocumentViewController.h"
 @interface MaterialInfoViewController ()
 
 @end
@@ -22,7 +23,7 @@ AFOpenFlowView *matFlow;
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-
+        
     }
     return self;
 }
@@ -75,7 +76,7 @@ AFOpenFlowView *matFlow;
                     label.text = [NSString stringWithFormat:@"%.0f",editItem.Quantity.floatValue];
                     break;
                 case 6:
-//                    label.text = editItem.EANCode;
+                    //                    label.text = editItem.EANCode;
                     break;
                 default:
                     break;
@@ -138,7 +139,7 @@ AFOpenFlowView *matFlow;
     
     [self.QuantitySlider setValue:value animated:NO];
     self.QuantityLabel.text = [NSString stringWithFormat:@"%i",value];
-
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -196,9 +197,23 @@ AFOpenFlowView *matFlow;
     }
     else
     {
-        ProductViewController *pvc = (ProductViewController*)parent;
-        [pvc.pop dismissPopoverAnimated:YES];
-        [pvc addItemWithQuantity:self.QuantitySlider.value andMaterial:self.material andAction:itemAction andPrice:self.material.Price.Price];
+        if([self.parent isKindOfClass:[ProductViewController class]])
+        {
+            ProductViewController *pvc = (ProductViewController*)parent;
+            [pvc.pop dismissPopoverAnimated:YES];
+            [pvc addItemWithQuantity:self.QuantitySlider.value andMaterial:self.material andAction:itemAction andPrice:self.material.Price.Price];
+        }
+        else
+            
+        {
+            DocumentViewController *dvc = self.parent.tabBarController.viewControllers[1];
+
+            [dvc addItemWithQuantity:self.QuantitySlider.value andMaterial:self.material andAction:itemAction andPrice:self.material.Price.Price];
+            ProductCatalogViewController* pc = (ProductCatalogViewController*)self.parent;
+            [pc.pop dismissPopoverAnimated:YES];
+        
+            
+        }
     }
 }
 

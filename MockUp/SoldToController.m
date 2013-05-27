@@ -14,7 +14,7 @@
 @end
 
 @implementation SoldToController
-
+@synthesize customers,shipTos;
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
@@ -50,20 +50,33 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    if(customers)
+        return customers.count;
+    if(shipTos)
+        return shipTos.count;
+    else
+        return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-    if(indexPath.row == 0)
+    if(customers)
     {
-        cell.textLabel.text = self.hvc.ndvc.cvc.selectedBusinessPartner.BusinessPartnerName;
+        BusinessPartner *bp = customers[indexPath.row];
+        cell.textLabel.text = bp.BusinessPartnerName;
+        cell.detailTextLabel.text = bp.Address.City;
+    }
+    else if(shipTos)
+    {
+        cell.textLabel.text = @"Store X";
+        cell.detailTextLabel.text = @"Location Y";
     }
     else
-        cell.textLabel.text = [NSString stringWithFormat:@"Store %i",(arc4random()%1000)+1];
+    {
+        cell.textLabel.text =@"Cleary you forgot something";
+    }
     return cell;
 }
 
@@ -111,7 +124,14 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    self.hvc.ShipToLabel.text = cell.textLabel.text;
+    if(customers)
+    {
+        BusinessPartner *bp = customers[indexPath.row];
+        self.hvc.sd.CustomerID = bp.BusinessPartnerID;
+        [self.hvc refreshLabels];
+    }
+    else
+        self.hvc.ShipToLabel.text = cell.textLabel.text;
     [_hvc.upc dismissPopoverAnimated:YES];
 }
 

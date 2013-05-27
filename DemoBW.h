@@ -11,7 +11,8 @@
 
 @interface DemoBW : NSObject
 +(NSMutableArray*)loadBWQuery1;
-+(NSMutableArray*)loadBWQuery4;
 +(NSMutableArray*)loadBWQueryEQ;
++(NSMutableArray*)loadSecondEQ;
++(NSMutableArray*)loadBWQueryEQForCustomer:(NSString*)customer;
 
 @end

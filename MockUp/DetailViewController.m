@@ -85,9 +85,17 @@ LGViewHUD *createHUD;
         self.PhoneField.text = prospect.telephone;
         self.URLField.text = prospect.website;
     }
-    else
+    else if(self.suspect)
     {
-        
+        MKMapItem *item = self.suspect.mapItem;
+        self.TitleLabel.text = @"Create new account";
+        self.CompanyField.text  = item.name;
+        self.StreetField.text = [item.placemark.addressDictionary objectForKey:(NSString*)kABPersonAddressStreetKey];
+//        self.HouseNumberField.text = prospect.house_no;
+        self.ZipField.text = [item.placemark.addressDictionary objectForKey:(NSString*)kABPersonAddressZIPKey];
+        self.CityField.text =[item.placemark.addressDictionary objectForKey:(NSString*)kABPersonAddressCityKey];
+        self.PhoneField.text = [item.placemark.addressDictionary objectForKey:(NSString*)kABPersonPhoneMainLabel];
+        self.URLField.text = [item.placemark.addressDictionary objectForKey:(NSString*)kABPersonHomePageLabel];
     }
 }
 

@@ -14,11 +14,12 @@
 @end
 
 @implementation DocumentViewController
-@synthesize tempSalesDocument,pop,cvc;
+@synthesize tempSalesDocument,pop,cvc,customers;
 AddPopover *addPopover;
 UIPopoverController *upc;
 ItemViewController *ivc;
 BOOL rowSelected;
+BOOL cartMode;
 LGViewHUD *creatingDocs;
 
 
@@ -35,12 +36,33 @@ LGViewHUD *creatingDocs;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    if(self.tabBarController)
+    {
+        self.view.layer.borderWidth = 1.0;
+        self.view.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+        tempSalesDocument = [[SalesDocument alloc]init];
+        tempSalesDocument.Items = [[NSMutableArray alloc]init];
+        tempSalesDocument.SalesOrganization = @"1000";
+        tempSalesDocument.Division = @"10";
+        tempSalesDocument.DistributionChannel = @"10";
+        tempSalesDocument.OrderID = @" ";
+        tempSalesDocument.Currency = @"EUR";
+        tempSalesDocument.DocumentDate = [NSDate date];
+        tempSalesDocument.NetValue = [NSDecimalNumber decimalNumberWithString:@"0"];
+        cartMode = YES;
+    }
+    else
+        cartMode = NO;
 	// Do any additional setup after loading the view.
     for(UIView *view in _ViewCollection)
     {
         [UIView changeLayoutToDefaultProjectSettings:view];
     }
-    cvc = (CustomerViewController*)self.navigationController.parentViewController;
+    self.CartHeaderView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    self.CartHeaderView.layer.borderWidth = 1.0;
+    
+    if(!cartMode)
+        cvc = (CustomerViewController*)self.navigationController.parentViewController;
     rowSelected = NO;
     creatingDocs = [[LGViewHUD alloc]initWithFrame:CGRectMake(0, 0, 150, 150)];
     creatingDocs.activityIndicatorOn = YES;
@@ -66,12 +88,13 @@ LGViewHUD *creatingDocs;
     self.ShipToLabel.text = cvc.selectedBusinessPartner.BusinessPartnerName;
     [self setHeaderLabelView];
     [self.ItemsTable reloadData];
-    if(tempSalesDocument.RequestedDeliveryDate==nil)
+    if(!tempSalesDocument.RequestedDeliveryDate ||!tempSalesDocument.CustomerID)
     {
         [self performSegueWithIdentifier:@"showHeaderView" sender:self];
     }
     if(self.changeMode)
     {
+        
         [self.AddButton setHidden:YES];
         self.SaveButton.hidden = YES;
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loadingItemsCompleted:) name:kLoadSalesDocumentItemsCompletedNotification object:nil];
@@ -80,8 +103,10 @@ LGViewHUD *creatingDocs;
     else
     {
         [self.AddButton setHidden:NO];
-        self.SaveButton.hidden = NO;
+        [self checkRequirements];
     }
+    self.ValueLabel.text = [NSString stringWithFormat:@"%@ %.2f",tempSalesDocument.Currency,tempSalesDocument.NetValue.floatValue];
+    [self setHeaderLabelView];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -116,13 +141,17 @@ LGViewHUD *creatingDocs;
         if(cell)
             [cell changeItem:[tempSalesDocument.Items objectAtIndex:indexPath.row]];
         else
+        {
             cell = [[SalesItemCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ItemCell" andSalesItem:[tempSalesDocument.Items  objectAtIndex:indexPath.row]];
+            cell.contentView.layer.borderColor = [[UIColor whiteColor]CGColor];
+            cell.contentView.layer.borderWidth = 1.0;
+        }
         return cell;
     }
     else
         return nil;
 }
-#pragma mark - Add Item 
+#pragma mark - Add Item
 - (void)addItemWithQuantity:(int)quant andMaterial:(Material*)material andAction:(NSString*)docAction andPrice:(NSDecimalNumber*)price
 {
     SalesDocItem *item = [[SalesDocItem alloc]init];
@@ -136,8 +165,11 @@ LGViewHUD *creatingDocs;
     float totalValue = item.Quantity.floatValue * item.NetPrice.floatValue;
     item.NetValue = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",totalValue]];
     [tempSalesDocument.Items addObject:item];
-    
+    tempSalesDocument.NetValue = [tempSalesDocument.NetValue decimalNumberByAdding:item.NetValue];
+    self.ValueLabel.text = [NSString stringWithFormat:@"%@ %.2f",tempSalesDocument.Currency,tempSalesDocument.NetValue.floatValue];
+    [self checkRequirements];
 }
+
 #pragma mark - TableView Delegate
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -200,6 +232,7 @@ LGViewHUD *creatingDocs;
     {
         HeaderViewController *hvc = (HeaderViewController*)segue.destinationViewController;
         hvc.sd = tempSalesDocument;
+        hvc.cartMode = cartMode;
         [hvc setNDVC:self];
     }
     else if([segue.identifier isEqualToString:@"editItem"])
@@ -217,6 +250,13 @@ LGViewHUD *creatingDocs;
         rdvc.dvc = self;
         rdvc.documents = cvc.SalesDocuments;
     }
+}
+
+- (IBAction)cancelCart:(id)sender {
+    tempSalesDocument = nil;
+
+    
+    [self.tabBarController setSelectedIndex:0];
 }
 
 - (IBAction)saveDocs:(id)sender {
@@ -271,13 +311,18 @@ LGViewHUD *creatingDocs;
         }
     }
     [creatingDocs hideWithAnimation:YES];
-    if(allSuccess)
+    if(allSuccess  && !cartMode)
     {
         [[RequestHandler uniqueInstance]loadSalesDocuments:cvc.selectedBusinessPartner.SalesDocumentsQuery];
         UIButton *temp = [[UIButton alloc]init];
         temp.tag = 2;
         cvc.creatingDoc = NO;
         [cvc performSelectorOnMainThread:@selector(clickedTab:) withObject:temp waitUntilDone:NO];
+    }
+    else if(allSuccess)
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Documents created!" message:@"Documents are send and stored!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:YES];
     }
     
 }
@@ -288,14 +333,21 @@ LGViewHUD *creatingDocs;
             [self performSegueWithIdentifier:@"editItem" sender:self.tempSalesDocument.Items[self.ItemsTable.indexPathForSelectedRow.row]];
             break;
         case 3:
-            [tempSalesDocument.Items removeObjectAtIndex:self.ItemsTable.indexPathForSelectedRow.row];
+        {
+            SalesDocItem *item = tempSalesDocument.Items[self.ItemsTable.indexPathForSelectedRow.row];
+            tempSalesDocument.NetValue = [tempSalesDocument.NetValue decimalNumberBySubtracting:item.NetValue];
+            
+            [tempSalesDocument.Items removeObject:item];
             [self.ItemsTable reloadData];
+            self.ValueLabel.text = [NSString stringWithFormat:@"%@ %.2f",tempSalesDocument.Currency,tempSalesDocument.NetValue.floatValue];
             for(UIButton *button in self.ItemActionButtons)
             {
                 [button setHidden:YES];
             }
+            if(tempSalesDocument.Items.count < 1)
+                self.SaveButton.hidden = YES;
             break;
-            
+        }
         default:
             break;
     }
@@ -324,11 +376,29 @@ LGViewHUD *creatingDocs;
                 if(tempSalesDocument.DocumentDate)
                     label.text = [GlobalFunctions getStringFormat:@"dd-MM-yyyy" FromDate:temp];
             }
+            case 99:
+                if(tempSalesDocument.CustomerID)
+                {
+                    BOOL found = NO;
+                    for(BusinessPartner *bp in customers)
+                    {
+                        if([bp.BusinessPartnerID isEqualToString:tempSalesDocument.CustomerID])
+                        {
+                            label.text = bp.BusinessPartnerName;
+                            found = YES;
+                        }
+                    }
+                    if(!found)
+                        label.text = tempSalesDocument.CustomerID;
+                }
+                else
+                    label.text = @"";
                 break;
             default:
                 break;
         }
     }
+[self checkRequirements];
 }
 
 -(void)loadingItemsCompleted:(NSNotification*)notification
@@ -384,11 +454,16 @@ LGViewHUD *creatingDocs;
     }
 }
 
+-(void)checkRequirements
+{
+    if(tempSalesDocument.Items.count >0 && tempSalesDocument.CustomerID && tempSalesDocument.RequestedDeliveryDate && !self.changeMode)
+        self.SaveButton.hidden = NO;
+}
+
 #pragma mark - Query for specific Material
 
 -(Material*)getBarcode:(NSString*)barcode
 {
-    NSLog(@"Scanned Barcode:%@",barcode);
     Material *result = nil;
     for(Material* temp in cvc.materials)
     {
@@ -396,6 +471,12 @@ LGViewHUD *creatingDocs;
             result = temp;
     }
     return result;
+}
+
+#pragma mark - AlertView Delegate
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

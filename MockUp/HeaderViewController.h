@@ -16,7 +16,12 @@
 @property (strong, nonatomic) IBOutlet UITextField *POField;
 @property (strong, nonatomic) IBOutlet UIDatePicker *DlvDatePicker;
 @property (strong, nonatomic) IBOutlet UILabel *ShipToLabel;
+@property (strong, nonatomic) IBOutlet UILabel *CustomerLabel;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *DoneButton;
 @property DocumentViewController *ndvc;
 @property UIPopoverController *upc;
+@property BOOL cartMode;
+@property (strong, nonatomic) IBOutlet UITableViewCell *CustomerCell;
 -(void)setNDVC:(UIViewController*)nv;
+-(void)refreshLabels;
 @end

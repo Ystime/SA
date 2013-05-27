@@ -49,6 +49,11 @@
 
 -(void)checkAvailability
 {
+    if([SettingsUtilities getDemoStatus])
+    {
+        self.ECCStatus.image =  self.GWStatus.image = [UIImage imageNamed:@"Status_Green.png"];
+        return;
+    }
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://knowledge.nl4b.com"]
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                                        timeoutInterval:10];

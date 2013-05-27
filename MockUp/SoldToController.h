@@ -11,4 +11,6 @@
 
 @interface SoldToController : UITableViewController
 @property HeaderViewController *hvc;
+@property NSArray *customers;
+@property NSArray *shipTos;
 @end

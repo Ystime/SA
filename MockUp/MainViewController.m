@@ -8,13 +8,14 @@
 
 #import "MainViewController.h"
 #import "ExtrasView.h"
+#import "DocumentViewController.h"
 @interface MainViewController ()
 
 @end
 
 @implementation MainViewController
 @synthesize BusinessPartners,VisibleBusinessPartners,Materials,MaterialGroups;
-NSMutableArray *prospects;
+NSMutableArray *suspects;
 NSMutableArray *bupasForLogo;
 BOOL firstTime;
 AFOpenFlowView *logoFlow;
@@ -24,7 +25,7 @@ NSMutableDictionary *hierLogos;
 NSMutableArray *parentKeys;
 NSMutableArray *visibleTypes;
 NSMutableDictionary *parents;
-
+NSString *filePath;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +37,13 @@ NSMutableDictionary *parents;
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documents = [paths objectAtIndex:0];
+    if([SettingsUtilities getDemoStatus])
+        filePath= [documents stringByAppendingPathComponent:@"DemoMaterialImages"];
+    else
+        filePath= [documents stringByAppendingPathComponent:@"MaterialImages"];
+    self.MaterialPictures = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
     
     for(UIView *view in self.ViewCollection)
     {
@@ -76,9 +84,11 @@ NSMutableDictionary *parents;
     hudBUPAS.bottomText = @"Please Wait!";
     
     [hudBUPAS showInView:self.CustomerTable];
-    [[RequestHandler uniqueInstance]loadBusinessPartners];
+    [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadBusinessPartners) withObject:nil];
     
     [self.FlowView addSubview:logoFlow];
+    if(![SettingsUtilities getDemoStatus])
+    {
     [self.CustomerTable addPullToRefreshWithActionHandler:^{
         [hudBUPAS showInView:_CustomerTable];
         [self.CustomerTable reloadData];
@@ -91,10 +101,16 @@ NSMutableDictionary *parents;
         
         
     }];
+    }
     [self setupPullView];
     [self setupFilterView];
 
     
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [NSKeyedArchiver archiveRootObject:self.MaterialPictures toFile:filePath];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -113,10 +129,6 @@ NSMutableDictionary *parents;
 
 }
 
--(void)viewWillDisappear:(BOOL)animated
-{
-    
-}
 - (void)viewDidUnload {
     [self setMapView:nil];
     [self setCustomerTable:nil];
@@ -233,37 +245,43 @@ NSMutableDictionary *parents;
 }
 -(void)processingResultGetBusinessPartners:(NSNotification*)notification
 {
-    [hudBUPAS hideWithAnimation:HUDAnimationHideFadeOut];
-    NSDictionary *userInfoDict = [notification userInfo];
-    NSError *error = [userInfoDict objectForKey:@"error"];
-    if(error)
-    {
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        [alert show];
-    }
-    else
-    {
-        NSMutableArray *unsortedBusinessParters = [userInfoDict objectForKey:kResponseItems];
-        BusinessPartners = (NSMutableArray*)[unsortedBusinessParters sortedArrayUsingComparator:^NSComparisonResult(id a, id b)
-                                             {
-                                                 
-                                                 NSString *first = [(BusinessPartner*)a BusinessPartnerName];
-                                                 NSString *second = [(BusinessPartner*)b BusinessPartnerName];
-                                                 NSString *firstUpper = [first uppercaseString];
-                                                 NSString *secondUpper = [second uppercaseString];
-                                                 return [firstUpper compare:secondUpper];
-                                             }];
-        [logoFlow centerOnSelectedCover:YES];
-        [logoFlow setSelectedCover:0];
-        //        [logoFlow centerOnSelectedCover:YES];
-        self.FlowLabel.text = @"All companies";
-        self.CustomerSearchField.text = self.ProspectSearchField.text = @"";
-        bupasForLogo = BusinessPartners;
-        VisibleBusinessPartners = [self filterBupaArray:bupasForLogo];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
         
-        [self.CustomerTable reloadData];
-        [self annotateVisibleCustomers];
-    }
+        //Your code goes in here
+        [hudBUPAS hideWithAnimation:HUDAnimationHideFadeOut];
+        NSDictionary *userInfoDict = [notification userInfo];
+        NSError *error = [userInfoDict objectForKey:@"error"];
+        if(error)
+        {
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alert show];
+        }
+        else
+        {
+            NSMutableArray *unsortedBusinessParters = [userInfoDict objectForKey:kResponseItems];
+            BusinessPartners = (NSMutableArray*)[unsortedBusinessParters sortedArrayUsingComparator:^NSComparisonResult(id a, id b)
+                                                 {
+                                                     
+                                                     NSString *first = [(BusinessPartner*)a BusinessPartnerName];
+                                                     NSString *second = [(BusinessPartner*)b BusinessPartnerName];
+                                                     NSString *firstUpper = [first uppercaseString];
+                                                     NSString *secondUpper = [second uppercaseString];
+                                                     return [firstUpper compare:secondUpper];
+                                                 }];
+            [logoFlow centerOnSelectedCover:YES];
+            [logoFlow setSelectedCover:0];
+            //        [logoFlow centerOnSelectedCover:YES];
+            self.FlowLabel.text = @"All companies";
+            self.CustomerSearchField.text = self.ProspectSearchField.text = @"";
+            bupasForLogo = BusinessPartners;
+            VisibleBusinessPartners = [self filterBupaArray:bupasForLogo];
+            
+            [self.CustomerTable reloadData];
+            [self annotateVisibleCustomers];
+        }
+        
+    }];
+
 }
 
 -(void)annotateVisibleCustomers
@@ -282,20 +300,46 @@ NSMutableDictionary *parents;
 
 -(void)loadProspects:(NSString*)searchText
 {
-    [self.mapView removeAnnotations:prospects];
+    [self.mapView removeAnnotations:suspects];
     GooglePlacesSearchParser *parser = [[GooglePlacesSearchParser alloc]init];
     searchText = [searchText stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     NSString *apiKey = @"AIzaSyBGHEoD8uMDk7Fwq_Bk6l1jp8Gsxl9bL5Y";
     NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/xml?location=%f,%f&radius=25000&keyword=%@&sensor=true&key=%@",self.mapView.userLocation.coordinate.latitude,self.mapView.userLocation.coordinate.longitude,searchText,apiKey];
-    prospects = [parser findPlaces:url];
+    suspects = [parser findPlaces:url];
     [self annotateProspects];
+    
+    /*
+     //Start MapKit SDK//
+     
+     **Code below is for using MapKits SDK for finding suspects**
+    
+    suspects = [NSMutableArray array];
+    MKLocalSearchRequest *req = [[MKLocalSearchRequest alloc]init];
+    req.naturalLanguageQuery = searchText;
+    MKLocalSearch *searchProspect = [[MKLocalSearch alloc]initWithRequest:req];
+    [searchProspect startWithCompletionHandler:^(MKLocalSearchResponse *response,NSError *error)
+     {
+         NSArray *items = response.mapItems;
+         for(MKMapItem *item in items)
+         {
+             Suspect *suspect = [[Suspect alloc]initWithItem:item];
+             [suspects  addObject:suspect];
+             [self.mapView addAnnotation:suspect];
+         }
+         
+     
+     }];
+     
+     //End MapKit SDK //
+     */
+    
     
 }
 
 -(void)annotateProspects
 {
     NSMutableArray *toKeep = [[NSMutableArray alloc]init];
-    for(SuspectAnnotation *prospect in prospects)
+    for(SuspectAnnotation *prospect in suspects)
     {
         if(![self checkProspectAlreadyCustomer:prospect])
         {
@@ -303,9 +347,9 @@ NSMutableDictionary *parents;
             [toKeep addObject:prospect];
         }
     }
-    prospects = toKeep;
+    suspects = toKeep;
     
-    if(prospects.count == 0)
+    if(suspects.count == 0)
     {
         UIAlertView *noResults = [[UIAlertView alloc]initWithTitle:@"No Results" message:@"The given searchterm did not generate any results!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
         [noResults show];
@@ -358,9 +402,13 @@ NSMutableDictionary *parents;
         NSMutableArray *temp = [NSMutableArray array];
         for(Material *material in Materials)
         {
-            [temp addObject:material.MaterialNumber];
+            if(![self.MaterialPictures objectForKey:material.MaterialNumber])
+                [temp addObject:material.MaterialNumber];
         }
-        [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
+        if(temp.count >0)
+            [[RequestHandler uniqueInstance]performSelectorInBackground:@selector(loadImagesforMaterials:) withObject:temp];
+        else
+            [self selectPromoMaterials];
     }
 }
 
@@ -395,6 +443,7 @@ NSMutableDictionary *parents;
 -(void)materialGroupsLoaded:(NSNotification*)notification
 {
     MaterialGroups = [notification.userInfo objectForKey:kResponseItems];
+    [self.ProductsButton setHidden:NO];
     
     /*
      Code below can be used in case materials can not be requested but material groups with materials can....
@@ -452,7 +501,7 @@ NSMutableDictionary *parents;
         av.rightCalloutAccessoryView = details;
         return av;
     }
-    else if ([annotation isKindOfClass:[SuspectAnnotation class]])
+    else if ([annotation isKindOfClass:[SuspectAnnotation class]] || [annotation isKindOfClass:[Suspect class]])
     {
         MKAnnotationView *av = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"SuspectAnnotation"];
         if(av == nil)
@@ -473,7 +522,7 @@ NSMutableDictionary *parents;
 
 -(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-    if([view.annotation isKindOfClass:[SuspectAnnotation class]])
+    if([view.annotation isKindOfClass:[Suspect class]] ||[view.annotation isKindOfClass:[SuspectAnnotation class]])
     { 
         [self performSegueWithIdentifier:@"Details" sender:view.annotation];
     }
@@ -602,7 +651,7 @@ NSMutableDictionary *parents;
     VisibleBusinessPartners = [self filterBupaArray:bupasForLogo onText:@""];
     VisibleBusinessPartners = [self filterBupaArray:VisibleBusinessPartners];
     [self.CustomerTable reloadData];
-    [self.mapView removeAnnotations:prospects];
+    [self.mapView removeAnnotations:suspects];
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView
@@ -838,6 +887,11 @@ NSMutableDictionary *parents;
         {
             dvc.bupa = sender;
         }
+        else if([sender isKindOfClass:[Suspect class]])
+        {
+            dvc.suspect = sender;
+        }
+
     }
     else if ([segue.identifier isEqualToString:@"CustomerOverview"])
     {
@@ -849,11 +903,19 @@ NSMutableDictionary *parents;
     }
     else if([segue.identifier isEqualToString:@"goToProducts"])
     {
-        ProductCatalogViewController *pcvc = segue.destinationViewController;
+        UITabBarController *utbc = segue.destinationViewController;
+        ProductCatalogViewController *pcvc = utbc.viewControllers[0];
+        DocumentViewController *dvc = utbc.viewControllers[1];
+        NSMutableArray *temp = [NSMutableArray array];
+        for(BusinessPartner *bp in BusinessPartners)
+        {
+            if([bp.BusinessPartnerType isEqualToString:@"Customer"])
+                [temp addObject:bp];
+        }
+        [dvc setCustomers:temp];
         pcvc.mvc = self;
     }
 }
-
 
 
 

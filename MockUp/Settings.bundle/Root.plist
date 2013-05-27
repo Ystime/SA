@@ -68,28 +68,6 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>ECC System</string>
-			<key>Key</key>
-			<string>eccsystem</string>
-		</dict>
-		<dict>
-			<key>AutocorrectionType</key>
-			<string>No</string>
-			<key>KeyboardType</key>
-			<string>URL</string>
-			<key>DefaultValue</key>
-			<string>http://knowledge.nl4b.com/sap/opu/odata/sap/ZORDERS</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>BW System URL</string>
-			<key>Key</key>
-			<string>bwsystem</string>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>Login Details</string>
@@ -140,7 +118,7 @@
 			<key>Key</key>
 			<string>demo</string>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
 		</dict>
 	</array>
 	<key>StringsTable</key>

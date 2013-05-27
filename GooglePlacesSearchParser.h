@@ -10,7 +10,7 @@
 #import "SuspectAnnotation.h"
 
 @interface GooglePlacesSearchParser : NSObject <NSXMLParserDelegate>
-@property NSMutableArray *prospects;
+@property NSMutableArray *suspects;
 
 -(NSMutableArray*)findPlaces:(NSString*)searchURL;
 @end

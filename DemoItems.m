@@ -11,7 +11,7 @@
 @implementation DemoItems
 
 
-+(void)addDemoItemsToSalesDocuments:(NSMutableArray*)documents
++(void)addDemoItemsToSalesDocuments2:(NSMutableArray*)documents
 {
     NSArray *materials = [[DemoData getInstance]materials];
     NSArray *primes = [NSArray arrayWithObjects:[NSNumber numberWithInt:2],[NSNumber numberWithInt:3],[NSNumber numberWithInt:5],[NSNumber numberWithInt:7],[NSNumber numberWithInt:11], nil];
@@ -20,7 +20,7 @@
     {
         float totalValue = 0.0;
         int random = arc4random()%99999;
-//        for(int i =2;i<7;i++)
+        //        for(int i =2;i<7;i++)
         for(NSNumber *number in primes)
         {
             int i = number.intValue;
@@ -42,6 +42,42 @@
         }
         sd.NetValue = [[NSDecimalNumber alloc]initWithFloat:totalValue];
     }
-
+    
 }
+
++(void)addDemoItemsToSalesDocuments:(NSMutableArray*)documents
+{
+    NSArray *materials = [[DemoData getInstance]materials];
+    NSMutableArray *resultingDocuments;
+    for(SalesDocument *sd in documents)
+    {
+        float totalValue = 0.0;
+        for(Material *mat in materials)
+        {
+            int boelItem = arc4random()%3;
+            if(boelItem == 0)
+            {
+                SalesDocItem *item = [[SalesDocItem alloc]initWithSDMDictionary:nil];
+                item.OrderID = sd.OrderID;
+                item.Quantity = [NSNumber numberWithInt:arc4random()%100];
+                item.Material = mat.MaterialNumber;
+                item.Description = mat.Description;
+                item.UoM = mat.UoM;
+                float total = mat.Price.Price.floatValue * item.Quantity.floatValue;
+                totalValue +=total;
+                item.NetPrice = mat.Price.Price;
+                item.NetValue = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%.2f",total]];
+                [sd.Items addObject:item];
+                
+            }
+        }
+        if (totalValue > 0.00)
+        {
+            sd.NetValue = [[NSDecimalNumber alloc]initWithFloat:totalValue];
+            [resultingDocuments addObject:sd];
+        }
+    }
+    documents = resultingDocuments;
+}
+
 @end

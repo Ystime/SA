@@ -17,20 +17,25 @@
 #import "ZBarSDK.h"
 #import "MaterialInfoViewController.h"
 
-@interface DocumentViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,ZBarReaderDelegate>
+@interface DocumentViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,ZBarReaderDelegate,UIAlertViewDelegate>
 @property (strong, readonly ) CustomerViewController *cvc;
 @property (strong, nonatomic) SalesDocument *tempSalesDocument;
 @property (strong, nonatomic) UIPopoverController *pop;
+@property (strong) NSArray *customers;
 @property (nonatomic) BOOL changeMode;
 
 @property (strong, nonatomic) IBOutlet UITableView *ItemsTable;
+@property (strong, nonatomic) IBOutlet UIView *CartHeaderView;
 @property (strong, nonatomic) IBOutlet UIButton *AddButton;
 @property (strong, nonatomic) IBOutlet UIButton *SaveButton;
+@property (strong, nonatomic) IBOutlet UIButton *editButton;
 
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *ItemActionButtons;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *HeaderLabel;
 @property (strong, nonatomic) IBOutletCollection(UIView) NSArray *ViewCollection;
 @property (strong, nonatomic) IBOutlet UILabel *ShipToLabel;
+@property (strong, nonatomic) IBOutlet UILabel *ValueLabel;
+- (IBAction)cancelCart:(id)sender;
 
 - (IBAction)saveDocs:(id)sender;
 - (IBAction)changeItem:(id)sender;

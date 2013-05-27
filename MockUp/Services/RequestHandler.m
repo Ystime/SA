@@ -119,6 +119,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 {
     if([SettingsUtilities getDemoStatus])
     {
+        sleep(2);
         [[DemoData getInstance]postNotificationfor:@"BUPA"];
         return;
     }
@@ -189,12 +190,13 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 {
     if([SettingsUtilities getDemoStatus])
     {
-        BusinessPartnerParent *parent = [[BusinessPartnerParent alloc]initWithSDMDictionary:nil];
-        parent.BusinessPartnerName = @"FEXS";
-        parent.BusinessPartnerParentID = @"FEXS_PARENT";
-        NSArray *temp = [[DemoData getInstance]bupas];
-        parent.BusinessPartners = [NSMutableArray arrayWithObjects:temp[0],temp[1],nil];
-        NSDictionary *userinfo = [NSDictionary dictionaryWithObject:[NSDictionary dictionaryWithObject:parent forKey:parent.BusinessPartnerParentID] forKey:kResponseItems];
+        NSArray *parents = [[DemoData getInstance]hierNodes];
+        NSMutableDictionary *tempDic = [NSMutableDictionary dictionary];
+        for(BusinessPartnerParent *parent in parents)
+        {
+            [tempDic setObject:parent forKey:parent.BusinessPartnerParentID];
+        }
+        NSDictionary *userinfo = [NSDictionary dictionaryWithObject:tempDic forKey:kResponseItems];
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadHierarchyCompletedNotification object:self userInfo:userinfo];
     }
     else
@@ -270,7 +272,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         NSMutableArray *contact = [NSMutableArray array];
         for(BusinessPartner *bp in temp)
         {
-            if([bp.BusinessPartnerID isEqualToString:bupa.BusinessPartnerID])
+            if([bp.BusinessPartnerID isEqualToString:bupa.BusinessPartnerID] && bp.ContactPersons.count>0)
                 contact = bp.ContactPersons;
         }
         NSDictionary *dic = [NSDictionary dictionaryWithObject:contact forKey:kResponseItems];
@@ -295,6 +297,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
         {
             if([bp.BusinessPartnerID isEqualToString:bupa.BusinessPartnerID])
             {
+                contact.ContactPersonID = [NSString stringWithFormat:@"%i",[[DemoData getInstance]getNextContactId]];
                 [bp.ContactPersons addObject:contact];
                 return contact;
             }
@@ -487,6 +490,9 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     {
         salesdoc.OrderID = [NSString stringWithFormat:@"%i",[[DemoData getInstance]getNextDocId]];
         [[[DemoData getInstance]salesDocs]addObject:salesdoc];
+        BusinessPartner *temp = [[BusinessPartner alloc]init];
+        temp.BusinessPartnerID = salesdoc.CustomerID;
+        [[BWRequests uniqueInstance]loadEQForBusinessPartner:temp withFilters:nil andSelectFields:nil];
         return YES;
     }
     NSError *error;
@@ -605,7 +611,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     {
         for(NSString *string in materials)
         {
-            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.jpg",string]] forKey:string];
+            [dic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png",string]] forKey:string];
         }
     }
     else
@@ -639,7 +645,7 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     {
         for(NSString *parent in parentIDs)
         {
-            [parentsPic setObject:[UIImage imageNamed:@"FEXS_LOGO.png"] forKey:parent];
+            [parentsPic setObject:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png",parent]] forKey:parent];
         }   
     }
     else{
@@ -676,6 +682,14 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     NSString *noImages;
     if([SettingsUtilities getDemoStatus])
     {
+        for(ContactPerson *contact in contacts)
+        {
+            NSMutableDictionary *passphotos = [[DemoData getInstance]contactPictures];
+            UIImage *passphoto = [passphotos objectForKey:contact.ContactPersonID];
+            if (passphoto) {
+                [photos setObject:passphoto forKey:contact.ContactPersonID];
+            }
+        }
     }
     else
     {
@@ -745,7 +759,12 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
 {
     if([SettingsUtilities getDemoStatus])
     {
-        return NO;
+        if([slug rangeOfString:@"Passphoto"].location !=NSNotFound)
+        {
+            NSArray *substring = [slug componentsSeparatedByString:@"'"];
+            [[[DemoData getInstance]contactPictures]setObject:photo forKey:substring[3]];
+            return YES;
+        }
         
     }
     MediaLink *link = [[MediaLink alloc]initWithQuery:service.MediasetQuery andContentType:@"image/jpeg" andSlug:slug];
@@ -842,12 +861,21 @@ NSString * const kLoadHierarchyCompletedNotification = @"Hierarchy Loaded";
     }
 }
 
+
 -(BOOL)uploadNote:(NSString*)note withTitle:(NSString*)title withCategory:(NSString*)category forBusinessPartner:(BusinessPartner*)bupa
 {
     if([SettingsUtilities getDemoStatus])
     {
         NSMutableDictionary *temp = [[[DemoData getInstance]bupaNotes]objectForKey:bupa.BusinessPartnerID];
-        [temp setObject:note forKey:title];
+        if(!temp)
+        {
+            temp = [NSMutableDictionary dictionary];
+            [temp setObject:note forKey:title];
+            [[[DemoData getInstance]bupaNotes]setObject:temp forKey:bupa.BusinessPartnerID];
+        }
+        else
+            [temp setObject:note forKey:title];
+        
         return YES;
     }
     NSString *keyword;

@@ -15,7 +15,8 @@
 @implementation LogInViewController
 LGViewHUD *loggingIn;
 BOOL firsttry;
-
+CGPoint oldCenter;
+@synthesize loginSubView;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -33,16 +34,22 @@ BOOL firsttry;
     firsttry = YES;
     self.UsernameTextField.text = [SettingsUtilities getUsernameFromUserSettings];
     self.PasswordTextField.text = [SettingsUtilities getPasswordFromUserSettings];
-    if(!([self.UsernameTextField.text isEqualToString:@""]||[self.PasswordTextField.text isEqualToString:@""]))
-    {
-        for(UIView *view in self.Views)
-        {
-            [view setHidden:YES];
-        }
-    }
+//    if(!([self.UsernameTextField.text isEqualToString:@""]||[self.PasswordTextField.text isEqualToString:@""]))
+//    {
+//        for(UIView *view in self.Views)
+//        {
+//            [view setHidden:YES];
+//        }
+//    }
     
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardVisible) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardHidden) name:UIKeyboardWillHideNotification object:nil];
+    
+}
 - (void)viewDidUnload
 {
     [self setVersionLabel:nil];
@@ -128,14 +135,27 @@ BOOL firsttry;
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    
-    [self shiftView:self.view vertical:352];
+
+//    [self shiftView:self.view vertical:352];
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    [textField resignFirstResponder];
-    [self shiftView:self.view vertical:(-352)];
+//    [textField resignFirstResponder];
+//    [self shiftView:self.view vertical:(-352)];
 }
 
+
+-(void)keyboardVisible
+{
+    loginSubView.backgroundColor = [UIColor blackColor];
+    loginSubView.frame = CGRectOffset(loginSubView.frame,0, -352);
+}
+
+-(void)keyboardHidden
+{
+    loginSubView.backgroundColor = [UIColor clearColor];
+    loginSubView.frame = CGRectOffset(loginSubView.frame,0, 352);
+
+}
 @end

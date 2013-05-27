@@ -9,7 +9,7 @@
 #import "DemoData.h"
 
 @implementation DemoData
-@synthesize bupas,salesDocs,name,materials,materialGroups,BWQuery1,BWQuery4,bupaNotes,bupaPictures;
+@synthesize bupas,salesDocs,name,materials,materialGroups,BWQuery1,BWQuery4,bupaNotes,bupaPictures,contactPictures,hierNodes;
 static DemoData *instance = nil;
 
 +(DemoData*)getInstance
@@ -19,7 +19,9 @@ static DemoData *instance = nil;
         if(instance == nil)
         {
             instance = [DemoData new];
-            [instance loadDemoData];
+            instance.contactNumber = 123;
+            instance.docNumber = 0;
+            [instance loadDemoData]; 
         }
     }
     return instance;
@@ -30,12 +32,15 @@ static DemoData *instance = nil;
 
     DemoBUPA *temp = [[DemoBUPA alloc]init];
     bupas = [temp getDemoBupas];
+    hierNodes = [temp createNodes];
     materials = [DemoMaterials loadDemoMaterials];
     materialGroups = [DemoMaterials loadDemoMaterialGroups];
     salesDocs = [DemoDocs loadDemoSalesDocuments];
-    docNumber = salesDocs.count;
+
+    bupaNumber = bupas.count;
     bupaPictures = [DemoAttachments loadPics];
     bupaNotes = [DemoAttachments loadNotes];
+    contactPictures = [DemoAttachments loadPassphotos];
     
 }
 
@@ -64,18 +69,10 @@ static DemoData *instance = nil;
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
     }
     
-    else if([identifier isEqualToString:@"BWQuery4"])
-    {
-        NSMutableDictionary *userInfoDict;
-        userInfoDict = [NSMutableDictionary dictionaryWithObject:[DemoBW loadBWQuery4] forKey:kResponseItems];
-        [userInfoDict setObject:[NSString stringWithFormat:@"4"] forKey:kQueryNumber];
-        [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
-    }
-    
     else if ([identifier isEqualToString:@"EQQuery"])
     {
         NSMutableDictionary *userInfoDict;
-        userInfoDict = [NSMutableDictionary dictionaryWithObject:[DemoBW loadBWQueryEQ] forKey:kResponseItems];
+        userInfoDict = [NSMutableDictionary dictionaryWithObject:EQQuery forKey:kResponseItems];
         [userInfoDict setObject:[NSString stringWithFormat:@"99"] forKey:kQueryNumber];
         [[NSNotificationCenter defaultCenter]postNotificationName:kLoadQueryCompletedNotification object:self userInfo:userInfoDict];
     }
@@ -85,6 +82,14 @@ static DemoData *instance = nil;
 {
     docNumber +=1;
     return docNumber;
+}
+
+-(int)getNextBupaId{
+    return (bupaNumber+=1);
+}
+-(int)getNextContactId{
+    return (contactNumber+=1);
+    
 }
 
 @end

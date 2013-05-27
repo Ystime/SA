@@ -208,7 +208,6 @@ int selectedContact;
 
 -(void)tappedContacts
 {
-    NSLog(@"Gesture Recogned");
     if(selectedContact < contacts.count)
         [self performSegueWithIdentifier:@"contactDetails" sender:contacts[selectedContact]];
     else
